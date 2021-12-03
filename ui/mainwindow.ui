@@ -1,0 +1,1496 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>600</width>
+    <height>3112</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>CS 123: Introduction to Computer Graphics</string>
+  </property>
+  <property name="dockNestingEnabled">
+   <bool>true</bool>
+  </property>
+  <property name="dockOptions">
+   <set>QMainWindow::AllowNestedDocks|QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks|QMainWindow::ForceTabbedDocks|QMainWindow::VerticalTabs</set>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QGridLayout" name="gridLayout_10">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="tabPosition">
+       <enum>QTabWidget::North</enum>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tab2D">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <attribute name="title">
+        <string>2D</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_11">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QScrollArea" name="scrollArea">
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Plain</enum>
+          </property>
+          <property name="lineWidth">
+           <number>0</number>
+          </property>
+          <property name="verticalScrollBarPolicy">
+           <enum>Qt::ScrollBarAsNeeded</enum>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAsNeeded</enum>
+          </property>
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="Canvas2D" name="canvas2D">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>184</width>
+             <height>3054</height>
+            </rect>
+           </property>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab3D">
+       <attribute name="title">
+        <string>3D</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_12">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QWidget" name="canvas3D" native="true"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QDockWidget" name="shapesDock">
+   <property name="windowTitle">
+    <string>Simulation</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="shapesDockContents">
+    <layout class="QVBoxLayout" name="verticalLayout_7">
+     <item>
+      <widget class="QGroupBox" name="shapeType">
+       <property name="title">
+        <string>Simulation Type</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_8">
+        <property name="topMargin">
+         <number>5</number>
+        </property>
+        <property name="bottomMargin">
+         <number>5</number>
+        </property>
+        <item>
+         <widget class="QRadioButton" name="shapeTypeCube">
+          <property name="text">
+           <string>Basic Jello Cube Simulation</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="shapeTypeCone">
+          <property name="text">
+           <string>Static Cube Test (For Shaders, Environment, etc. Testing)</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="shapeTypeSphere">
+          <property name="text">
+           <string>Example Simulation 3</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="shapeParameters">
+       <property name="title">
+        <string>Tessellation Parameters</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <property name="topMargin">
+         <number>5</number>
+        </property>
+        <property name="bottomMargin">
+         <number>5</number>
+        </property>
+        <property name="verticalSpacing">
+         <number>5</number>
+        </property>
+        <item row="2" column="0">
+         <widget class="QLabel" name="shapeParameterLabel2">
+          <property name="text">
+           <string>2</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QLineEdit" name="shapeParameterTextbox2">
+          <property name="minimumSize">
+           <size>
+            <width>40</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>40</width>
+            <height>16777215</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="shapeParameterLabel1">
+          <property name="text">
+           <string>1</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QSlider" name="shapeParameterSlider2">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QLineEdit" name="shapeParameterTextbox1">
+          <property name="minimumSize">
+           <size>
+            <width>40</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>40</width>
+            <height>16777215</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QSlider" name="shapeParameterSlider1">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="title">
+        <string>Physics Constants (to be added)</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="useLightingCheckbox">
+       <property name="text">
+        <string>Use lighting</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="drawWireframeCheckbox">
+       <property name="text">
+        <string>Draw wireframe</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="drawNormalsCheckbox">
+       <property name="text">
+        <string>Draw normals</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QWidget" name="shapesDockEmptySpace" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="camtransDock">
+   <property name="windowTitle">
+    <string>&amp;Camtrans</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="camtransDockContents">
+    <layout class="QVBoxLayout" name="verticalLayout_10">
+     <item>
+      <widget class="QCheckBox" name="cameraOrbitCheckbox">
+       <property name="text">
+        <string>Use orbit camera instead</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="cameraPosition">
+       <property name="title">
+        <string>Translation</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout">
+        <property name="topMargin">
+         <number>5</number>
+        </property>
+        <property name="bottomMargin">
+         <number>5</number>
+        </property>
+        <property name="verticalSpacing">
+         <number>5</number>
+        </property>
+        <item row="1" column="0">
+         <widget class="QLabel" name="cameraPositionLabelX">
+          <property name="text">
+           <string>X</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLabel" name="cameraPositionLabelY">
+          <property name="text">
+           <string>Y</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QLabel" name="cameraPositionLabelZ">
+          <property name="text">
+           <string>Z</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QDial" name="transX">
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>60</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>60</width>
+            <height>60</height>
+           </size>
+          </property>
+          <property name="minimum">
+           <number>-360</number>
+          </property>
+          <property name="maximum">
+           <number>360</number>
+          </property>
+          <property name="singleStep">
+           <number>10</number>
+          </property>
+          <property name="pageStep">
+           <number>30</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="invertedControls">
+           <bool>true</bool>
+          </property>
+          <property name="wrapping">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QDial" name="transY">
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>60</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>60</width>
+            <height>60</height>
+           </size>
+          </property>
+          <property name="minimum">
+           <number>-360</number>
+          </property>
+          <property name="maximum">
+           <number>360</number>
+          </property>
+          <property name="singleStep">
+           <number>10</number>
+          </property>
+          <property name="pageStep">
+           <number>30</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="invertedControls">
+           <bool>true</bool>
+          </property>
+          <property name="wrapping">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QDial" name="transZ">
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>60</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>60</width>
+            <height>60</height>
+           </size>
+          </property>
+          <property name="minimum">
+           <number>-360</number>
+          </property>
+          <property name="maximum">
+           <number>360</number>
+          </property>
+          <property name="singleStep">
+           <number>10</number>
+          </property>
+          <property name="pageStep">
+           <number>30</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="invertedControls">
+           <bool>true</bool>
+          </property>
+          <property name="wrapping">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="cameraRotation">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="title">
+        <string>Rotation</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_13">
+        <property name="topMargin">
+         <number>5</number>
+        </property>
+        <property name="bottomMargin">
+         <number>5</number>
+        </property>
+        <item>
+         <widget class="QWidget" name="cameraRotation_2" native="true">
+          <layout class="QGridLayout" name="gridLayout_15">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <property name="verticalSpacing">
+            <number>18</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QDial" name="rotU">
+             <property name="minimumSize">
+              <size>
+               <width>60</width>
+               <height>60</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>60</width>
+               <height>60</height>
+              </size>
+             </property>
+             <property name="minimum">
+              <number>-360</number>
+             </property>
+             <property name="maximum">
+              <number>360</number>
+             </property>
+             <property name="singleStep">
+              <number>10</number>
+             </property>
+             <property name="pageStep">
+              <number>30</number>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="invertedControls">
+              <bool>true</bool>
+             </property>
+             <property name="wrapping">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QDial" name="rotV">
+             <property name="minimumSize">
+              <size>
+               <width>60</width>
+               <height>60</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>60</width>
+               <height>60</height>
+              </size>
+             </property>
+             <property name="minimum">
+              <number>-360</number>
+             </property>
+             <property name="maximum">
+              <number>360</number>
+             </property>
+             <property name="singleStep">
+              <number>10</number>
+             </property>
+             <property name="pageStep">
+              <number>30</number>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="invertedControls">
+              <bool>true</bool>
+             </property>
+             <property name="wrapping">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QDial" name="rotW">
+             <property name="minimumSize">
+              <size>
+               <width>60</width>
+               <height>60</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>60</width>
+               <height>60</height>
+              </size>
+             </property>
+             <property name="minimum">
+              <number>-360</number>
+             </property>
+             <property name="maximum">
+              <number>360</number>
+             </property>
+             <property name="singleStep">
+              <number>10</number>
+             </property>
+             <property name="pageStep">
+              <number>30</number>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="invertedControls">
+              <bool>true</bool>
+             </property>
+             <property name="wrapping">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="cameraRotationLabelYaw">
+             <property name="text">
+              <string>U</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLabel" name="cameraRotationLabelPitch">
+             <property name="text">
+              <string>V</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="2">
+            <widget class="QLabel" name="cameraRotationLabelRoll">
+             <property name="text">
+              <string>W</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="resetUpVector">
+          <property name="text">
+           <string>Reset up vector</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="cameraResetAxis">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="title">
+        <string>Reset</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_14">
+        <item row="0" column="0">
+         <widget class="QPushButton" name="xAxisButton">
+          <property name="text">
+           <string>X axis</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="yAxisButton">
+          <property name="text">
+           <string>Y axis</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QPushButton" name="zAxisButton">
+          <property name="text">
+           <string>Z axis</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QPushButton" name="axonometricButton">
+          <property name="text">
+           <string>Axonometric</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QWidget" name="cameraFrustum" native="true">
+       <layout class="QGridLayout" name="gridLayout_5">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <property name="verticalSpacing">
+         <number>5</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QLabel" name="cameraFovLabel">
+          <property name="text">
+           <string>FOV</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <widget class="QLineEdit" name="cameraFovTextbox">
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>60</width>
+            <height>16777215</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QSlider" name="cameraFovSlider">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="cameraNearLabel">
+          <property name="text">
+           <string>Near</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3">
+         <widget class="QLineEdit" name="cameraNearTextbox">
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>60</width>
+            <height>16777215</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="cameraFarLabel">
+          <property name="text">
+           <string>Far</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="3">
+         <widget class="QLineEdit" name="cameraFarTextbox">
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>60</width>
+            <height>16777215</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QSlider" name="cameraNearSlider">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QSlider" name="cameraFarSlider">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="resetSliders">
+       <property name="text">
+        <string>Reset FOV / Near / Far</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="cameraAspectRatio">
+       <property name="text">
+        <string>Aspect ratio:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Resize the window to change the aspect ratio.</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QWidget" name="cameraDockEmptySpace" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>600</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="actionNew"/>
+    <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionRevert"/>
+    <addaction name="actionClear"/>
+    <addaction name="actionCopy3Dto2D"/>
+    <addaction name="actionUseOrbitingCamera"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <widget class="QMenu" name="menuToolbars">
+    <property name="title">
+     <string>&amp;Toolbars</string>
+    </property>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuToolbars"/>
+  </widget>
+  <action name="actionNew">
+   <property name="text">
+    <string>&amp;New</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>&amp;Open...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>&amp;Save...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="text">
+    <string>&amp;Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionRevert">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Revert Image</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionCopy3Dto2D">
+   <property name="text">
+    <string>Copy &amp;3D tab to 2D tab</string>
+   </property>
+  </action>
+  <action name="actionClear">
+   <property name="text">
+    <string>&amp;Clear Image</string>
+   </property>
+   <property name="toolTip">
+    <string>Clear Image</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="actionUseOrbitingCamera">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Use Orbiting Camera</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+B</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>Canvas2D</class>
+   <extends>QWidget</extends>
+   <header>Canvas2D.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>actionQuit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>199</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cameraOrbitCheckbox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>cameraRotation</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>119</x>
+     <y>2353</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>116</x>
+     <y>2632</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cameraOrbitCheckbox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>cameraPosition</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>119</x>
+     <y>2353</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>116</x>
+     <y>2466</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>xAxisButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>setCameraAxisX()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>110</x>
+     <y>2693</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>1555</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>yAxisButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>setCameraAxisY()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>110</x>
+     <y>2727</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>1555</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>axonometricButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>setCameraAxonometric()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>232</x>
+     <y>2727</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>1555</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>transX</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>updateCameraTranslation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>86</x>
+     <y>2436</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>1555</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>transY</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>updateCameraTranslation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>156</x>
+     <y>2436</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>1555</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>transZ</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>updateCameraTranslation()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>226</x>
+     <y>2436</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>1555</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rotU</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>updateCameraRotationU()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>86</x>
+     <y>2552</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>1555</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rotW</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>updateCameraRotationN()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>226</x>
+     <y>2552</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>1555</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rotV</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>updateCameraRotationV()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>156</x>
+     <y>2552</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>1555</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cameraNearSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>updateCameraClip()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>173</x>
+     <y>2799</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>1555</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cameraNearTextbox</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>updateCameraClip()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>241</x>
+     <y>2798</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>1555</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cameraFarSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>updateCameraClip()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>173</x>
+     <y>2826</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>1555</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cameraFarTextbox</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>updateCameraClip()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>241</x>
+     <y>2825</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>1555</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cameraFovSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>updateCameraHeightAngle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>173</x>
+     <y>2772</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>1555</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cameraFovTextbox</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>updateCameraHeightAngle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>241</x>
+     <y>2771</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>1555</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionSave</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>fileSave()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>1165</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionOpen</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>fileOpen()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>1165</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionNew</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>fileNew()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>1165</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>resetUpVector</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>resetUpVector()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>224</x>
+     <y>2628</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>1555</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cameraOrbitCheckbox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>cameraResetAxis</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>130</x>
+     <y>2353</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>126</x>
+     <y>2735</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionCopy3Dto2D</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>fileCopy3Dto2D()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>1432</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>zAxisButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>setCameraAxisZ()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>232</x>
+     <y>2693</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>1555</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionClear</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>clearImage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>1555</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionRevert</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>revertImage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>1555</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>resetSliders</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>resetSliders()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>126</x>
+     <y>2852</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>1555</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionUseOrbitingCamera</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>cameraOrbitCheckbox</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>117</x>
+     <y>2412</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cameraOrbitCheckbox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>actionUseOrbitingCamera</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>117</x>
+     <y>2412</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>checkAllRayFeatures()</slot>
+  <slot>uncheckAllRayFeatures()</slot>
+  <slot>setAspectRatioText()</slot>
+  <slot>fileNew()</slot>
+  <slot>fileOpen()</slot>
+  <slot>fileSave()</slot>
+  <slot>renderImage()</slot>
+  <slot>cancelRender()</slot>
+  <slot>fileCopy3Dto2D()</slot>
+  <slot>setCameraAxisX()</slot>
+  <slot>setCameraAxisY()</slot>
+  <slot>setCameraAxisZ()</slot>
+  <slot>updateCameraTranslation()</slot>
+  <slot>updateCameraRotationN()</slot>
+  <slot>updateCameraRotationV()</slot>
+  <slot>updateCameraRotationU()</slot>
+  <slot>resetUpVector()</slot>
+  <slot>updateCameraClip()</slot>
+  <slot>updateCameraHeightAngle()</slot>
+  <slot>setCameraAxonometric()</slot>
+  <slot>clearImage()</slot>
+  <slot>revertImage()</slot>
+  <slot>resetSliders()</slot>
+ </slots>
+</ui>
