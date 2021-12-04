@@ -19,11 +19,12 @@ using namespace CS123::GL;
 
 ShapesScene::ShapesScene(int width, int height) :
     m_shape(nullptr),
+    m_shapeParameter1(-1),
+    m_shapeParameter2(-1),
     m_width(width),
     m_height(height),
-    m_shapeType(-1),
-    m_shapeParameter1(-1),
-    m_shapeParameter2(-1)
+    m_simType(-1),
+    m_shapeType(-1)
 {
     initializeSceneMaterial();
     initializeSceneLight();
@@ -187,20 +188,48 @@ void ShapesScene::settingsChanged() {
     // TODO: eventually add if statements and member variables to check what type of setting was changed
 
     // Type
+    if (settings.simType != m_simType) {
+        switch (settings.simType) {
+            case SIM_JELLO_SIM:
+                std::cout << "sim type: jello sim" << std::endl;
+            break;
+            case SIM_STATIC_CUBE:
+                std::cout << "sim type: static cube" << std::endl;
+            break;
+            case SIM_EXAMPLE:
+                std::cout << "sim type: example" << std::endl;
+            break;
+            default:
+                std::cout << "sim type: these sim types have no-impl" << std::endl;
+            break;
+        }
+        m_simType = settings.simType;
+    }
 
-    switch (settings.shapeType) {
-        case SHAPE_CUBE:
-            std::cout << "Jello Cube Simulation" << std::endl;
-            m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
-        break;
-        case SHAPE_CONE:
-            std::cout << "Static Cube Test For Shaders" << std::endl;
-             m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
-        break;
-        default:
-            std::cout << "these have no-impl" << std::endl;
-            m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
-        break;
+    if (settings.shapeType != m_shapeType) {
+        switch (settings.shapeType) {
+            case SHAPE_CUBE:
+                std::cout << "shape type: jellooo cube" << std::endl;
+                m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
+            break;
+            case SHAPE_CYLINDER:
+                std::cout << "shape type: jellooo cylinder" << std::endl;
+                m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
+            break;
+            case SHAPE_CONE:
+                std::cout << "shape type: jellooo cone" << std::endl;
+                m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
+            break;
+            case SHAPE_SPHERE:
+                std::cout << "shape type: jellooo sphere" << std::endl;
+                 m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
+            break;
+            default:
+                std::cout << "shape type: these shapes have no-impl" << std::endl;
+                m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
+            break;
+        }
+        m_shapeType = settings.shapeType;
     }
 }
 
