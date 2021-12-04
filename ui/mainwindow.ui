@@ -86,8 +86,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>184</width>
-             <height>3054</height>
+             <width>182</width>
+             <height>3061</height>
             </rect>
            </property>
           </widget>
@@ -131,9 +131,57 @@
    <widget class="QWidget" name="shapesDockContents">
     <layout class="QVBoxLayout" name="verticalLayout_7">
      <item>
-      <widget class="QGroupBox" name="shapeType">
+      <widget class="QGroupBox" name="simType">
        <property name="title">
         <string>Simulation Type</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <property name="leftMargin">
+         <number>9</number>
+        </property>
+        <property name="topMargin">
+         <number>5</number>
+        </property>
+        <property name="rightMargin">
+         <number>9</number>
+        </property>
+        <property name="bottomMargin">
+         <number>5</number>
+        </property>
+        <item>
+         <widget class="QRadioButton" name="simTypeJelloSim">
+          <property name="text">
+           <string>Basic Jello Cube Simulation</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="simTypeStaticCube">
+          <property name="text">
+           <string>Static Cube Test (For Shaders,  Environment, etc.  Testing)</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="simTypeExample">
+          <property name="contextMenuPolicy">
+           <enum>Qt::DefaultContextMenu</enum>
+          </property>
+          <property name="text">
+           <string>Example Simulation 3</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="shapeType">
+       <property name="title">
+        <string>Shapes</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_8">
         <property name="topMargin">
@@ -145,7 +193,7 @@
         <item>
          <widget class="QRadioButton" name="shapeTypeCube">
           <property name="text">
-           <string>Basic Jello Cube Simulation</string>
+           <string>Cube</string>
           </property>
           <property name="checked">
            <bool>true</bool>
@@ -153,138 +201,27 @@
          </widget>
         </item>
         <item>
+         <widget class="QRadioButton" name="shapeTypeCylinder">
+          <property name="text">
+           <string>Cylinder</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QRadioButton" name="shapeTypeCone">
           <property name="text">
-           <string>Static Cube Test (For Shaders, Environment, etc. Testing)</string>
+           <string>Cone</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QRadioButton" name="shapeTypeSphere">
           <property name="text">
-           <string>Example Simulation 3</string>
+           <string>Sphere</string>
           </property>
          </widget>
         </item>
        </layout>
-      </widget>
-     </item>
-     <item>
-      <widget class="QGroupBox" name="shapeParameters">
-       <property name="title">
-        <string>Tessellation Parameters</string>
-       </property>
-       <layout class="QGridLayout" name="gridLayout_4">
-        <property name="topMargin">
-         <number>5</number>
-        </property>
-        <property name="bottomMargin">
-         <number>5</number>
-        </property>
-        <property name="verticalSpacing">
-         <number>5</number>
-        </property>
-        <item row="2" column="0">
-         <widget class="QLabel" name="shapeParameterLabel2">
-          <property name="text">
-           <string>2</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="2">
-         <widget class="QLineEdit" name="shapeParameterTextbox2">
-          <property name="minimumSize">
-           <size>
-            <width>40</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>40</width>
-            <height>16777215</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="shapeParameterLabel1">
-          <property name="text">
-           <string>1</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QSlider" name="shapeParameterSlider2">
-          <property name="minimumSize">
-           <size>
-            <width>100</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="2">
-         <widget class="QLineEdit" name="shapeParameterTextbox1">
-          <property name="minimumSize">
-           <size>
-            <width>40</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>40</width>
-            <height>16777215</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QSlider" name="shapeParameterSlider1">
-          <property name="minimumSize">
-           <size>
-            <width>100</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item>
-      <widget class="QGroupBox" name="groupBox">
-       <property name="title">
-        <string>Physics Constants (to be added)</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="useLightingCheckbox">
-       <property name="text">
-        <string>Use lighting</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="drawWireframeCheckbox">
-       <property name="text">
-        <string>Draw wireframe</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="drawNormalsCheckbox">
-       <property name="text">
-        <string>Draw normals</string>
-       </property>
       </widget>
      </item>
      <item>
@@ -295,6 +232,154 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <widget class="QCheckBox" name="drawNormalsCheckbox">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>190</y>
+          <width>388</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Draw normals</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="drawWireframeCheckbox">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>160</y>
+          <width>388</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Draw wireframe</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="useLightingCheckbox">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>130</y>
+          <width>388</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Use lighting</string>
+        </property>
+       </widget>
+       <widget class="QGroupBox" name="groupBox">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>90</y>
+          <width>388</width>
+          <height>35</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Physics Constants (to be added)</string>
+        </property>
+       </widget>
+       <widget class="QGroupBox" name="shapeParameters">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>388</width>
+          <height>88</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Tessellation Parameters</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_4">
+         <property name="topMargin">
+          <number>5</number>
+         </property>
+         <property name="bottomMargin">
+          <number>5</number>
+         </property>
+         <property name="verticalSpacing">
+          <number>5</number>
+         </property>
+         <item row="2" column="0">
+          <widget class="QLabel" name="shapeParameterLabel2">
+           <property name="text">
+            <string>2</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QLineEdit" name="shapeParameterTextbox2">
+           <property name="minimumSize">
+            <size>
+             <width>40</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>40</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="shapeParameterLabel1">
+           <property name="text">
+            <string>1</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QSlider" name="shapeParameterSlider2">
+           <property name="minimumSize">
+            <size>
+             <width>100</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QLineEdit" name="shapeParameterTextbox1">
+           <property name="minimumSize">
+            <size>
+             <width>40</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>40</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QSlider" name="shapeParameterSlider1">
+           <property name="minimumSize">
+            <size>
+             <width>100</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </item>
     </layout>
@@ -880,7 +965,7 @@
      <x>0</x>
      <y>0</y>
      <width>600</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

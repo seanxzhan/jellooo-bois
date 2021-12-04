@@ -93,10 +93,15 @@ MainWindow::MainWindow(QWidget *parent) :
     a.clear();
     a += ui->shapeTypeCone;
     a += ui->shapeTypeCube;
-//    a += ui->shapeTypeCylinder;
+    a += ui->shapeTypeCylinder;
+    a += ui->shapeTypeSphere;
 //    a += ui->shapeTypeTorus;
 //    a += ui->shapeTypeSpecial1;
 //    a += ui->shapeTypeSpecial2;
+    a += ui->simTypeJelloSim;
+    a += ui->simTypeStaticCube;
+    a += ui->simTypeExample;
+
     foreach (QRadioButton *rb, a)
         connect(rb, SIGNAL(clicked()), this, SLOT(activateCanvas3D()));
 
@@ -125,73 +130,33 @@ void MainWindow::dataBind() {
     assert(connect(_b, SIGNAL(dataChanged()), this, SLOT(settingsChanged()))); \
 }
     QButtonGroup *brushButtonGroup = new QButtonGroup;
+    QButtonGroup *simulationGroup = new QButtonGroup;
     QButtonGroup *shapesButtonGroup = new QButtonGroup;
     QButtonGroup *filterButtonGroup = new QButtonGroup;
     m_buttonGroups.push_back(brushButtonGroup);
+    m_buttonGroups.push_back(simulationGroup);
     m_buttonGroups.push_back(shapesButtonGroup);
     m_buttonGroups.push_back(filterButtonGroup);
-
-//    BIND(ChoiceBinding::bindRadioButtons(
-//            brushButtonGroup,
-//            NUM_BRUSH_TYPES,
-//            settings.brushType,
-//            ui->brushTypeConstant,
-//            ui->brushTypeLinear,
-//            ui->brushTypeQuadratic,
-//            ui->brushTypeSmudge,
-//            ui->brushTypeSpecial1,
-//            ui->brushTypeSpecial2))
-
-//    BIND(IntBinding::bindSliderAndTextbox(
-//        ui->brushRadiusSlider, ui->brushRadiusTextbox, settings.brushRadius, 0, 96))
-//    BIND(UCharBinding::bindSliderAndTextbox(
-//        ui->brushColorSliderRed, ui->brushColorTextboxRed, settings.brushColor.r, 0, 255))
-//    BIND(UCharBinding::bindSliderAndTextbox(
-//        ui->brushColorSliderGreen, ui->brushColorTextboxGreen, settings.brushColor.g, 0, 255))
-//    BIND(UCharBinding::bindSliderAndTextbox(
-//        ui->brushColorSliderBlue, ui->brushColorTextboxBlue, settings.brushColor.b, 0, 255))
-//    BIND(UCharBinding::bindSliderAndTextbox(
-//        ui->brushColorSliderAlpha, ui->brushColorTextboxAlpha, settings.brushColor.a, 0, 255))
-//    BIND(BoolBinding::bindCheckbox(ui->brushAlphaBlendingCheckbox, settings.fixAlphaBlending))
-
-//    // Filter dock
-//    BIND(ChoiceBinding::bindRadioButtons(
-//            filterButtonGroup,
-//            NUM_FILTER_TYPES,
-//            settings.filterType,
-//            ui->filterTypeEdgeDetect,
-//            ui->filterTypeBlur,
-//            ui->filterTypeScale,
-//            ui->filterTypeRotate,
-//            ui->filterTypeSpecial1,
-//            ui->filterTypeSpecial2,
-//            ui->filterTypeSpecial3))
-//    BIND(FloatBinding::bindSliderAndTextbox(
-//        ui->edgeDetectSensitivitySlider, ui->edgeDetectSensitivityTextbox, settings.edgeDetectSensitivity,
-//            0.f, 1.f))
-//    BIND(IntBinding::bindSliderAndTextbox(
-//        ui->blurRadiusSlider, ui->blurRadiusTextbox, settings.blurRadius, 1.f, 200.f))
-//    BIND(FloatBinding::bindSliderAndTextbox(
-//        ui->scaleSliderX, ui->scaleTextboxX, settings.scaleX, 0.1f, 10.f))
-//    BIND(FloatBinding::bindSliderAndTextbox(
-//        ui->scaleSliderY, ui->scaleTextboxY, settings.scaleY, 0.1f, 10.f))
-//    BIND(IntBinding::bindSliderAndTextbox(
-//        ui->rotateSlider, ui->rotateAngleEdit, settings.rotateAngle, -360.f, 360.f))
 
     // Shapes dock
 //    BIND(BoolBinding::bindCheckbox(ui->showSceneviewInstead, settings.useSceneviewScene))
     BIND(ChoiceBinding::bindRadioButtons(
-            shapesButtonGroup,
-            NUM_SHAPE_TYPES,
-            settings.shapeType,
-            ui->shapeTypeCube,
-            ui->shapeTypeCone,
-            ui->shapeTypeSphere))
-//            ui->shapeTypeCylinder,
-//            ui->shapeTypeTorus,
-//            ui->shapeTypeSpecial1,
-//            ui->shapeTypeSpecial2)
-//         )
+        shapesButtonGroup,
+        NUM_SHAPE_TYPES,
+        settings.shapeType,
+        ui->shapeTypeCube,
+        ui->shapeTypeCylinder,
+        ui->shapeTypeCone,
+        ui->shapeTypeSphere))
+
+    BIND(ChoiceBinding::bindRadioButtons(
+        simulationGroup,
+        NUM_SIM_TYPES,
+        settings.simType,
+        ui->simTypeJelloSim,
+        ui->simTypeStaticCube,
+        ui->simTypeExample))
+
     BIND(IntBinding::bindSliderAndTextbox(
         ui->shapeParameterSlider1, ui->shapeParameterTextbox1, settings.shapeParameter1, 1.f, 100.f))
     BIND(IntBinding::bindSliderAndTextbox(
@@ -217,21 +182,6 @@ void MainWindow::dataBind() {
     BIND(FloatBinding::bindSliderAndTextbox(
               ui->cameraFarSlider, ui->cameraFarTextbox, settings.cameraFar, 0.1, 50))
     initializeCamtransFrustum(); // always set the viewing frustum to reasonable settings when we start the program
-
-
-//    // Ray dock
-//    BIND(BoolBinding::bindCheckbox(ui->raySuperSamping,          settings.useSuperSampling))
-//    BIND(IntBinding::bindTextbox(ui->raySuperSamplesTextbox,   settings.numSuperSamples))
-//    BIND(BoolBinding::bindCheckbox(ui->rayAntiAliasing,          settings.useAntiAliasing))
-//    BIND(BoolBinding::bindCheckbox(ui->rayShadows,               settings.useShadows))
-//    BIND(BoolBinding::bindCheckbox(ui->rayTextureMapping,        settings.useTextureMapping))
-//    BIND(BoolBinding::bindCheckbox(ui->rayReflection,            settings.useReflection))
-//    BIND(BoolBinding::bindCheckbox(ui->rayRefraction,            settings.useRefraction))
-//    BIND(BoolBinding::bindCheckbox(ui->rayPointLights,           settings.usePointLights))
-//    BIND(BoolBinding::bindCheckbox(ui->rayDirectionalLights,     settings.useDirectionalLights))
-//    BIND(BoolBinding::bindCheckbox(ui->raySpotLights,            settings.useSpotLights))
-//    BIND(BoolBinding::bindCheckbox(ui->rayMultiThreading,        settings.useMultiThreading))
-//    BIND(BoolBinding::bindCheckbox(ui->rayUseKDTree,             settings.useKDTree))
 
     BIND(ChoiceBinding::bindTabs(ui->tabWidget, settings.currentTab))
 

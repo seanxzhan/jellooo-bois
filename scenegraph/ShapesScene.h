@@ -76,6 +76,7 @@ private:
     int m_width;
     int m_height;
 
+    int m_simType;
     int m_shapeType;
 
     void clearLights();

@@ -52,6 +52,9 @@ void Settings::loadSettingsOrDefaults() {
     drawWireframe = s.value("drawWireframe", true).toBool();
     drawNormals = s.value("drawNormals", false).toBool();
 
+    // Simulation
+    simType = s.value("simType", SIM_JELLO_SIM).toInt();
+
     // Camtrans
     useOrbitCamera = s.value("useOrbitCamera", true).toBool();
     cameraFov = s.value("cameraFov", 55).toDouble();
@@ -111,6 +114,9 @@ void Settings::saveSettings() {
     s.setValue("useLighting", useLighting);
     s.setValue("drawWireframe", drawWireframe);
     s.setValue("drawNormals", drawNormals);
+
+    // Simulatoin
+    s.setValue("simType", simType);
 
     // Camtrans
     s.setValue("useOrbitCamera", useOrbitCamera);
