@@ -37,4 +37,5 @@ void ExampleShape::tick(float current) {
 //    }
 
 //    initializeOpenGLShapeProperties();
+//    std::cout << current << std::endl;
 }
