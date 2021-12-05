@@ -38,8 +38,6 @@ protected:
             const glm::vec3 &inp3, const glm::vec3 &norm3,
             const glm::vec3 &inp4, const glm::vec3 &norm4);
 
-private:
-
 };
 
 #endif // SHAPE_H
