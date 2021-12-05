@@ -19,6 +19,8 @@ public:
     virtual void setParam1(int inp);
     virtual void setParam2(int inp);
 
+    void tick(float current) override;
+
 protected:
     int m_param1;
     int m_param2;

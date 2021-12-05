@@ -4,6 +4,8 @@
 #include "gl/datatype/VBOAttribMarker.h"
 #include "gl/shaders/ShaderAttribLocations.h"
 
+#include <iostream>
+
 using namespace CS123::GL;
 
 OpenGLShape::OpenGLShape() :

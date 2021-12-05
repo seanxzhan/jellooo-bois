@@ -233,3 +233,7 @@ void ShapesScene::settingsChanged() {
     }
 }
 
+void ShapesScene::tick(float current) {
+    m_shape->tick(current);
+}
+

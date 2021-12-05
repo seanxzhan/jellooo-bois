@@ -65,3 +65,8 @@ void Shape::pushRectangleAsFloats(
     pushVertexAsFloats(inp3, norm3);
     pushVertexAsFloats(inp2, norm2);
 }
+
+void Shape::tick(float current) {
+    std::cout << "Shape:";
+    std::cout << current << std::endl;
+}
