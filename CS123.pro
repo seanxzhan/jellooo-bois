@@ -36,6 +36,7 @@ SOURCES += \
     scenegraph/ShapesScene.cpp \
     scenegraph/SceneviewScene.cpp \
     scenegraph/RayScene.cpp \
+    shapes/Bbox.cpp \
     shapes/ExampleShape.cpp \
     shapes/JelloCube.cpp \
     shapes/JelloUtil.cpp \
@@ -84,6 +85,7 @@ HEADERS += \
     scenegraph/ShapesScene.h \
     scenegraph/SceneviewScene.h \
     scenegraph/RayScene.h \
+    shapes/Bbox.h \
     shapes/ExampleShape.h \
     shapes/JelloCube.h \
     shapes/JelloUtil.h \

@@ -17,6 +17,7 @@ using namespace CS123::GL;
 #include "ResourceLoader.h"
 #include "shapes/ExampleShape.h"
 #include "shapes/JelloCube.h"
+#include "shapes/Bbox.h"
 
 #include "gl/shaders/ShaderAttribLocations.h"
 
@@ -171,7 +172,7 @@ void ShapesScene::renderGeometry() {
     }
 
     // draw top
-    m_bbox = std::make_unique<OpenGLShape>();
+    m_bbox = std::make_unique<Bbox>();
     std::vector<GLfloat> lineData = {
         2.f, 2.f, 2.f, 2.f, 2.f, -2.f,
         2.f, 2.f, -2.f, -2.f, 2.f, -2.f,
