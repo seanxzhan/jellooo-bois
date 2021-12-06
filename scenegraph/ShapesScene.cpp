@@ -17,6 +17,8 @@ using namespace CS123::GL;
 #include "ResourceLoader.h"
 #include "shapes/ExampleShape.h"
 
+#include "gl/shaders/ShaderAttribLocations.h"
+
 ShapesScene::ShapesScene(int width, int height) :
     m_shape(nullptr),
     m_shapeParameter1(-1),
@@ -142,6 +144,9 @@ void ShapesScene::renderWireframePass(SupportCanvas3D *context) {
 
 void ShapesScene::renderGeometryAsWireframe() {
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    float lineWidth[2];
+    glGetFloatv(GL_LINE_WIDTH_RANGE, lineWidth);
+    glLineWidth(lineWidth[1]);
     renderGeometry();
 }
 
@@ -163,6 +168,86 @@ void ShapesScene::renderGeometry() {
     if (m_shape) {
         m_shape->draw();
     }
+
+    // draw top
+    m_bbox = std::make_unique<OpenGLShape>();
+    std::vector<GLfloat> lineData = {
+        2.f, 2.f, 2.f, 2.f, 2.f, -2.f,
+        2.f, 2.f, -2.f, -2.f, 2.f, -2.f,
+        -2.f, 2.f, -2.f, -2.f, 2.f, 2.f,
+        -2.f, 2.f, 2.f, 2.f, 2.f, 2.f};
+    drawLine(lineData, 8);
+
+    lineData = {
+        2.f, 1.f, 2.f, 2.f, 1.f, -2.f,
+        2.f, 1.f, -2.f, -2.f, 1.f, -2.f,
+        -2.f, 1.f, -2.f, -2.f, 1.f, 2.f,
+        -2.f, 1.f, 2.f, 2.f, 1.f, 2.f};
+    drawLine(lineData, 8);
+
+    lineData = {
+        2.f, 0.f, 2.f, 2.f, 0.f, -2.f,
+        2.f, 0.f, -2.f, -2.f, 0.f, -2.f,
+        -2.f, 0.f, -2.f, -2.f, 0.f, 2.f,
+        -2.f, 0.f, 2.f, 2.f, 0.f, 2.f};
+    drawLine(lineData, 8);
+
+    lineData = {
+        2.f, -1.f, 2.f, 2.f, -1.f, -2.f,
+        2.f, -1.f, -2.f, -2.f, -1.f, -2.f,
+        -2.f, -1.f, -2.f, -2.f, -1.f, 2.f,
+        -2.f, -1.f, 2.f, 2.f, -1.f, 2.f};
+    drawLine(lineData, 8);
+
+    // draw bottom
+    lineData = {2.f, -2.f, 2.f, 2.f, -2.f, -2.f,
+                2.f, -2.f, -2.f, -2.f, -2.f, -2.f,
+                -2.f, -2.f, -2.f, -2.f, -2.f, 2.f,
+                -2.f, -2.f, 2.f, 2.f, -2.f, 2.f};
+    drawLine(lineData, 8);
+
+    // draw vertical pillars separately due to LINE_STRIP
+    lineData = {2.f, 2.f, 2.f, 2.f, -2.f, 2.f};
+    drawLine(lineData, 2);
+    lineData = {2.f, 2.f, -2.f, 2.f, -2.f, -2.f};
+    drawLine(lineData, 2);
+    lineData = {-2.f, 2.f, -2.f, -2.f, -2.f, -2.f};
+    drawLine(lineData, 2);
+    lineData = {-2.f, 2.f, 2.f, -2.f, -2.f, 2.f};
+    drawLine(lineData, 2);
+
+    lineData = {2.f, 2.f, 1.f, 2.f, -2.f, 1.f};
+    drawLine(lineData, 2);
+    lineData = {2.f, 2.f, -1.f, 2.f, -2.f, -1.f};
+    drawLine(lineData, 2);
+    lineData = {-2.f, 2.f, -1.f, -2.f, -2.f, -1.f};
+    drawLine(lineData, 2);
+    lineData = {-2.f, 2.f, 1.f, -2.f, -2.f, 1.f};
+    drawLine(lineData, 2);
+    lineData = {2.f, 2.f, 0.f, 2.f, -2.f, 0.f};
+    drawLine(lineData, 2);
+    lineData = {-2.f, 2.f, 0.f, -2.f, -2.f, 0.f};
+    drawLine(lineData, 2);
+
+    lineData = {1.f, 2.f, 2.f, 1.f, -2.f, 2.f};
+    drawLine(lineData, 2);
+    lineData = {1.f, 2.f, -2.f, 1.f, -2.f, -2.f};
+    drawLine(lineData, 2);
+    lineData = {-1.f, 2.f, -2.f, -1.f, -2.f, -2.f};
+    drawLine(lineData, 2);
+    lineData = {-1.f, 2.f, 2.f, -1.f, -2.f, 2.f};
+    drawLine(lineData, 2);
+    lineData = {0.f, 2.f, 2.f, 0.f, -2.f, 2.f};
+    drawLine(lineData, 2);
+    lineData = {0.f, 2.f, -2.f, 0.f, -2.f, -2.f};
+    drawLine(lineData, 2);
+}
+
+void ShapesScene::drawLine(std::vector<GLfloat> &line, int num_vertices) {
+    m_bbox->setVertexData(&line[0], line.size(), VBO::GEOMETRY_LAYOUT::LAYOUT_LINE_STRIP, num_vertices);
+    m_bbox->setAttribute(ShaderAttrib::POSITION, 3, 0, VBOAttribMarker::DATA_TYPE::FLOAT, false);
+    m_bbox->buildVAO();
+    m_bbox->draw();
 }
 
 void ShapesScene::clearLights() {
