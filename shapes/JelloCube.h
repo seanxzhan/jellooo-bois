@@ -19,9 +19,12 @@ public:
 
 private:
     virtual void generateVertexData() override;
-    void loadVAO();
 
-    void computeAcceleration(std::vector<glm::vec3> &acceleration);
+    void calculateNormals();
+    void loadVAO();
+    void computeAcceleration(std::vector<glm::vec3> &points,
+                             std::vector<glm::vec3> &velocity,
+                             std::vector<glm::vec3> &acceleration);
     void euler();
     void rk4();
 
@@ -35,9 +38,9 @@ private:
     float dt;
 
     //Standardizations for how to index in comments
-    std::vector<glm::vec3> points; //points for each point
-    std::vector<glm::vec3> normals; //normals for each of the 6 faces
-    std::vector<glm::vec3> velocity; //velocities for each point
+    std::vector<glm::vec3> m_points; //points
+    std::vector<glm::vec3> m_normals; //normals for each of the 6 faces
+    std::vector<glm::vec3> m_velocity; //velocities for each point
 };
 
 #endif // JELLOCUBE_H

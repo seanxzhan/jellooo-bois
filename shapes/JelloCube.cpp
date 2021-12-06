@@ -31,9 +31,9 @@ void JelloCube::setParam2(int inp) {
 void JelloCube::generateVertexData(){
     int dim = m_param1 + 1;
     int num_control_points = pow(dim,3);
-    points.reserve(num_control_points);
-    velocity.reserve(num_control_points);
-    normals.reserve(dim * dim * 6);
+    m_points.reserve(num_control_points);
+    m_velocity.reserve(num_control_points);
+    m_normals.reserve(dim * dim * 6);
 
     //Initialize points
     float incr = 1.f / m_param1;
@@ -48,7 +48,7 @@ void JelloCube::generateVertexData(){
         for (int i = 0; i < dim; i++) {
             //j is the column (x)
             for (int j = 0; j < dim; j++) {
-                points.push_back(start + glm::vec3(j * incr, i * -incr, k * -incr));
+                m_points.push_back(start + glm::vec3(j * incr, i * -incr, k * -incr));
             }
         }
     }
@@ -56,33 +56,35 @@ void JelloCube::generateVertexData(){
     // Convention for indexing into normals
     // 6 2D slices, each slice is of dimension dim x dim for each face
     // normals [i][j][FACE] gives the normal at (i,j) given enum FACE
+
+    //Below code is temporary until calculateNormals is filled in
     for (int face = 0; face < 6; face++) {
         for (int i = 0; i < dim; i++) {
             for (int j = 0; j < dim; j++) {
                 FACE side = (FACE)face;
                 switch(side) {
                     case BOTTOM: {
-                        normals.push_back(glm::vec3(0.f, -1.f, 0.f));
+                        m_normals.push_back(glm::vec3(0.f, -1.f, 0.f));
                         break;
                     }
                     case TOP: {
-                        normals.push_back(glm::vec3(0.f, 1.f, 0.f));
+                        m_normals.push_back(glm::vec3(0.f, 1.f, 0.f));
                         break;
                     }
                     case FRONT: {
-                        normals.push_back(glm::vec3(0.f, 0.f, 1.f));
+                        m_normals.push_back(glm::vec3(0.f, 0.f, 1.f));
                         break;
                     }
                     case BACK: {
-                        normals.push_back(glm::vec3(0.f, 0.f, -1.f));
+                        m_normals.push_back(glm::vec3(0.f, 0.f, -1.f));
                         break;
                     }
                     case LEFT: {
-                        normals.push_back(glm::vec3(-1.f, 0.f, 0.f));
+                        m_normals.push_back(glm::vec3(-1.f, 0.f, 0.f));
                         break;
                     }
                     case RIGHT: {
-                        normals.push_back(glm::vec3(1.f, 0.f, 0.f));
+                        m_normals.push_back(glm::vec3(1.f, 0.f, 0.f));
                         break;
                     }
                 }
@@ -90,18 +92,30 @@ void JelloCube::generateVertexData(){
         }
     }
 
-    //Load VAO for each of the 6 faces with points and normas
+    //Just debugging faces
+    for (int face = 0; face < 6; face++) {
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
+                FACE side = (FACE)face;
+                int index = indexFromFace(i, j, dim, side);
+                std::cout << index << ", ";
+            }
+        }
+        std::cout << std::endl;
+    }
+
+    //Load VAO for each of the 6 faces with points and normals
+    calculateNormals();
     loadVAO();
 
     initializeOpenGLShapeProperties();
 
 }
 
-//void Shape::pushRectangleAsFloats(
-//        const glm::vec3 &inp1, const glm::vec3 &norm1,
-//        const glm::vec3 &inp2, const glm::vec3 &norm2,
-//        const glm::vec3 &inp3, const glm::vec3 &norm3,
-//        const glm::vec3 &inp4, const glm::vec3 &norm4)
+//Computes normals for points at arbitrary points
+void JelloCube::calculateNormals() {
+
+}
 
 //Should load the VAO given arbitrary positions of each cube point
 void JelloCube::loadVAO() {
@@ -111,14 +125,14 @@ void JelloCube::loadVAO() {
         for (int i = 0; i < dim - 1; i++) {
             for (int j = 0; j < dim - 1; j++) {
                 FACE side = (FACE)face;
-                glm::vec3 point1 = points[indexPoints(i, j, dim, side)];
-                glm::vec3 normal1 = normals[to1D(i, j, face, dim, dim)];
-                glm::vec3 point2 = points[indexPoints(i, j+1, dim, side)];
-                glm::vec3 normal2 = normals[to1D(i, j+1, face, dim, dim)];
-                glm::vec3 point3 = points[indexPoints(i+1, j+1, dim, side)];
-                glm::vec3 normal3 = normals[to1D(i+1, j+1, face, dim, dim)];
-                glm::vec3 point4 = points[indexPoints(i+1, j, dim, side)];
-                glm::vec3 normal4 = normals[to1D(i+1, j, face, dim, dim)];
+                glm::vec3 point1 = m_points[indexFromFace(i, j, dim, side)];
+                glm::vec3 normal1 = m_normals[to1D(i, j, face, dim, dim)];
+                glm::vec3 point2 = m_points[indexFromFace(i, j+1, dim, side)];
+                glm::vec3 normal2 = m_normals[to1D(i, j+1, face, dim, dim)];
+                glm::vec3 point3 = m_points[indexFromFace(i+1, j+1, dim, side)];
+                glm::vec3 normal3 = m_normals[to1D(i+1, j+1, face, dim, dim)];
+                glm::vec3 point4 = m_points[indexFromFace(i+1, j, dim, side)];
+                glm::vec3 normal4 = m_normals[to1D(i+1, j, face, dim, dim)];
                 pushRectangleAsFloats(
                             point1, normal1,
                             point2, normal2,
@@ -129,7 +143,9 @@ void JelloCube::loadVAO() {
     }
 }
 
-void JelloCube::computeAcceleration(std::vector<glm::vec3> &acceleration) {
+void JelloCube::computeAcceleration(std::vector<glm::vec3> &points,
+                                    std::vector<glm::vec3> &velocity,
+                                    std::vector<glm::vec3> &acceleration) {
 
 }
 
@@ -140,22 +156,126 @@ void JelloCube::euler() {
     std::vector<glm::vec3> acceleration;
     acceleration.reserve(num_control_points);
 
+    computeAcceleration(m_points, m_velocity, acceleration);
+
     //k depth (z)
     for (int k = 0; k < dim; k++) {
         //i is the row (y)
         for (int i = 0; i < dim; i++) {
             //j is the column (x)
             for (int j = 0; j < dim; j++) {
-                points[to1D(i, j, k, dim, dim)] += dt * velocity[to1D(i, j, k, dim, dim)];
-                velocity[to1D(i, j, k, dim, dim)] += dt * acceleration[to1D(i, j, k, dim, dim)];
+                m_points[to1D(i, j, k, dim, dim)] += dt * m_velocity[to1D(i, j, k, dim, dim)];
+                m_velocity[to1D(i, j, k, dim, dim)] += dt * acceleration[to1D(i, j, k, dim, dim)];
             }
         }
     }
 
 }
 
+//Is it possible to optimize this thing?
 void JelloCube::rk4() {
+    int dim = m_param1 + 1;
+    int num_control_points = pow(dim,3);
 
+    std::vector<glm::vec3> buffer_points;
+    std::vector<glm::vec3> buffer_velocity;
+    buffer_points.reserve(num_control_points);
+    buffer_velocity.reserve(num_control_points);
+
+    std::vector<glm::vec3> acceleration;
+    acceleration.reserve(num_control_points);
+
+    std::vector<glm::vec3> points1;
+    std::vector<glm::vec3> velocity1;
+    points1.reserve(num_control_points);
+    velocity1.reserve(num_control_points);
+
+    std::vector<glm::vec3> points2;
+    std::vector<glm::vec3> velocity2;
+    points2.reserve(num_control_points);
+    velocity2.reserve(num_control_points);
+
+    std::vector<glm::vec3> points3;
+    std::vector<glm::vec3> velocity3;
+    points3.reserve(num_control_points);
+    velocity3.reserve(num_control_points);
+
+    std::vector<glm::vec3> points4;
+    std::vector<glm::vec3> velocity4;
+    points4.reserve(num_control_points);
+    velocity4.reserve(num_control_points);
+
+    computeAcceleration(m_points, m_velocity, acceleration);
+    for (int k = 0; k < dim; k++) {
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
+                int index = to1D(i, j, k, dim, dim);
+                points1[index] = dt * m_velocity[index];
+                velocity1[index] = dt * acceleration[index];
+                buffer_points[index] = 0.5f * points1[index];
+                buffer_velocity[index] = 0.5f * velocity1[index];
+                buffer_points[index] += m_points[index];
+                buffer_velocity[index] += m_velocity[index];
+            }
+        }
+    }
+
+    computeAcceleration(buffer_points, buffer_velocity, acceleration);
+    for (int k = 0; k < dim; k++) {
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
+                int index = to1D(i, j, k, dim, dim);
+                points2[index] = dt * buffer_velocity[index];
+                velocity2[index] = dt * acceleration[index];
+                buffer_points[index] = 0.5f * points2[index];
+                buffer_velocity[index] = 0.5f * velocity2[index];
+                buffer_points[index] += m_points[index];
+                buffer_velocity[index] += m_velocity[index];
+            }
+        }
+    }
+
+    computeAcceleration(buffer_points, buffer_velocity, acceleration);
+    for (int k = 0; k < dim; k++) {
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
+                int index = to1D(i, j, k, dim, dim);
+                points3[index] = dt * buffer_velocity[index];
+                velocity3[index] = dt * acceleration[index];
+                buffer_points[index] = 0.5f * points3[index];
+                buffer_velocity[index] = 0.5f * velocity3[index];
+                buffer_points[index] += m_points[index];
+                buffer_velocity[index] += m_velocity[index];
+            }
+        }
+    }
+
+    computeAcceleration(buffer_points, buffer_velocity, acceleration);
+    for (int k = 0; k < dim; k++) {
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
+                int index = to1D(i, j, k, dim, dim);
+                points4[index] = dt * buffer_velocity[index];
+                velocity4[index] = dt * acceleration[index];
+
+                buffer_points[index] = 2.f * points2[index];
+                buffer_velocity[index] = 2.f * points3[index];
+                buffer_points[index] += buffer_velocity[index];
+                buffer_points[index] += points1[index];
+                buffer_points[index] += points4[index];
+                buffer_points[index] /= 6.f;
+                m_points[index] += buffer_points[index];
+
+                buffer_points[index] = 2.f * velocity2[index];
+                buffer_velocity[index] = 2.f * velocity3[index];
+                buffer_points[index] += buffer_velocity[index];
+                buffer_points[index] += velocity1[index];
+                buffer_points[index] += velocity4[index];
+                buffer_points[index] /= 6.f;
+                m_velocity[index] += buffer_points[index];
+            }
+        }
+    }
 }
 
 //Should update positions and call on loadVAO and initializeOpenGLShapeProperties() to prep for drawing again
@@ -172,10 +292,12 @@ void JelloCube::tick(float current) {
         for (int i = 0; i < dim; i++) {
             //j is the column (x)
             for (int j = 0; j < dim; j++) {
-                points[to1D(i, j, k, dim, dim)].y += increment;
+                m_points[to1D(i, j, k, dim, dim)].y += increment;
             }
         }
     }
+
+    calculateNormals();
     loadVAO();
     initializeOpenGLShapeProperties();
 }

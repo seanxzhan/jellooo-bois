@@ -13,7 +13,7 @@ enum FACE {
 namespace JelloUtil {
 
 int to1D(int r, int c, int d, int width, int height);
-int indexPoints(int i, int j, int dim, FACE face);
+int indexFromFace(int i, int j, int dim, FACE face);
 
 }
 

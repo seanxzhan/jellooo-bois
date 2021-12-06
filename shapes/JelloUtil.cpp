@@ -14,7 +14,7 @@ int to1D(int r, int c, int d, int width, int height) {
 //Left - [i][0][j]
 //Right - [i][dim-1][j]
 //*Note that some go the opposite way - I'm not sure why but this makes it work so dont' touch it lol
-int indexPoints(int i, int j, int dim, FACE face) {
+int indexFromFace(int i, int j, int dim, FACE face) {
     switch(face) {
         case BOTTOM: {
             return to1D(dim-1, i, dim-1-j, dim, dim);
