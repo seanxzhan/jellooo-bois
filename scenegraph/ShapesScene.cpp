@@ -16,6 +16,7 @@ using namespace CS123::GL;
 
 #include "ResourceLoader.h"
 #include "shapes/ExampleShape.h"
+#include "shapes/JelloCube.h"
 
 ShapesScene::ShapesScene(int width, int height) :
     m_shape(nullptr),
@@ -210,7 +211,7 @@ void ShapesScene::settingsChanged() {
         switch (settings.shapeType) {
             case SHAPE_CUBE:
                 std::cout << "shape type: jellooo cube" << std::endl;
-                m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
+                m_shape = std::make_unique<JelloCube>(settings.shapeParameter1, settings.shapeParameter2);
             break;
             case SHAPE_CYLINDER:
                 std::cout << "shape type: jellooo cylinder" << std::endl;
