@@ -45,6 +45,7 @@ public:
 
     virtual void render(SupportCanvas3D *context) override;
     virtual void settingsChanged() override;
+    virtual void tick(float current) override;
 
 
 protected:

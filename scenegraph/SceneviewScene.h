@@ -35,6 +35,7 @@ public:
 
     virtual void render(SupportCanvas3D *context) override;
     virtual void settingsChanged() override;
+    virtual void tick(float current) override;
 
     // Use this method to set an internal selection, based on the (x, y) position of the mouse
     // pointer.  This will be used during the "modeler" lab, so don't worry about it for now.

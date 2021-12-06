@@ -100,3 +100,7 @@ void SceneviewScene::settingsChanged() {
     // TODO: [SCENEVIEW] Fill this in if applicable.
 }
 
+void SceneviewScene::tick(float current) {
+
+}
+

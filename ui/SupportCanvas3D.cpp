@@ -21,8 +21,15 @@ SupportCanvas3D::SupportCanvas3D(QGLFormat format, QWidget *parent) : QGLWidget(
     m_settingsDirty(true),
     m_defaultPerspectiveCamera(new CamtransCamera()),
     m_defaultOrbitingCamera(new OrbitingCamera()),
-    m_currentScene(nullptr)
+    m_currentScene(nullptr),
+    m_timer(this),
+    m_fps(24.0f),
+    m_increment(0)
 {
+    // Set up 60 FPS draw loop.
+    connect(&m_timer, SIGNAL(timeout()), this, SLOT(tick()));
+    m_timer.start(1000.0f / m_fps);
+    m_tick = 1.0;
 }
 
 SupportCanvas3D::~SupportCanvas3D()
@@ -279,4 +286,12 @@ void SupportCanvas3D::wheelEvent(QWheelEvent *event) {
 
 void SupportCanvas3D::resizeEvent(QResizeEvent *event) {
     emit aspectRatioChanged();
+}
+
+/** Repaints the canvas. Called 60 times per second. */
+void SupportCanvas3D::tick()
+{
+    float time = m_tick++ / (float) m_fps;
+    m_currentScene->tick(time);
+    update();
 }

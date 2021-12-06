@@ -30,6 +30,7 @@ public:
     OpenGLShape();
     virtual ~OpenGLShape();
     void draw();
+    virtual void tick(float current) = 0;
 
 protected:
     /**

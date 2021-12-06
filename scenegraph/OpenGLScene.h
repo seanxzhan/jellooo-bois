@@ -21,6 +21,7 @@ public:
     virtual ~OpenGLScene();
     virtual void settingsChanged() override;
     virtual void render(SupportCanvas3D *context) = 0;
+    virtual void tick(float current) = 0;
 
 protected:
 

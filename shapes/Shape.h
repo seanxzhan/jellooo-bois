@@ -19,6 +19,8 @@ public:
     virtual void setParam1(int inp);
     virtual void setParam2(int inp);
 
+    void tick(float current) override;
+
 protected:
     int m_param1;
     int m_param2;
@@ -35,8 +37,6 @@ protected:
             const glm::vec3 &inp2, const glm::vec3 &norm2,
             const glm::vec3 &inp3, const glm::vec3 &norm3,
             const glm::vec3 &inp4, const glm::vec3 &norm4);
-
-private:
 
 };
 
