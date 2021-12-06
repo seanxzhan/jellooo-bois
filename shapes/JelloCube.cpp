@@ -298,6 +298,7 @@ void JelloCube::tick(float current) {
     }
 
     calculateNormals();
+    m_vertexData.clear();
     loadVAO();
     initializeOpenGLShapeProperties();
 }
