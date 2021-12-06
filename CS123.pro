@@ -38,6 +38,7 @@ SOURCES += \
     scenegraph/RayScene.cpp \
     shapes/ExampleShape.cpp \
     shapes/JelloCube.cpp \
+    shapes/JelloUtil.cpp \
     shapes/OpenGLShape.cpp \
     shapes/Shape.cpp \
     ui/Canvas2D.cpp \
@@ -85,6 +86,7 @@ HEADERS += \
     scenegraph/RayScene.h \
     shapes/ExampleShape.h \
     shapes/JelloCube.h \
+    shapes/JelloUtil.h \
     shapes/OpenGLShape.h \
     shapes/Shape.h \
     ui/Canvas2D.h \

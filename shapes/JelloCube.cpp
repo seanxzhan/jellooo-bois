@@ -2,7 +2,8 @@
 #include <iostream>
 
 JelloCube::JelloCube():
-    Shape(7, 7)
+    Shape(7, 7),
+    dt(0.001)
 {
     generateVertexData();
 }
@@ -32,7 +33,6 @@ void JelloCube::generateVertexData(){
     int num_control_points = pow(dim,3);
     points.reserve(num_control_points);
     velocity.reserve(num_control_points);
-    acceleration.reserve(num_control_points);
     normals.reserve(dim * dim * 6);
 
     //Initialize points
@@ -129,23 +129,53 @@ void JelloCube::loadVAO() {
     }
 }
 
+void JelloCube::computeAcceleration(std::vector<glm::vec3> &acceleration) {
+
+}
+
+void JelloCube::euler() {
+    int dim = m_param1 + 1;
+    int num_control_points = pow(dim,3);
+
+    std::vector<glm::vec3> acceleration;
+    acceleration.reserve(num_control_points);
+
+    //k depth (z)
+    for (int k = 0; k < dim; k++) {
+        //i is the row (y)
+        for (int i = 0; i < dim; i++) {
+            //j is the column (x)
+            for (int j = 0; j < dim; j++) {
+                points[to1D(i, j, k, dim, dim)] += dt * velocity[to1D(i, j, k, dim, dim)];
+                velocity[to1D(i, j, k, dim, dim)] += dt * acceleration[to1D(i, j, k, dim, dim)];
+            }
+        }
+    }
+
+}
+
+void JelloCube::rk4() {
+
+}
+
 //Should update positions and call on loadVAO and initializeOpenGLShapeProperties() to prep for drawing again
 void JelloCube::tick(float current) {
 //    std::cout << "Jello Cube" << std::endl;
 //    std::cout << current << std::endl;
 
-//    float increment = sin(current) / 60;
-//    int dim = m_param1 + 1;
-//    //k depth (z)
-//    for (int k = 0; k < dim; k++) {
-//        //i is the row (y)
-//        for (int i = 0; i < dim; i++) {
-//            //j is the column (x)
-//            for (int j = 0; j < dim; j++) {
-//                points[to1D(i, j, k, dim, dim)].y += increment;
-//            }
-//        }
-//    }
+    //This just goes up and down - should involve call to compute acceleration and using RK4 integration
+    float increment = sin(current) / 60;
+    int dim = m_param1 + 1;
+    //k depth (z)
+    for (int k = 0; k < dim; k++) {
+        //i is the row (y)
+        for (int i = 0; i < dim; i++) {
+            //j is the column (x)
+            for (int j = 0; j < dim; j++) {
+                points[to1D(i, j, k, dim, dim)].y += increment;
+            }
+        }
+    }
     loadVAO();
     initializeOpenGLShapeProperties();
 }
