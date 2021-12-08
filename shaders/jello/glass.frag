@@ -49,7 +49,14 @@ void main()
 
     // step 5
     fragColor = (1-F) * refractionColor + F * reflectionColor;
+    fragColor.w = 1.0;
 
-    // TODO: play with more jello colors (use only 1 color channel? maybe
-    // diffuse it or brighten/wash it out i have no idea
+    // Make Jello-Like
+
+    // Keep 1 Channel Color
+    fragColor.x *= 0;
+    fragColor.y *= 0;
+    fragColor.z *= 2.0;
+
+    // Maybe Add Diffusion, or Specular Smth
 }
