@@ -164,7 +164,7 @@ void ShapesScene::renderSkybox(SupportCanvas3D *context) {
     m_skyboxShader->bind();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     m_skyboxShader->setUniform("projection", context->getCamera()->getProjectionMatrix());
-    m_skyboxShader->setUniform("view", context->getCamera()->getViewMatrix());
+    m_skyboxShader->setUniform("view", glm::mat4(glm::mat3(context->getCamera()->getViewMatrix())));
 
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_cubeMapTexture);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

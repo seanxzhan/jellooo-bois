@@ -1,6 +1,6 @@
 #version 400 core
 
-const float scale = 500;
+const float scale = 5;
 
 layout (location = 0) in vec3 aPos;
 
