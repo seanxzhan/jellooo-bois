@@ -42,6 +42,7 @@ ShapesScene::ShapesScene(int width, int height) :
     //added by Marc
     loadSkyboxShader();
     m_cubeMapTexture = setSkyboxUniforms(m_skyboxShader.get());
+    loadJelloShader();
 
     // [SHAPES] Allocate any additional memory you need...
 }
@@ -69,6 +70,13 @@ void ShapesScene::initializeSceneLight() {
     m_light.dir = m_lightDirection;
     m_light.color.r = m_light.color.g = m_light.color.b = 1;
     m_light.id = 0;
+}
+
+void ShapesScene::loadJelloShader() {
+    std::string vertexSource = ResourceLoader::loadResourceFileToString(":/shaders/glass.vert");
+    std::string fragmentSource = ResourceLoader::loadResourceFileToString(":/shaders/glass.frag");
+
+    m_jelloShader = std::make_unique<Shader>(vertexSource, fragmentSource);
 }
 
 void ShapesScene::loadSkyboxShader() {
@@ -116,15 +124,36 @@ void ShapesScene::render(SupportCanvas3D *context) {
 
     renderSkybox(context);
 
-    renderPhongPass(context);
+    // TODO: Update to UI Settings Eventually
+    bool usePhong = false; // if false uses our jello shader :D
 
-    if (settings.drawWireframe) {
-        renderWireframePass(context);
-    }
+    if (usePhong) {
+        renderPhongPass(context);
 
-    if (settings.drawNormals) {
-        renderNormalsPass(context);
+        if (settings.drawWireframe) {
+            renderWireframePass(context);
+        }
+
+        if (settings.drawNormals) {
+            renderNormalsPass(context);
+        }
+    } else {
+        renderJelloPass(context);
     }
+}
+
+// Need to confirm this works for both orbiting and camtrans camera D:
+void ShapesScene::renderJelloPass(SupportCanvas3D *context) {
+    m_jelloShader->bind();
+
+    // Pass in uniforms for view, projection, model (mat4(1.0))
+    setMatrixUniforms(m_jelloShader.get(), context);
+    // Pass in our environment map
+    glBindTexture(GL_TEXTURE_CUBE_MAP, m_cubeMapTexture);
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // may not need this idk
+    m_shape->draw();
+    m_jelloShader->unbind();
 }
 
 void ShapesScene::renderSkybox(SupportCanvas3D *context) {

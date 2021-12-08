@@ -129,6 +129,8 @@ OTHER_FILES += shaders/shader.frag \
     shaders/wireframe/wireframe.frag \
     shaders/envmap/skybox.vert \
     shaders/envmap/skybox.frag \
+    shaders/jello/glass.vert \
+    shaders/jello/glass.frag \
     shaders/normals/normals.vert \
     shaders/normals/normals.gsh \
     shaders/normals/normals.frag \

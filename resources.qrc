@@ -14,5 +14,7 @@
         <file alias="normalsArrow.frag">shaders/normals/normalsArrow.frag</file>
         <file alias="normalsArrow.gsh">shaders/normals/normalsArrow.gsh</file>
         <file alias="normalsArrow.vert">shaders/normals/normalsArrow.vert</file>
+		<file alias="glass.vert">shaders/jello/glass.vert</file>
+		<file alias="glass.frag">shaders/jello/glass.frag</file>
     </qresource>
 </RCC>
