@@ -4,6 +4,8 @@
         <file alias="default.vert">shaders/shader.vert</file>
         <file alias="wireframe.frag">shaders/wireframe/wireframe.frag</file>
         <file alias="wireframe.vert">shaders/wireframe/wireframe.vert</file>
+		<file alias="skybox.frag">shaders/envmap/skybox.frag</file>
+        <file alias="skybox.vert">shaders/envmap/skybox.vert</file>
         <file alias="fullscreenquad.vert">shaders/fullscreenquad/fullscreenquad.vert</file>
         <file alias="fullscreenquad.frag">shaders/fullscreenquad/fullscreenquad.frag</file>
         <file alias="normals.frag">shaders/normals/normals.frag</file>

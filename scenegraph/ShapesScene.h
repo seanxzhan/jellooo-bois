@@ -10,6 +10,7 @@
 #include "gl/datatype/FBO.h"
 #include "Settings.h"
 #include "shapes/Shape.h"
+//#include "uniforms/uniformvariable.h"
 
 namespace CS123 { namespace GL {
 
@@ -59,6 +60,15 @@ private:
     // Storage for private copies of the scene's light and material data. Note that these don't
     // need to be freed because they are VALUE types (not pointers) and the memory for them is
     // freed when the class itself is freed.
+
+    // Added by Marc
+    std::unique_ptr<CS123::GL::Shader> m_skyboxShader;
+    std::unique_ptr<OpenGLShape> m_skyboxCube;
+    void loadSkyboxShader();
+    void renderSkybox(SupportCanvas3D *context);
+    unsigned int setSkyboxUniforms(CS123::GL::Shader *shader);
+    unsigned int m_cubeMapTexture;
+
     std::unique_ptr<CS123::GL::CS123Shader> m_phongShader;
     std::unique_ptr<CS123::GL::Shader> m_wireframeShader;
     std::unique_ptr<CS123::GL::Shader> m_normalsShader;

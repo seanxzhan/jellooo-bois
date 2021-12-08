@@ -82,12 +82,12 @@ void SupportCanvas3D::initializeGlew() {
 
 void SupportCanvas3D::initializeOpenGLSettings() {
     // Enable depth testing, so that objects are occluded based on depth instead of drawing order.
-    glEnable(GL_DEPTH_TEST);
+//    glEnable(GL_DEPTH_TEST);
 
     // Move the polygons back a bit so lines are still drawn even though they are coplanar with the
     // polygons they came from, which will be drawn before them.
-    glEnable(GL_POLYGON_OFFSET_LINE);
-    glPolygonOffset(-1, -1);
+//    glEnable(GL_POLYGON_OFFSET_LINE);
+//    glPolygonOffset(-1, -1);
 
     // Enable back-face culling, meaning only the front side of every face is rendered.
     glEnable(GL_CULL_FACE);
@@ -115,6 +115,8 @@ void SupportCanvas3D::paintGL() {
     glViewport(0, 0, width() * ratio, height() * ratio);
     getCamera()->setAspectRatio(static_cast<float>(width()) / static_cast<float>(height()));
     m_currentScene->render(this);
+
+
 }
 
 void SupportCanvas3D::settingsChanged() {

@@ -17,6 +17,12 @@ using namespace CS123::GL;
 #include "ResourceLoader.h"
 #include "shapes/ExampleShape.h"
 
+#include "gl/shaders/ShaderAttribLocations.h"
+
+// added by Marc - from lab 11
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 ShapesScene::ShapesScene(int width, int height) :
     m_shape(nullptr),
     m_shapeParameter1(-1),
@@ -32,6 +38,10 @@ ShapesScene::ShapesScene(int width, int height) :
     loadWireframeShader();
     loadNormalsShader();
     loadNormalsArrowShader();
+
+    //added by Marc
+    loadSkyboxShader();
+    m_cubeMapTexture = setSkyboxUniforms(m_skyboxShader.get());
 
     // [SHAPES] Allocate any additional memory you need...
 }
@@ -59,6 +69,18 @@ void ShapesScene::initializeSceneLight() {
     m_light.dir = m_lightDirection;
     m_light.color.r = m_light.color.g = m_light.color.b = 1;
     m_light.id = 0;
+}
+
+void ShapesScene::loadSkyboxShader() {
+    // using Shader vs CS123Shader bc we don't need light + material info
+    // Loading in Skybox Shader
+    std::string vertexSource = ResourceLoader::loadResourceFileToString(":/shaders/skybox.vert");
+    std::string fragmentSource = ResourceLoader::loadResourceFileToString(":/shaders/skybox.frag");
+
+    m_skyboxShader = std::make_unique<Shader>(vertexSource, fragmentSource);
+
+//      Loading CubeMap data
+    m_skyboxCube = std::make_unique<ExampleShape>(1,1);
 }
 
 void ShapesScene::loadPhongShader() {
@@ -92,6 +114,8 @@ void ShapesScene::render(SupportCanvas3D *context) {
     // black one for drawing wireframe or normals so they will show up against the background.)
     setClearColor();
 
+    renderSkybox(context);
+
     renderPhongPass(context);
 
     if (settings.drawWireframe) {
@@ -103,10 +127,70 @@ void ShapesScene::render(SupportCanvas3D *context) {
     }
 }
 
+void ShapesScene::renderSkybox(SupportCanvas3D *context) {
+
+    glFrontFace(GL_CW);
+
+    glDepthMask(GL_FALSE);
+    m_skyboxShader->bind();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    m_skyboxShader->setUniform("projection", context->getCamera()->getProjectionMatrix());
+    m_skyboxShader->setUniform("view", context->getCamera()->getViewMatrix());
+
+    glBindTexture(GL_TEXTURE_CUBE_MAP, m_cubeMapTexture);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    m_skyboxCube->draw();
+    m_skyboxShader->unbind();
+    glDepthMask(GL_TRUE);
+
+    glFrontFace(GL_CCW);
+}
+
+unsigned int ShapesScene::setSkyboxUniforms(Shader *shader) {
+    // [NOTE] Need to use absolute paths
+    std::vector<std::string> faces = {"C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//posx.jpg",
+                                      "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//negx.jpg",
+                                      "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//posy.jpg",
+                                      "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//negy.jpg",
+                                      "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//posz.jpg",
+                                      "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//negz.jpg"};
+
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+    int width, height, nrChannels;
+    for (unsigned int i = 0; i < 6; i++)
+    {
+        unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+//        std::cout << width << std::endl;
+//        std::cout << height << std::endl;
+//        std::cout << nrChannels << std::endl;
+        if (data)
+        {
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                         0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+            );
+            free(data);
+        }
+        else
+        {
+            std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
+            free(data);
+        }
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    return textureID;
+}
+
 void ShapesScene::renderPhongPass(SupportCanvas3D *context) {
     m_phongShader->bind();
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     clearLights();
     setLights(context->getCamera()->getViewMatrix());
     setPhongSceneUniforms();

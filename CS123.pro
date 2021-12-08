@@ -113,6 +113,7 @@ HEADERS += \
     lib/CS123ISceneParser.h \
     lib/ResourceLoader.h \
     glew-1.10.0/include/GL/glew.h \
+    stb_image.h \
     lib/RGBA.h
 
 
@@ -126,6 +127,8 @@ OTHER_FILES += shaders/shader.frag \
     shaders/shader.vert \
     shaders/wireframe/wireframe.vert \
     shaders/wireframe/wireframe.frag \
+    shaders/envmap/skybox.vert \
+    shaders/envmap/skybox.frag \
     shaders/normals/normals.vert \
     shaders/normals/normals.gsh \
     shaders/normals/normals.frag \

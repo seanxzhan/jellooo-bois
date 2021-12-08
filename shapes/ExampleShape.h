@@ -78,6 +78,7 @@
         0.5f,-0.5f, 0.5f, \
         0.f, 0.f, 1.f}
 
+
 class ExampleShape : public OpenGLShape
 {
 public:
