@@ -54,9 +54,9 @@ void main()
     // Make Jello-Like
 
     // Keep 1 Channel Color
-    fragColor.x *= 0;
-    fragColor.y *= 0;
-    fragColor.z *= 2.0;
-
+    float prop = 0.5; // proportion of glass color to keep
+    fragColor.x *= 0.1;
+    fragColor.y *= 0.1;
+    fragColor.z = (1-prop) * 1.0 + prop * fragColor.z;
     // Maybe Add Diffusion, or Specular Smth
 }
