@@ -57,58 +57,23 @@ void JelloCube::generateVertexData(){
     // 6 2D slices, each slice is of dimension dim x dim for each face
     // normals [i][j][FACE] gives the normal at (i,j) given enum FACE
 
-    //Below code is temporary until calculateNormals is filled in
+    //Just debugging faces
 //    for (int face = 0; face < 6; face++) {
-//        for (int i = 0; i < dim; i++) {
-//            for (int j = 0; j < dim; j++) {
+//        for (int i = 0; i < dim - 1; i++) {
+//            for (int j = 0; j < dim - 1; j++) {
 //                FACE side = (FACE)face;
-//                switch(side) {
-//                    case BOTTOM: {
-//                        m_normals.push_back(glm::vec3(0.f, -1.f, 0.f));
-//                        break;
-//                    }
-//                    case TOP: {
-//                        m_normals.push_back(glm::vec3(0.f, 1.f, 0.f));
-//                        break;
-//                    }
-//                    case FRONT: {
-//                        m_normals.push_back(glm::vec3(0.f, 0.f, 1.f));
-//                        break;
-//                    }
-//                    case BACK: {
-//                        m_normals.push_back(glm::vec3(0.f, 0.f, -1.f));
-//                        break;
-//                    }
-//                    case LEFT: {
-//                        m_normals.push_back(glm::vec3(-1.f, 0.f, 0.f));
-//                        break;
-//                    }
-//                    case RIGHT: {
-//                        m_normals.push_back(glm::vec3(1.f, 0.f, 0.f));
-//                        break;
-//                    }
-//                }
+//                int index = indexFromFace(i, j, dim, side);
+//                std::cout << index << ", ";
+//                index = indexFromFace(i, j + 1, dim, side);
+//                std::cout << index << ", ";
+//                index = indexFromFace(i + 1, j + 1, dim, side);
+//                std::cout << index << ", ";
+//                index = indexFromFace(i + 1, j, dim, side);
+//                std::cout << index << ", ";
 //            }
 //        }
+//        std::cout << std::endl;
 //    }
-
-    //Just debugging faces
-    for (int face = 0; face < 6; face++) {
-        for (int i = 0; i < dim - 1; i++) {
-            for (int j = 0; j < dim - 1; j++) {
-                FACE side = (FACE)face;
-                int index = indexFromFace(i, j, dim, side);
-                std::cout << index << ", ";
-                index = indexFromFace(i, j + 1, dim, side);
-                std::cout << index << ", ";
-                index = indexFromFace(i + 1, j + 1, dim, side);
-                std::cout << index << ", ";
-                index = indexFromFace(i + 1, j, dim, side);
-                std::cout << index << ", ";
-            }
-        }
-        std::cout << std::endl;
-    }
 
     //Load VAO for each of the 6 faces with points and normals
     calculateNormals();
@@ -121,8 +86,8 @@ void JelloCube::generateVertexData(){
 //Computes normals for points at arbitrary points
 void JelloCube::calculateNormals() {
     int dim = m_param1 + 1;
-    m_normals.clear();
-    for (int i = 0; i < m_normals.size(); i++) {
+    int total = 6 * dim * dim;
+    for (int i = 0; i < total; i++) {
         m_normals[i] = glm::vec3(0.f);
     }
 
@@ -130,6 +95,7 @@ void JelloCube::calculateNormals() {
         for (int i = 0; i < dim - 1; i++) {
             for (int j = 0; j < dim - 1; j++) {
                 FACE side = (FACE)face;
+                std::cout << side << std::endl;
                 glm::vec3 point1 = m_points[indexFromFace(i, j, dim, side)];
                 glm::vec3 point2 = m_points[indexFromFace(i, j + 1, dim, side)];
                 glm::vec3 point3 = m_points[indexFromFace(i + 1, j + 1, dim, side)];
@@ -325,7 +291,7 @@ void JelloCube::tick(float current) {
 //    std::cout << "Jello Cube" << std::endl;
 //    std::cout << current << std::endl;
 
-    //This just goes up and down - should involve call to compute acceleration and using RK4 integration
+//    This just goes up and down - should involve call to compute acceleration and using RK4 integration
     float increment = sin(current) / 60;
     int dim = m_param1 + 1;
     //k depth (z)
