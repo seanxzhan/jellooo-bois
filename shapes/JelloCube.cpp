@@ -53,28 +53,6 @@ void JelloCube::generateVertexData(){
         }
     }
 
-    // Convention for indexing into normals
-    // 6 2D slices, each slice is of dimension dim x dim for each face
-    // normals [i][j][FACE] gives the normal at (i,j) given enum FACE
-
-    //Just debugging faces
-//    for (int face = 0; face < 6; face++) {
-//        for (int i = 0; i < dim - 1; i++) {
-//            for (int j = 0; j < dim - 1; j++) {
-//                FACE side = (FACE)face;
-//                int index = indexFromFace(i, j, dim, side);
-//                std::cout << index << ", ";
-//                index = indexFromFace(i, j + 1, dim, side);
-//                std::cout << index << ", ";
-//                index = indexFromFace(i + 1, j + 1, dim, side);
-//                std::cout << index << ", ";
-//                index = indexFromFace(i + 1, j, dim, side);
-//                std::cout << index << ", ";
-//            }
-//        }
-//        std::cout << std::endl;
-//    }
-
     //Load VAO for each of the 6 faces with points and normals
     calculateNormals();
     loadVAO();
@@ -82,6 +60,10 @@ void JelloCube::generateVertexData(){
     initializeOpenGLShapeProperties();
 
 }
+
+// Convention for indexing into normals
+// 6 2D slices, each slice is of dimension dim x dim for each face
+// normals [i][j][FACE] gives the normal at (i,j) given enum FACE
 
 //Computes normals for points at arbitrary points
 void JelloCube::calculateNormals() {
@@ -95,7 +77,6 @@ void JelloCube::calculateNormals() {
         for (int i = 0; i < dim - 1; i++) {
             for (int j = 0; j < dim - 1; j++) {
                 FACE side = (FACE)face;
-                std::cout << side << std::endl;
                 glm::vec3 point1 = m_points[indexFromFace(i, j, dim, side)];
                 glm::vec3 point2 = m_points[indexFromFace(i, j + 1, dim, side)];
                 glm::vec3 point3 = m_points[indexFromFace(i + 1, j + 1, dim, side)];
@@ -288,9 +269,6 @@ void JelloCube::rk4() {
 
 //Should update positions and call on loadVAO and initializeOpenGLShapeProperties() to prep for drawing again
 void JelloCube::tick(float current) {
-//    std::cout << "Jello Cube" << std::endl;
-//    std::cout << current << std::endl;
-
 //    This just goes up and down - should involve call to compute acceleration and using RK4 integration
     float increment = sin(current) / 60;
     int dim = m_param1 + 1;
@@ -300,7 +278,14 @@ void JelloCube::tick(float current) {
         for (int i = 0; i < dim; i++) {
             //j is the column (x)
             for (int j = 0; j < dim; j++) {
-                m_points[to1D(i, j, k, dim, dim)].y += increment;
+                if (i == 0 || i == dim - 1) {
+                   m_points[to1D(i, j, k, dim, dim)].y += increment;
+                }
+                if (i == 0 || j == 0 || k == 0) {
+                   m_points[to1D(i, j, k, dim, dim)].x += increment;
+                   m_points[to1D(i, j, k, dim, dim)].y += increment;
+                   m_points[to1D(i, j, k, dim, dim)].z += increment;
+                }
             }
         }
     }
