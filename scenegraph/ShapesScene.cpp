@@ -60,7 +60,7 @@ void ShapesScene::initializeSceneMaterial() {
     m_material.cDiffuse.r = 1.0f;
     m_material.cDiffuse.g = 0.5f;
     m_material.cSpecular.r = m_material.cSpecular.g = m_material.cSpecular.b = 1;
-    m_material.shininess = 64;
+    m_material.shininess = 10;
 }
 
 void ShapesScene::initializeSceneLight() {
@@ -76,7 +76,7 @@ void ShapesScene::loadJelloShader() {
     std::string vertexSource = ResourceLoader::loadResourceFileToString(":/shaders/glass.vert");
     std::string fragmentSource = ResourceLoader::loadResourceFileToString(":/shaders/glass.frag");
 
-    m_jelloShader = std::make_unique<Shader>(vertexSource, fragmentSource);
+    m_jelloShader = std::make_unique<CS123Shader>(vertexSource, fragmentSource);
 }
 
 void ShapesScene::loadSkyboxShader() {
@@ -145,6 +145,28 @@ void ShapesScene::render(SupportCanvas3D *context) {
 // Need to confirm this works for both orbiting and camtrans camera D:
 void ShapesScene::renderJelloPass(SupportCanvas3D *context) {
     m_jelloShader->bind();
+
+    // clearLights()
+    for (int i = 0; i < MAX_NUM_LIGHTS; i++) {
+        std::ostringstream os;
+        os << i;
+        std::string indexString = "[" + os.str() + "]"; // e.g. [0], [1], etc.
+        m_jelloShader->setUniform("lightColors" + indexString, glm::vec3(0.0f, 0.0f, 0.0f));
+    }
+
+    // setLights()
+    m_light.dir = glm::inverse(context->getCamera()->getViewMatrix()) * m_lightDirection;
+
+    // clearLights();
+    for (int i = 0; i < MAX_NUM_LIGHTS; i++) {
+        std::ostringstream os;
+        os << i;
+        std::string indexString = "[" + os.str() + "]"; // e.g. [0], [1], etc.
+        m_jelloShader->setUniform("lightColors" + indexString, glm::vec3(0.0f, 0.0f, 0.0f));
+    }
+    m_jelloShader->setLight(m_light);
+
+    m_jelloShader->setUniform("useLighting", settings.useLighting);
 
     // Pass in uniforms for view, projection, model (mat4(1.0))
     setMatrixUniforms(m_jelloShader.get(), context);

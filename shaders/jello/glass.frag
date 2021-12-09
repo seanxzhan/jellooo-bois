@@ -4,6 +4,8 @@ in vec3 vertex;                 // The position of the vertex, in camera space!
 in vec3 vertexToCamera;         // Vector from the vertex to the eye, which is the camera
 in vec3 eyeNormal;	        // Normal of the vertex, in camera space!
 
+in float SpecularIntensity;
+
 // [NOTE] These are hyperparamters we can experiment with
 float r0 = 0.8; // The R0 value to use in Schlick's approximation
 vec3  eta = vec3(0.79, 0.8, 0.81);  // Contains one eta for each channel (use eta.r, eta.g, eta.b in your code)
@@ -49,6 +51,9 @@ void main()
 
     // step 5
     fragColor = (1-F) * refractionColor + F * reflectionColor;
+
+    // Add Specular Highlight
+    fragColor = fragColor + SpecularIntensity;
     fragColor.w = 1.0;
 
     // Make Jello-Like
@@ -58,5 +63,5 @@ void main()
     fragColor.x *= 0.1;
     fragColor.y *= 0.1;
     fragColor.z = (1-prop) * 1.0 + prop * fragColor.z;
-    // Maybe Add Diffusion, or Specular Smth
+    fragColor.w = 0.8;
 }

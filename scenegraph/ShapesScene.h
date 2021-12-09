@@ -69,7 +69,7 @@ private:
     unsigned int setSkyboxUniforms(CS123::GL::Shader *shader);
     unsigned int m_cubeMapTexture;
     void loadJelloShader();
-    std::unique_ptr<CS123::GL::Shader> m_jelloShader;
+    std::unique_ptr<CS123::GL::CS123Shader> m_jelloShader;
     void renderJelloPass(SupportCanvas3D *context);
 
     std::unique_ptr<CS123::GL::CS123Shader> m_phongShader;
