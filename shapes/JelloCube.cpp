@@ -58,46 +58,52 @@ void JelloCube::generateVertexData(){
     // normals [i][j][FACE] gives the normal at (i,j) given enum FACE
 
     //Below code is temporary until calculateNormals is filled in
-    for (int face = 0; face < 6; face++) {
-        for (int i = 0; i < dim; i++) {
-            for (int j = 0; j < dim; j++) {
-                FACE side = (FACE)face;
-                switch(side) {
-                    case BOTTOM: {
-                        m_normals.push_back(glm::vec3(0.f, -1.f, 0.f));
-                        break;
-                    }
-                    case TOP: {
-                        m_normals.push_back(glm::vec3(0.f, 1.f, 0.f));
-                        break;
-                    }
-                    case FRONT: {
-                        m_normals.push_back(glm::vec3(0.f, 0.f, 1.f));
-                        break;
-                    }
-                    case BACK: {
-                        m_normals.push_back(glm::vec3(0.f, 0.f, -1.f));
-                        break;
-                    }
-                    case LEFT: {
-                        m_normals.push_back(glm::vec3(-1.f, 0.f, 0.f));
-                        break;
-                    }
-                    case RIGHT: {
-                        m_normals.push_back(glm::vec3(1.f, 0.f, 0.f));
-                        break;
-                    }
-                }
-            }
-        }
-    }
+//    for (int face = 0; face < 6; face++) {
+//        for (int i = 0; i < dim; i++) {
+//            for (int j = 0; j < dim; j++) {
+//                FACE side = (FACE)face;
+//                switch(side) {
+//                    case BOTTOM: {
+//                        m_normals.push_back(glm::vec3(0.f, -1.f, 0.f));
+//                        break;
+//                    }
+//                    case TOP: {
+//                        m_normals.push_back(glm::vec3(0.f, 1.f, 0.f));
+//                        break;
+//                    }
+//                    case FRONT: {
+//                        m_normals.push_back(glm::vec3(0.f, 0.f, 1.f));
+//                        break;
+//                    }
+//                    case BACK: {
+//                        m_normals.push_back(glm::vec3(0.f, 0.f, -1.f));
+//                        break;
+//                    }
+//                    case LEFT: {
+//                        m_normals.push_back(glm::vec3(-1.f, 0.f, 0.f));
+//                        break;
+//                    }
+//                    case RIGHT: {
+//                        m_normals.push_back(glm::vec3(1.f, 0.f, 0.f));
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     //Just debugging faces
     for (int face = 0; face < 6; face++) {
-        for (int i = 0; i < dim; i++) {
-            for (int j = 0; j < dim; j++) {
+        for (int i = 0; i < dim - 1; i++) {
+            for (int j = 0; j < dim - 1; j++) {
                 FACE side = (FACE)face;
                 int index = indexFromFace(i, j, dim, side);
+                std::cout << index << ", ";
+                index = indexFromFace(i, j + 1, dim, side);
+                std::cout << index << ", ";
+                index = indexFromFace(i + 1, j + 1, dim, side);
+                std::cout << index << ", ";
+                index = indexFromFace(i + 1, j, dim, side);
                 std::cout << index << ", ";
             }
         }
@@ -114,7 +120,43 @@ void JelloCube::generateVertexData(){
 
 //Computes normals for points at arbitrary points
 void JelloCube::calculateNormals() {
+    int dim = m_param1 + 1;
+    m_normals.clear();
+    for (int i = 0; i < m_normals.size(); i++) {
+        m_normals[i] = glm::vec3(0.f);
+    }
 
+    for (int face = 0; face < 6; face++) {
+        for (int i = 0; i < dim - 1; i++) {
+            for (int j = 0; j < dim - 1; j++) {
+                FACE side = (FACE)face;
+                glm::vec3 point1 = m_points[indexFromFace(i, j, dim, side)];
+                glm::vec3 point2 = m_points[indexFromFace(i, j + 1, dim, side)];
+                glm::vec3 point3 = m_points[indexFromFace(i + 1, j + 1, dim, side)];
+                glm::vec3 point4 = m_points[indexFromFace(i + 1, j, dim, side)];
+
+                //Top triangle
+                glm::vec3 v1 = point1 - point2;
+                glm::vec3 v2 = point3 - point2;
+                glm::vec3 normal = glm::cross(v1, v2);
+                m_normals[to1D(i, j, face, dim, dim)] += normal;
+                m_normals[to1D(i, j + 1, face, dim, dim)] += normal;
+                m_normals[to1D(i + 1, j + 1, face, dim, dim)] += normal;
+
+                //Bottom Triangle
+                v1 = point1 - point4;
+                v2 = point3 - point4;
+                normal = glm::cross(v2, v1);
+                m_normals[to1D(i, j, face, dim, dim)] += normal;
+                m_normals[to1D(i + 1, j + 1, face, dim, dim)] += normal;
+                m_normals[to1D(i + 1, j, face, dim, dim)] += normal;
+            }
+        }
+    }
+
+    for (int i = 0; i < m_normals.size(); i++) {
+        m_normals[i] = glm::normalize(m_normals[i]);
+    }
 }
 
 //Should load the VAO given arbitrary positions of each cube point
