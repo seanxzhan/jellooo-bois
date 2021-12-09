@@ -71,12 +71,8 @@ void SpringMassCube::tick(float current) {
             }
         }
     }
-//    m_structural_cnnctns.clear();
     make_structural_connections();
 
-//    int total_num_vertices = (int) m_points.size() / 3 + (int) m_structural_cnnctns.size() / 3;
-//    drawPoints(m_points, 0, (int) m_points.size() / 3);
-//    drawLines(m_structural_cnnctns, (int) m_points.size() / 3, total_num_vertices);
     drawPointsAndLines(m_points, m_structural_cnnctns);
 //    m_points.clear();
     m_structural_cnnctns.clear();

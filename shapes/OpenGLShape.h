@@ -35,11 +35,11 @@ public:
     OpenGLShape();
     virtual ~OpenGLShape();
     void draw();
+    void drawPandL();
     virtual void tick(float current) = 0;
 
     /** Initialize the VBO with the given vertex data. */
-    void setVertexData(GLfloat *data, int size, VBO::GEOMETRY_LAYOUT drawMode,
-                       int start, int end);
+    void setVertexData(GLfloat *data, int size, VBO::GEOMETRY_LAYOUT drawMode, int num_vertices);
 
     /** Enables the specified attribute and calls glVertexAttribPointer with the given arguments. */
     void setAttribute(GLuint index, GLuint numElementsPerVertex, int offset, VBOAttribMarker::DATA_TYPE type,
@@ -55,9 +55,9 @@ protected:
      * look at ExampleShape.cpp for it's demonstrated usage
      */
     void initializeOpenGLShapeProperties();
-    void drawPoints(std::vector<GLfloat> &points, int start, int end);
-    void drawLine(std::vector<GLfloat> &line, int start, int end);
-    void drawLines(std::vector<GLfloat> &lines, int start, int end);
+    void drawPoints(std::vector<GLfloat> &points);
+    void drawLine(std::vector<GLfloat> &line);
+    void drawLines(std::vector<GLfloat> &lines);
     void drawPointsAndLines(std::vector<GLfloat> &points, std::vector<GLfloat> &lines);
 
     std::vector<GLfloat> m_vertexData;
@@ -66,8 +66,8 @@ protected:
     GLfloat *m_data;                            /// vector of floats containing the vertex data.
     GLsizeiptr m_size;                          /// size of the data array, in bytes.
     VBO::GEOMETRY_LAYOUT m_drawMode;            /// drawing mode
-    int m_startNumVertices;
-    int m_endNumVertices;                          /// number of vertices to be rendered
+    int m_numVertices;
+    int m_cutoff = 0;
     std::vector<VBOAttribMarker> m_markers;
 };
 

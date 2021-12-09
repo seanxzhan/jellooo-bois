@@ -170,11 +170,15 @@ void ShapesScene::renderNormalsPass (SupportCanvas3D *context) {
 void ShapesScene::renderGeometry() {
     if (m_shape) {
         m_shape->draw();
+        if (m_shapeType == SHAPE_CYLINDER) {
+            m_shape->drawPandL();
+        } else {
+            m_shape->draw();
+        }
     }
 
-    // draw top
-//    m_bbox = std::make_unique<Bbox>();
-//    m_bbox->drawBbox();
+    m_bbox = std::make_unique<Bbox>();
+    m_bbox->drawBbox();
 }
 
 void ShapesScene::clearLights() {

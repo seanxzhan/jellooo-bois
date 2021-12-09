@@ -25,69 +25,69 @@ void Bbox::drawBbox() {
         2.f, 2.f, -2.f, -2.f, 2.f, -2.f,
         -2.f, 2.f, -2.f, -2.f, 2.f, 2.f,
         -2.f, 2.f, 2.f, 2.f, 2.f, 2.f};
-    drawLine(lineData, 0, lineData.size() / 3);
+    drawLine(lineData);
 
     lineData = {
         2.f, 1.f, 2.f, 2.f, 1.f, -2.f,
         2.f, 1.f, -2.f, -2.f, 1.f, -2.f,
         -2.f, 1.f, -2.f, -2.f, 1.f, 2.f,
         -2.f, 1.f, 2.f, 2.f, 1.f, 2.f};
-    drawLine(lineData, 0, lineData.size() / 3);
+    drawLine(lineData);
 
     lineData = {
         2.f, 0.f, 2.f, 2.f, 0.f, -2.f,
         2.f, 0.f, -2.f, -2.f, 0.f, -2.f,
         -2.f, 0.f, -2.f, -2.f, 0.f, 2.f,
         -2.f, 0.f, 2.f, 2.f, 0.f, 2.f};
-    drawLine(lineData, 0, lineData.size() / 3);
+    drawLine(lineData);
 
     lineData = {
         2.f, -1.f, 2.f, 2.f, -1.f, -2.f,
         2.f, -1.f, -2.f, -2.f, -1.f, -2.f,
         -2.f, -1.f, -2.f, -2.f, -1.f, 2.f,
         -2.f, -1.f, 2.f, 2.f, -1.f, 2.f};
-    drawLine(lineData, 0, lineData.size() / 3);
+    drawLine(lineData);
 
     // draw bottom
     lineData = {2.f, -2.f, 2.f, 2.f, -2.f, -2.f,
                 2.f, -2.f, -2.f, -2.f, -2.f, -2.f,
                 -2.f, -2.f, -2.f, -2.f, -2.f, 2.f,
                 -2.f, -2.f, 2.f, 2.f, -2.f, 2.f};
-    drawLine(lineData, 0, lineData.size() / 3);
+    drawLine(lineData);
 
     // draw vertical pillars separately due to LINE_STRIP
     lineData = {2.f, 2.f, 2.f, 2.f, -2.f, 2.f};
-    drawLine(lineData, 0, lineData.size() / 3);
+    drawLine(lineData);
     lineData = {2.f, 2.f, -2.f, 2.f, -2.f, -2.f};
-    drawLine(lineData, 0, lineData.size() / 3);
+    drawLine(lineData);
     lineData = {-2.f, 2.f, -2.f, -2.f, -2.f, -2.f};
-    drawLine(lineData, 0, lineData.size() / 3);
+    drawLine(lineData);
     lineData = {-2.f, 2.f, 2.f, -2.f, -2.f, 2.f};
-    drawLine(lineData, 0, lineData.size() / 3);
+    drawLine(lineData);
 
     lineData = {2.f, 2.f, 1.f, 2.f, -2.f, 1.f};
-    drawLine(lineData, 0, lineData.size() / 3);
+    drawLine(lineData);
     lineData = {2.f, 2.f, -1.f, 2.f, -2.f, -1.f};
-    drawLine(lineData, 0, lineData.size() / 3);
+    drawLine(lineData);
     lineData = {-2.f, 2.f, -1.f, -2.f, -2.f, -1.f};
-    drawLine(lineData, 0, lineData.size() / 3);
+    drawLine(lineData);
     lineData = {-2.f, 2.f, 1.f, -2.f, -2.f, 1.f};
-    drawLine(lineData, 0, lineData.size() / 3);
+    drawLine(lineData);
     lineData = {2.f, 2.f, 0.f, 2.f, -2.f, 0.f};
-    drawLine(lineData, 0, lineData.size() / 3);
+    drawLine(lineData);
     lineData = {-2.f, 2.f, 0.f, -2.f, -2.f, 0.f};
-    drawLine(lineData, 0, lineData.size() / 3);
+    drawLine(lineData);
 
     lineData = {1.f, 2.f, 2.f, 1.f, -2.f, 2.f};
-    drawLine(lineData, 0, lineData.size() / 3);
+    drawLine(lineData);
     lineData = {1.f, 2.f, -2.f, 1.f, -2.f, -2.f};
-    drawLine(lineData, 0, lineData.size() / 3);
+    drawLine(lineData);
     lineData = {-1.f, 2.f, -2.f, -1.f, -2.f, -2.f};
-    drawLine(lineData, 0, lineData.size() / 3);
+    drawLine(lineData);
     lineData = {-1.f, 2.f, 2.f, -1.f, -2.f, 2.f};
-    drawLine(lineData, 0, lineData.size() / 3);
+    drawLine(lineData);
     lineData = {0.f, 2.f, 2.f, 0.f, -2.f, 2.f};
-    drawLine(lineData, 0, lineData.size() / 3);
+    drawLine(lineData);
     lineData = {0.f, 2.f, -2.f, 0.f, -2.f, -2.f};
-    drawLine(lineData, 0, lineData.size() / 3);
+    drawLine(lineData);
 }
