@@ -71,6 +71,7 @@ void VAO::draw() {
 }
 
 void VAO::draw(int count) {
+    glEnable(GL_PROGRAM_POINT_SIZE);
     switch(m_drawMethod) {
         case VAO::DRAW_ARRAYS:
             glDrawArrays(m_triangleLayout, 0, count);

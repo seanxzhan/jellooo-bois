@@ -1,5 +1,4 @@
 #include "Bbox.h"
-#include <iostream>
 
 Bbox::Bbox():
     Shape(0, 0)

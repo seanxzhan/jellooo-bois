@@ -13,13 +13,14 @@
 using namespace CS123::GL;
 #include "gl/shaders/CS123Shader.h"
 #include "gl/shaders/Shader.h"
+#include "gl/shaders/ShaderAttribLocations.h"
 
 #include "ResourceLoader.h"
 #include "shapes/ExampleShape.h"
 #include "shapes/JelloCube.h"
 #include "shapes/Bbox.h"
+#include "shapes/SpringMassCube.h"
 
-#include "gl/shaders/ShaderAttribLocations.h"
 
 ShapesScene::ShapesScene(int width, int height) :
     m_shape(nullptr),
@@ -243,10 +244,20 @@ void ShapesScene::renderGeometry() {
     drawLine(lineData, 2);
     lineData = {0.f, 2.f, -2.f, 0.f, -2.f, -2.f};
     drawLine(lineData, 2);
+
+//    std::vector<GLfloat> pointData = {0.f, 0.f, 0.f};
+//    drawPoint(pointData);
 }
 
 void ShapesScene::drawLine(std::vector<GLfloat> &line, int num_vertices) {
     m_bbox->setVertexData(&line[0], line.size(), VBO::GEOMETRY_LAYOUT::LAYOUT_LINE_STRIP, num_vertices);
+    m_bbox->setAttribute(ShaderAttrib::POSITION, 3, 0, VBOAttribMarker::DATA_TYPE::FLOAT, false);
+    m_bbox->buildVAO();
+    m_bbox->draw();
+}
+
+void ShapesScene::drawPoint(std::vector<GLfloat> &point) {
+    m_bbox->setVertexData(&point[0], point.size(), VBO::GEOMETRY_LAYOUT::LAYOUT_POINTS, 1);
     m_bbox->setAttribute(ShaderAttrib::POSITION, 3, 0, VBOAttribMarker::DATA_TYPE::FLOAT, false);
     m_bbox->buildVAO();
     m_bbox->draw();
@@ -301,7 +312,7 @@ void ShapesScene::settingsChanged() {
             break;
             case SHAPE_CYLINDER:
                 std::cout << "shape type: jellooo cylinder" << std::endl;
-                m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
+                m_shape = std::make_unique<SpringMassCube>(settings.shapeParameter1, settings.shapeParameter2);
             break;
             case SHAPE_CONE:
                 std::cout << "shape type: jellooo cone" << std::endl;

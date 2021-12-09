@@ -12,6 +12,8 @@ class IBO;
 
 class VAO {
 public:
+    enum DRAW_METHOD { DRAW_ARRAYS, DRAW_INDEXED };
+
     VAO(const VBO &vbo, int numberOfVerticesToRender = 0);
     VAO(const VBO &vbo, const IBO &ibo, int numberOfVerticesToRender = 0);
     VAO(const VAO &that) = delete;
@@ -19,8 +21,6 @@ public:
     VAO(VAO &&that);
     VAO& operator=(VAO &&that);
     ~VAO();
-
-    enum DRAW_METHOD { DRAW_ARRAYS, DRAW_INDEXED };
 
     void bind();
     void draw();

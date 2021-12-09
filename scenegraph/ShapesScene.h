@@ -100,6 +100,7 @@ private:
     void renderWireframe();
     void setSceneUniforms(SupportCanvas3D *context); 
     void drawLine(std::vector<GLfloat> &line, int num_vertices);
+    void drawPoint(std::vector<GLfloat> &point);
 };
 
 #endif // SHAPESSCENE_H
