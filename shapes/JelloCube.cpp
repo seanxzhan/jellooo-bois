@@ -278,14 +278,15 @@ void JelloCube::tick(float current) {
         for (int i = 0; i < dim; i++) {
             //j is the column (x)
             for (int j = 0; j < dim; j++) {
-                if (i == 0 || i == dim - 1) {
-                   m_points[to1D(i, j, k, dim, dim)].y += increment;
-                }
-                if (i == 0 || j == 0 || k == 0) {
-                   m_points[to1D(i, j, k, dim, dim)].x += increment;
-                   m_points[to1D(i, j, k, dim, dim)].y += increment;
-                   m_points[to1D(i, j, k, dim, dim)].z += increment;
-                }
+//                if (i == 0 || i == dim - 1) {
+//                   m_points[to1D(i, j, k, dim, dim)].y += increment;
+//                }
+//                if (i == 0 || j == 0 || k == 0) {
+//                   m_points[to1D(i, j, k, dim, dim)].x += increment;
+//                   m_points[to1D(i, j, k, dim, dim)].y += increment;
+//                   m_points[to1D(i, j, k, dim, dim)].z += increment;
+//                }
+                m_points[to1D(i, j, k, dim, dim)].y += increment;
             }
         }
     }
