@@ -19,9 +19,15 @@ public:
 
 private:
     virtual void generateVertexData() override;
+    std::vector<int> get_neighbor(int j, int i, int k,
+                                  int offset_j, int offset_i, int offset_k);
+    void add_to_structural(const std::vector<int> &indices);
 
+    // format: x, y, z, x, y, z, ...
     std::vector<GLfloat> m_points;
-    void drawPoints(std::vector<GLfloat> &points);
+    // format: point 1 -- point 2, point 2 -- point 3, ...
+    std::vector<GLfloat> m_structural_cnnctns;
+    void make_structural_connections();
 };
 
 #endif // SPRINGMASSCUBE_H

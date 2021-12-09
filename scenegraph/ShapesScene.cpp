@@ -217,7 +217,7 @@ void ShapesScene::settingsChanged() {
         }
         m_simType = settings.simType;
     }
-
+    // TODO: check if params are the same
     if (settings.shapeType != m_shapeType) {
         switch (settings.shapeType) {
             case SHAPE_CUBE:

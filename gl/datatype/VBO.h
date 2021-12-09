@@ -15,7 +15,8 @@ public:
                            LAYOUT_TRIANGLE_STRIP = GL_TRIANGLE_STRIP,
                            LAYOUT_TRIANGLE_FAN = GL_TRIANGLE_FAN,
                            LAYOUT_LINE_STRIP = GL_LINE_STRIP,
-                           LAYOUT_POINTS = GL_POINTS};
+                           LAYOUT_POINTS = GL_POINTS,
+                           LAYOUT_LINES = GL_LINES};
 
     /**
      * @brief VBO

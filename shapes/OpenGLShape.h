@@ -54,6 +54,9 @@ protected:
      * look at ExampleShape.cpp for it's demonstrated usage
      */
     void initializeOpenGLShapeProperties();
+    void drawPoints(std::vector<GLfloat> &points);
+    void drawLine(std::vector<GLfloat> &line);
+    void drawLines(std::vector<GLfloat> &lines);
 
     std::vector<GLfloat> m_vertexData;
     std::unique_ptr<CS123::GL::VAO> m_VAO;

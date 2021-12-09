@@ -58,4 +58,27 @@ void OpenGLShape::buildVAO() {
     m_VAO = std::make_unique<VAO>(vbo, m_numVertices);
 }
 
+void OpenGLShape::drawPoints(std::vector<GLfloat> &points) {
+    int num_points = points.size() / 3;
+    setVertexData(&points[0], points.size(), VBO::GEOMETRY_LAYOUT::LAYOUT_POINTS, num_points);
+    setAttribute(ShaderAttrib::POSITION, 3, 0, VBOAttribMarker::DATA_TYPE::FLOAT, false);
+    buildVAO();
+    draw();
+}
+
+void OpenGLShape::drawLine(std::vector<GLfloat> &line) {
+    int num_vertices = line.size() / 3;
+    setVertexData(&line[0], line.size(), VBO::GEOMETRY_LAYOUT::LAYOUT_LINE_STRIP, num_vertices);
+    setAttribute(ShaderAttrib::POSITION, 3, 0, VBOAttribMarker::DATA_TYPE::FLOAT, false);
+    buildVAO();
+    draw();
+}
+
+void OpenGLShape::drawLines(std::vector<GLfloat> &line) {
+    int num_vertices = line.size() / 3;
+    setVertexData(&line[0], line.size(), VBO::GEOMETRY_LAYOUT::LAYOUT_LINES, num_vertices);
+    setAttribute(ShaderAttrib::POSITION, 3, 0, VBOAttribMarker::DATA_TYPE::FLOAT, false);
+    buildVAO();
+    draw();
+}
 

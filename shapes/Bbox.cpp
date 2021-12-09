@@ -25,76 +25,69 @@ void Bbox::drawBbox() {
         2.f, 2.f, -2.f, -2.f, 2.f, -2.f,
         -2.f, 2.f, -2.f, -2.f, 2.f, 2.f,
         -2.f, 2.f, 2.f, 2.f, 2.f, 2.f};
-    drawLine(lineData, 8);
+    drawLine(lineData);
 
     lineData = {
         2.f, 1.f, 2.f, 2.f, 1.f, -2.f,
         2.f, 1.f, -2.f, -2.f, 1.f, -2.f,
         -2.f, 1.f, -2.f, -2.f, 1.f, 2.f,
         -2.f, 1.f, 2.f, 2.f, 1.f, 2.f};
-    drawLine(lineData, 8);
+    drawLine(lineData);
 
     lineData = {
         2.f, 0.f, 2.f, 2.f, 0.f, -2.f,
         2.f, 0.f, -2.f, -2.f, 0.f, -2.f,
         -2.f, 0.f, -2.f, -2.f, 0.f, 2.f,
         -2.f, 0.f, 2.f, 2.f, 0.f, 2.f};
-    drawLine(lineData, 8);
+    drawLine(lineData);
 
     lineData = {
         2.f, -1.f, 2.f, 2.f, -1.f, -2.f,
         2.f, -1.f, -2.f, -2.f, -1.f, -2.f,
         -2.f, -1.f, -2.f, -2.f, -1.f, 2.f,
         -2.f, -1.f, 2.f, 2.f, -1.f, 2.f};
-    drawLine(lineData, 8);
+    drawLine(lineData);
 
     // draw bottom
     lineData = {2.f, -2.f, 2.f, 2.f, -2.f, -2.f,
                 2.f, -2.f, -2.f, -2.f, -2.f, -2.f,
                 -2.f, -2.f, -2.f, -2.f, -2.f, 2.f,
                 -2.f, -2.f, 2.f, 2.f, -2.f, 2.f};
-    drawLine(lineData, 8);
+    drawLine(lineData);
 
     // draw vertical pillars separately due to LINE_STRIP
     lineData = {2.f, 2.f, 2.f, 2.f, -2.f, 2.f};
-    drawLine(lineData, 2);
+    drawLine(lineData);
     lineData = {2.f, 2.f, -2.f, 2.f, -2.f, -2.f};
-    drawLine(lineData, 2);
+    drawLine(lineData);
     lineData = {-2.f, 2.f, -2.f, -2.f, -2.f, -2.f};
-    drawLine(lineData, 2);
+    drawLine(lineData);
     lineData = {-2.f, 2.f, 2.f, -2.f, -2.f, 2.f};
-    drawLine(lineData, 2);
+    drawLine(lineData);
 
     lineData = {2.f, 2.f, 1.f, 2.f, -2.f, 1.f};
-    drawLine(lineData, 2);
+    drawLine(lineData);
     lineData = {2.f, 2.f, -1.f, 2.f, -2.f, -1.f};
-    drawLine(lineData, 2);
+    drawLine(lineData);
     lineData = {-2.f, 2.f, -1.f, -2.f, -2.f, -1.f};
-    drawLine(lineData, 2);
+    drawLine(lineData);
     lineData = {-2.f, 2.f, 1.f, -2.f, -2.f, 1.f};
-    drawLine(lineData, 2);
+    drawLine(lineData);
     lineData = {2.f, 2.f, 0.f, 2.f, -2.f, 0.f};
-    drawLine(lineData, 2);
+    drawLine(lineData);
     lineData = {-2.f, 2.f, 0.f, -2.f, -2.f, 0.f};
-    drawLine(lineData, 2);
+    drawLine(lineData);
 
     lineData = {1.f, 2.f, 2.f, 1.f, -2.f, 2.f};
-    drawLine(lineData, 2);
+    drawLine(lineData);
     lineData = {1.f, 2.f, -2.f, 1.f, -2.f, -2.f};
-    drawLine(lineData, 2);
+    drawLine(lineData);
     lineData = {-1.f, 2.f, -2.f, -1.f, -2.f, -2.f};
-    drawLine(lineData, 2);
+    drawLine(lineData);
     lineData = {-1.f, 2.f, 2.f, -1.f, -2.f, 2.f};
-    drawLine(lineData, 2);
+    drawLine(lineData);
     lineData = {0.f, 2.f, 2.f, 0.f, -2.f, 2.f};
-    drawLine(lineData, 2);
+    drawLine(lineData);
     lineData = {0.f, 2.f, -2.f, 0.f, -2.f, -2.f};
-    drawLine(lineData, 2);
-}
-
-void Bbox::drawLine(std::vector<GLfloat> &line, int num_vertices) {
-    setVertexData(&line[0], line.size(), VBO::GEOMETRY_LAYOUT::LAYOUT_LINE_STRIP, num_vertices);
-    setAttribute(ShaderAttrib::POSITION, 3, 0, VBOAttribMarker::DATA_TYPE::FLOAT, false);
-    buildVAO();
-    draw();
+    drawLine(lineData);
 }

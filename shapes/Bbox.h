@@ -16,8 +16,6 @@ public:
 
 private:
     virtual void generateVertexData() override;
-
-    void drawLine(std::vector<GLfloat> &line, int num_vertices);
 };
 
 
