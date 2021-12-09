@@ -54,8 +54,6 @@ void SpringMassCube::generateVertexData(){
             }
         }
     }
-
-    make_structural_connections();
 }
 
 void SpringMassCube::tick(float current) {
@@ -73,6 +71,8 @@ void SpringMassCube::tick(float current) {
             }
         }
     }
+    m_structural_cnnctns.clear();
+    make_structural_connections();
 
     drawPoints(m_points);
     drawLines(m_structural_cnnctns);
@@ -83,9 +83,11 @@ std::vector<int> SpringMassCube::get_neighbor(int j, int i, int k,
     int new_j = j + offset_j;
     int new_i = i + offset_i;
     int new_k = k + offset_k;
-    if (!((new_i>m_param1) || (new_i<0) || (new_j>m_param1) || (new_j<0) || (new_k>m_param1) || (new_k<0) )
-            && ((i==0) || (i==m_param1) || (j==0) || (j==m_param1) || (k==0) || (k==m_param1))
-            && ((new_i==0) || (new_i==m_param1) || (new_j==0) || (new_j==m_param1) || (new_k==0) || (new_k==m_param1))) {
+    if (!((new_i>m_param1) || (new_i<0) || (new_j>m_param1) || (new_j<0) || (new_k>m_param1) || (new_k<0))
+//            uncomment the following two lines to get a bounding box!! crazy
+//            && ((i==0) || (i==m_param1) || (j==0) || (j==m_param1) || (k==0) || (k==m_param1))
+//            && ((new_i==0) || (new_i==m_param1) || (new_j==0) || (new_j==m_param1) || (new_k==0) || (new_k==m_param1))
+            ) {
         std::vector<int> ret = {j, i, k, new_j, new_i, new_k};
         return ret;
     } else {
@@ -99,28 +101,28 @@ void SpringMassCube::add_to_structural(const std::vector<int> &indices) {
         // first push the original point
         m_structural_cnnctns.push_back(
                     m_points[3*to1D(
-                        indices[0], indices[1], indices[2],
+                        indices[1], indices[0], indices[2],
                         m_param1 + 1, m_param1 + 1)]);
         m_structural_cnnctns.push_back(
                     m_points[3*to1D(
-                        indices[0], indices[1], indices[2],
+                        indices[1], indices[0], indices[2],
                         m_param1 + 1, m_param1 + 1)+1]);
         m_structural_cnnctns.push_back(
                     m_points[3*to1D(
-                        indices[0], indices[1], indices[2],
+                        indices[1], indices[0], indices[2],
                         m_param1 + 1, m_param1 + 1)+2]);
         // then push the neighboring point
         m_structural_cnnctns.push_back(
                     m_points[3*to1D(
-                        indices[3], indices[4], indices[5],
+                        indices[4], indices[3], indices[5],
                         m_param1 + 1, m_param1 + 1)]);
         m_structural_cnnctns.push_back(
                     m_points[3*to1D(
-                        indices[3], indices[4], indices[5],
+                        indices[4], indices[3], indices[5],
                         m_param1 + 1, m_param1 + 1)+1]);
         m_structural_cnnctns.push_back(
                     m_points[3*to1D(
-                        indices[3], indices[4], indices[5],
+                        indices[4], indices[3], indices[5],
                         m_param1 + 1, m_param1 + 1)+2]);
     }
 }

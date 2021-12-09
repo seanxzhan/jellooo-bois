@@ -173,8 +173,8 @@ void ShapesScene::renderGeometry() {
     }
 
     // draw top
-    m_bbox = std::make_unique<Bbox>();
-    m_bbox->drawBbox();
+//    m_bbox = std::make_unique<Bbox>();
+//    m_bbox->drawBbox();
 }
 
 void ShapesScene::clearLights() {
