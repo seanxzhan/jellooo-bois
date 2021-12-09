@@ -14,7 +14,7 @@ class VAO {
 public:
     enum DRAW_METHOD { DRAW_ARRAYS, DRAW_INDEXED };
 
-    VAO(const VBO &vbo, int numberOfVerticesToRender = 0);
+    VAO(const VBO &vbo, int startingNumberOfVerticesToRender, int endingNumberOfVerticesToRender);
     VAO(const VBO &vbo, const IBO &ibo, int numberOfVerticesToRender = 0);
     VAO(const VAO &that) = delete;
     VAO& operator=(const VAO &that) = delete;
@@ -24,7 +24,7 @@ public:
 
     void bind();
     void draw();
-    void draw(int count);
+    void draw(int start, int end);
     DRAW_METHOD drawMethod();
     void unbind();
 
@@ -33,7 +33,8 @@ private:
 
     DRAW_METHOD m_drawMethod;
     GLuint m_handle;
-    GLuint m_numVertices;
+    GLuint m_startingNumVertices;
+    GLuint m_endingNumVertices;
     int m_size;
     GLenum m_triangleLayout;
 };

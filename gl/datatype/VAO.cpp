@@ -5,10 +5,11 @@
 
 namespace CS123 { namespace GL {
 
-VAO::VAO(const VBO &vbo, int numberOfVerticesToRender) :
+VAO::VAO(const VBO &vbo, int startingNumberOfVerticesToRender, int endingNumberOfVerticesToRender) :
     m_drawMethod(DRAW_ARRAYS),
     m_handle(0),
-    m_numVertices(numberOfVerticesToRender),
+    m_startingNumVertices(startingNumberOfVerticesToRender),
+    m_endingNumVertices(endingNumberOfVerticesToRender),
     m_size(0),
     m_triangleLayout(vbo.triangleLayout())
 {
@@ -23,7 +24,7 @@ VAO::VAO(const VBO &vbo, int numberOfVerticesToRender) :
 VAO::VAO(const VBO &vbo, const IBO &ibo, int numberOfVerticesToRender) :
     m_drawMethod(DRAW_INDEXED),
     m_handle(0),
-    m_numVertices(numberOfVerticesToRender),
+    m_endingNumVertices(numberOfVerticesToRender),
     m_size(0),
     m_triangleLayout(vbo.triangleLayout())
 {
@@ -38,7 +39,8 @@ VAO::VAO(const VBO &vbo, const IBO &ibo, int numberOfVerticesToRender) :
 VAO::VAO(VAO &&that) :
     m_VBO(std::move(that.m_VBO)),
     m_drawMethod(that.m_drawMethod),
-    m_numVertices(that.m_numVertices),
+    m_startingNumVertices(that.m_startingNumVertices),
+    m_endingNumVertices(that.m_endingNumVertices),
     m_size(that.m_size),
     m_triangleLayout(that.m_triangleLayout)
 {
@@ -51,7 +53,8 @@ VAO& VAO::operator=(VAO &&that) {
     m_VBO = std::move(that.m_VBO);
     m_drawMethod = that.m_drawMethod;
     m_handle = that.m_handle;
-    m_numVertices = that.m_numVertices;
+    m_startingNumVertices = that.m_startingNumVertices;
+    m_endingNumVertices = that.m_endingNumVertices;
     m_size = that.m_size;
     m_triangleLayout = that.m_triangleLayout;
 
@@ -67,14 +70,15 @@ VAO::~VAO()
 
 
 void VAO::draw() {
-    draw(m_numVertices);
+    draw(m_startingNumVertices, m_endingNumVertices);
 }
 
-void VAO::draw(int count) {
+void VAO::draw(int start, int end) {
     glEnable(GL_PROGRAM_POINT_SIZE);
     switch(m_drawMethod) {
         case VAO::DRAW_ARRAYS:
-            glDrawArrays(m_triangleLayout, 0, count);
+            glDrawArrays(VBO::GEOMETRY_LAYOUT::LAYOUT_POINTS, 0, start);
+            glDrawArrays(VBO::GEOMETRY_LAYOUT::LAYOUT_LINES, start, end);
             break;
         case VAO::DRAW_INDEXED:
             // TODO [OPTIONAL]
