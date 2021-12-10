@@ -71,6 +71,7 @@ private:
     void loadJelloShader();
     std::unique_ptr<CS123::GL::CS123Shader> m_jelloShader;
     void renderJelloPass(SupportCanvas3D *context);
+    bool m_usePhong;
 
     std::unique_ptr<CS123::GL::CS123Shader> m_phongShader;
     std::unique_ptr<CS123::GL::Shader> m_wireframeShader;

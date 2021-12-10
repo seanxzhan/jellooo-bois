@@ -124,10 +124,7 @@ void ShapesScene::render(SupportCanvas3D *context) {
 
     renderSkybox(context);
 
-    // TODO: Update to UI Settings Eventually
-    bool usePhong = false; // if false uses our jello shader :D
-
-    if (usePhong) {
+    if (m_usePhong) {
         renderPhongPass(context);
 
         if (settings.drawWireframe) {
@@ -344,7 +341,13 @@ void ShapesScene::settingsChanged() {
     if (settings.shapeType != m_shapeType) {
         switch (settings.shapeType) {
             case SHAPE_CUBE:
-                std::cout << "shape type: jellooo cube" << std::endl;
+                std::cout << "shape type: phong cube" << std::endl;
+                m_usePhong = true;
+                m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
+            break;
+            case SHAPE_JELLO_CUBE:
+                std::cout << "shape type: jello cube" << std::endl;
+                m_usePhong = false;
                 m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
             break;
             case SHAPE_CYLINDER:
