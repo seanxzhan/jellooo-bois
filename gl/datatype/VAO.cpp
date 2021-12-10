@@ -73,7 +73,6 @@ void VAO::draw() {
 }
 
 void VAO::draw(int numVertices) {
-    std::cout << "drawing" << std::endl;
     switch(m_drawMethod) {
         case VAO::DRAW_ARRAYS:
             glDrawArrays(m_triangleLayout, 0, numVertices);

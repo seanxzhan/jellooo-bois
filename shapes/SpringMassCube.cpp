@@ -71,10 +71,10 @@ void SpringMassCube::tick(float current) {
             }
         }
     }
+
     make_structural_connections();
 
     drawPointsAndLines(m_points, m_structural_cnnctns);
-//    m_points.clear();
     m_structural_cnnctns.clear();
 }
 
@@ -98,32 +98,33 @@ std::vector<int> SpringMassCube::get_neighbor(int j, int i, int k,
 
 void SpringMassCube::add_to_structural(const std::vector<int> &indices) {
     if (indices[0] != -1) {
+        int dim = m_param1 + 1;
         // first push the original point
         m_structural_cnnctns.push_back(
                     m_points[3*to1D(
                         indices[1], indices[0], indices[2],
-                        m_param1 + 1, m_param1 + 1)]);
+                        dim, dim)]);
         m_structural_cnnctns.push_back(
                     m_points[3*to1D(
                         indices[1], indices[0], indices[2],
-                        m_param1 + 1, m_param1 + 1)+1]);
+                        dim, dim)+1]);
         m_structural_cnnctns.push_back(
                     m_points[3*to1D(
                         indices[1], indices[0], indices[2],
-                        m_param1 + 1, m_param1 + 1)+2]);
+                        dim, dim)+2]);
         // then push the neighboring point
         m_structural_cnnctns.push_back(
                     m_points[3*to1D(
                         indices[4], indices[3], indices[5],
-                        m_param1 + 1, m_param1 + 1)]);
+                        dim, dim)]);
         m_structural_cnnctns.push_back(
                     m_points[3*to1D(
                         indices[4], indices[3], indices[5],
-                        m_param1 + 1, m_param1 + 1)+1]);
+                        dim, dim)+1]);
         m_structural_cnnctns.push_back(
                     m_points[3*to1D(
                         indices[4], indices[3], indices[5],
-                        m_param1 + 1, m_param1 + 1)+2]);
+                        dim, dim)+2]);
     }
 }
 

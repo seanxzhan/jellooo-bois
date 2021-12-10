@@ -169,8 +169,7 @@ void ShapesScene::renderNormalsPass (SupportCanvas3D *context) {
 
 void ShapesScene::renderGeometry() {
     if (m_shape) {
-        m_shape->draw();
-        if (m_shapeType == SHAPE_CYLINDER) {
+        if (settings.shapeType == SHAPE_CYLINDER) {
             m_shape->drawPandL();
         } else {
             m_shape->draw();

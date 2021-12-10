@@ -90,8 +90,8 @@ void OpenGLShape::drawLines(std::vector<GLfloat> &line) {
 }
 
 void OpenGLShape::drawPointsAndLines(std::vector<GLfloat> &points, std::vector<GLfloat> &lines) {
-    int total_num_vertices = points.size() / 3 + lines.size() / 3;
-    m_cutoff = total_num_vertices;
+    int total_num_vertices = (int) points.size() / 3 + (int) lines.size() / 3;
+    m_cutoff = (int) points.size() / 3;
     std::vector<GLfloat> AB;
     AB.resize(points.size());
     for (int i = 0; i < points.size(); i++) {
@@ -101,6 +101,5 @@ void OpenGLShape::drawPointsAndLines(std::vector<GLfloat> &points, std::vector<G
     setVertexData(&AB[0], AB.size(), VBO::GEOMETRY_LAYOUT::LAYOUT_LINES, total_num_vertices);
     setAttribute(ShaderAttrib::POSITION, 3, 0, VBOAttribMarker::DATA_TYPE::FLOAT, false);
     buildVAO();
-//    drawPandL();
 }
 
