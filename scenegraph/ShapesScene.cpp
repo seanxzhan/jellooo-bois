@@ -169,13 +169,14 @@ void ShapesScene::renderNormalsPass (SupportCanvas3D *context) {
 
 void ShapesScene::renderGeometry() {
     if (m_shape) {
-        if (settings.shapeType == SHAPE_CYLINDER) {
+        if (m_shapeType == SHAPE_CYLINDER) {
             m_shape->drawPandL();
         } else {
             m_shape->draw();
         }
     }
 
+    // anything that needs to persist for any t should be put here
     m_bbox = std::make_unique<Bbox>();
     m_bbox->drawBbox();
 }

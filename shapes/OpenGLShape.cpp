@@ -74,29 +74,19 @@ void OpenGLShape::drawPoints(std::vector<GLfloat> &points) {
     buildVAO();
 }
 
-void OpenGLShape::drawLine(std::vector<GLfloat> &line) {
-    int num_vertices = line.size() / 3;
-    setVertexData(&line[0], line.size(), VBO::GEOMETRY_LAYOUT::LAYOUT_LINE_STRIP, num_vertices);
-    setAttribute(ShaderAttrib::POSITION, 3, 0, VBOAttribMarker::DATA_TYPE::FLOAT, false);
-    buildVAO();
-    draw();
-}
-
 void OpenGLShape::drawLines(std::vector<GLfloat> &line) {
     int num_vertices = line.size() / 3;
     setVertexData(&line[0], line.size(), VBO::GEOMETRY_LAYOUT::LAYOUT_LINES, num_vertices);
     setAttribute(ShaderAttrib::POSITION, 3, 0, VBOAttribMarker::DATA_TYPE::FLOAT, false);
     buildVAO();
+    draw();
 }
 
-void OpenGLShape::drawPointsAndLines(std::vector<GLfloat> &points, std::vector<GLfloat> &lines) {
+void OpenGLShape::drawPointsAndLines(const std::vector<GLfloat> &points,
+                                     const std::vector<GLfloat> &lines) {
     int total_num_vertices = (int) points.size() / 3 + (int) lines.size() / 3;
     m_cutoff = (int) points.size() / 3;
-    std::vector<GLfloat> AB;
-    AB.resize(points.size());
-    for (int i = 0; i < points.size(); i++) {
-        AB[i] = points[i];
-    }
+    std::vector<GLfloat> AB = points;
     AB.insert(AB.end(), lines.begin(), lines.end());
     setVertexData(&AB[0], AB.size(), VBO::GEOMETRY_LAYOUT::LAYOUT_LINES, total_num_vertices);
     setAttribute(ShaderAttrib::POSITION, 3, 0, VBOAttribMarker::DATA_TYPE::FLOAT, false);

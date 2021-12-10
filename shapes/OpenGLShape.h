@@ -56,9 +56,8 @@ protected:
      */
     void initializeOpenGLShapeProperties();
     void drawPoints(std::vector<GLfloat> &points);
-    void drawLine(std::vector<GLfloat> &line);
     void drawLines(std::vector<GLfloat> &lines);
-    void drawPointsAndLines(std::vector<GLfloat> &points, std::vector<GLfloat> &lines);
+    void drawPointsAndLines(const std::vector<GLfloat> &points, const std::vector<GLfloat> &lines);
 
     std::vector<GLfloat> m_vertexData;
     std::unique_ptr<CS123::GL::VAO> m_VAO;
