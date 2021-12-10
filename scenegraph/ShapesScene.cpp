@@ -169,7 +169,7 @@ void ShapesScene::renderNormalsPass (SupportCanvas3D *context) {
 
 void ShapesScene::renderGeometry() {
     if (m_shape) {
-        if (m_shapeType == SHAPE_CYLINDER) {
+        if (m_shapeType == SHAPE_SPRING_MASS_CUBE) {
             m_shape->drawPandL();
         } else {
             m_shape->draw();
@@ -222,27 +222,34 @@ void ShapesScene::settingsChanged() {
         m_simType = settings.simType;
     }
     // TODO: check if params are the same
-    if (settings.shapeType != m_shapeType) {
+    if (settings.shapeType != m_shapeType || settings.shapeParameter1 != m_shapeParameter1
+            || settings.shapeParameter2 != m_shapeParameter2) {
+        m_shapeParameter1 = settings.shapeParameter1;
+        m_shapeParameter2 = settings.shapeParameter2;
         switch (settings.shapeType) {
             case SHAPE_CUBE:
                 std::cout << "shape type: jellooo cube" << std::endl;
-                m_shape = std::make_unique<JelloCube>(settings.shapeParameter1, settings.shapeParameter2);
+                m_shape = std::make_unique<JelloCube>(m_shapeParameter1, m_shapeParameter2);
+            break;
+            case SHAPE_SPRING_MASS_CUBE:
+                std::cout << "shape type: spring mass cube" << std::endl;
+                m_shape = std::make_unique<SpringMassCube>(m_shapeParameter1, m_shapeParameter2);
             break;
             case SHAPE_CYLINDER:
                 std::cout << "shape type: jellooo cylinder" << std::endl;
-                m_shape = std::make_unique<SpringMassCube>(settings.shapeParameter1, settings.shapeParameter2);
+                m_shape = std::make_unique<ExampleShape>(m_shapeParameter1, m_shapeParameter2);
             break;
             case SHAPE_CONE:
                 std::cout << "shape type: jellooo cone" << std::endl;
-                m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
+                m_shape = std::make_unique<ExampleShape>(m_shapeParameter1, m_shapeParameter2);
             break;
             case SHAPE_SPHERE:
                 std::cout << "shape type: jellooo sphere" << std::endl;
-                 m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
+                 m_shape = std::make_unique<ExampleShape>(m_shapeParameter1, m_shapeParameter2);
             break;
             default:
                 std::cout << "shape type: these shapes have no-impl" << std::endl;
-                m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
+                m_shape = std::make_unique<ExampleShape>(m_shapeParameter1, m_shapeParameter2);
             break;
         }
         m_shapeType = settings.shapeType;

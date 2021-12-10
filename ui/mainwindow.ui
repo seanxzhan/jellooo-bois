@@ -201,6 +201,13 @@
          </widget>
         </item>
         <item>
+         <widget class="QRadioButton" name="shapeTypeSMCube">
+          <property name="text">
+           <string>Spring-Mass Cube</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QRadioButton" name="shapeTypeCylinder">
           <property name="text">
            <string>Cylinder</string>
