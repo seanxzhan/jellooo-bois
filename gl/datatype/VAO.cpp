@@ -3,6 +3,8 @@
 #include "VBO.h"
 #include "IBO.h"
 
+#include <iostream>
+
 namespace CS123 { namespace GL {
 
 VAO::VAO(const VBO &vbo, int numberOfVerticesToRender) :
@@ -70,16 +72,23 @@ void VAO::draw() {
     draw(m_numVertices);
 }
 
-void VAO::draw(int count) {
+void VAO::draw(int numVertices) {
     switch(m_drawMethod) {
         case VAO::DRAW_ARRAYS:
-            glDrawArrays(m_triangleLayout, 0, count);
+            glDrawArrays(m_triangleLayout, 0, numVertices);
             break;
         case VAO::DRAW_INDEXED:
             // TODO [OPTIONAL]
             // If you want to use IBO's, you'll need to call glDrawElements here
             break;
     }
+}
+
+void VAO::drawPL(VBO::GEOMETRY_LAYOUT layout1, VBO::GEOMETRY_LAYOUT layout2, int cutoff) {
+    // enable point size here, specify point size in shader.vert
+    glEnable(GL_PROGRAM_POINT_SIZE);
+    glDrawArrays(layout1, 0, cutoff);
+    glDrawArrays(layout2, cutoff, m_numVertices);
 }
 
 void VAO::bind() {

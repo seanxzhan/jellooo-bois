@@ -42,6 +42,7 @@ SOURCES += \
     shapes/JelloUtil.cpp \
     shapes/OpenGLShape.cpp \
     shapes/Shape.cpp \
+    shapes/SpringMassCube.cpp \
     ui/Canvas2D.cpp \
     ui/SupportCanvas2D.cpp \
     ui/SupportCanvas3D.cpp \
@@ -91,6 +92,7 @@ HEADERS += \
     shapes/JelloUtil.h \
     shapes/OpenGLShape.h \
     shapes/Shape.h \
+    shapes/SpringMassCube.h \
     ui/Canvas2D.h \
     ui/SupportCanvas2D.h \
     ui/SupportCanvas3D.h \

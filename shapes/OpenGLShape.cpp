@@ -29,6 +29,14 @@ void OpenGLShape::draw() {
     }
 }
 
+void OpenGLShape::drawPandL() {
+    if (m_VAO) {
+        m_VAO->bind();
+        m_VAO->drawPL(VBO::GEOMETRY_LAYOUT::LAYOUT_POINTS, VBO::GEOMETRY_LAYOUT::LAYOUT_LINES, m_cutoff);
+        m_VAO->unbind();
+    }
+}
+
 void OpenGLShape::initializeOpenGLShapeProperties() {
     const int numFloatsPerVertex = 6;
     const int numVertices = m_vertexData.size() / numFloatsPerVertex;
@@ -40,12 +48,13 @@ void OpenGLShape::initializeOpenGLShapeProperties() {
     m_VAO = std::make_unique<VAO>(vbo, numVertices);
 }
 
-void OpenGLShape::setVertexData(GLfloat *data, int size, VBO::GEOMETRY_LAYOUT drawMode, int numVertices) {
+void OpenGLShape::setVertexData(GLfloat *data, int size, VBO::GEOMETRY_LAYOUT drawMode,
+                                int num_vertices) {
     // Store the vertex data and other values to be used later when constructing the VAO
     m_data = data;
     m_size = size;
     m_drawMode = drawMode;
-    m_numVertices = numVertices;
+    m_numVertices = num_vertices;
 }
 
 void OpenGLShape::setAttribute(
@@ -58,4 +67,29 @@ void OpenGLShape::buildVAO() {
     m_VAO = std::make_unique<VAO>(vbo, m_numVertices);
 }
 
+void OpenGLShape::drawPoints(std::vector<GLfloat> &points) {
+    int num_vertices = points.size() / 3;
+    setVertexData(&points[0], points.size(), VBO::GEOMETRY_LAYOUT::LAYOUT_POINTS, num_vertices);
+    setAttribute(ShaderAttrib::POSITION, 3, 0, VBOAttribMarker::DATA_TYPE::FLOAT, false);
+    buildVAO();
+}
+
+void OpenGLShape::drawLines(std::vector<GLfloat> &line) {
+    int num_vertices = line.size() / 3;
+    setVertexData(&line[0], line.size(), VBO::GEOMETRY_LAYOUT::LAYOUT_LINES, num_vertices);
+    setAttribute(ShaderAttrib::POSITION, 3, 0, VBOAttribMarker::DATA_TYPE::FLOAT, false);
+    buildVAO();
+    draw();
+}
+
+void OpenGLShape::drawPointsAndLines(const std::vector<GLfloat> &points,
+                                     const std::vector<GLfloat> &lines) {
+    int total_num_vertices = (int) points.size() / 3 + (int) lines.size() / 3;
+    m_cutoff = (int) points.size() / 3;
+    std::vector<GLfloat> AB = points;
+    AB.insert(AB.end(), lines.begin(), lines.end());
+    setVertexData(&AB[0], AB.size(), VBO::GEOMETRY_LAYOUT::LAYOUT_LINES, total_num_vertices);
+    setAttribute(ShaderAttrib::POSITION, 3, 0, VBOAttribMarker::DATA_TYPE::FLOAT, false);
+    buildVAO();
+}
 

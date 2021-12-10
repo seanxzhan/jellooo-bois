@@ -13,13 +13,14 @@
 using namespace CS123::GL;
 #include "gl/shaders/CS123Shader.h"
 #include "gl/shaders/Shader.h"
+#include "gl/shaders/ShaderAttribLocations.h"
 
 #include "ResourceLoader.h"
 #include "shapes/ExampleShape.h"
 #include "shapes/JelloCube.h"
 #include "shapes/Bbox.h"
+#include "shapes/SpringMassCube.h"
 
-#include "gl/shaders/ShaderAttribLocations.h"
 
 ShapesScene::ShapesScene(int width, int height) :
     m_shape(nullptr),
@@ -168,88 +169,16 @@ void ShapesScene::renderNormalsPass (SupportCanvas3D *context) {
 
 void ShapesScene::renderGeometry() {
     if (m_shape) {
-        m_shape->draw();
+        if (m_shapeType == SHAPE_SPRING_MASS_CUBE) {
+            m_shape->drawPandL();
+        } else {
+            m_shape->draw();
+        }
     }
 
-    // draw top
+    // anything that needs to persist for any t should be put here
     m_bbox = std::make_unique<Bbox>();
-    std::vector<GLfloat> lineData = {
-        2.f, 2.f, 2.f, 2.f, 2.f, -2.f,
-        2.f, 2.f, -2.f, -2.f, 2.f, -2.f,
-        -2.f, 2.f, -2.f, -2.f, 2.f, 2.f,
-        -2.f, 2.f, 2.f, 2.f, 2.f, 2.f};
-    drawLine(lineData, 8);
-
-    lineData = {
-        2.f, 1.f, 2.f, 2.f, 1.f, -2.f,
-        2.f, 1.f, -2.f, -2.f, 1.f, -2.f,
-        -2.f, 1.f, -2.f, -2.f, 1.f, 2.f,
-        -2.f, 1.f, 2.f, 2.f, 1.f, 2.f};
-    drawLine(lineData, 8);
-
-    lineData = {
-        2.f, 0.f, 2.f, 2.f, 0.f, -2.f,
-        2.f, 0.f, -2.f, -2.f, 0.f, -2.f,
-        -2.f, 0.f, -2.f, -2.f, 0.f, 2.f,
-        -2.f, 0.f, 2.f, 2.f, 0.f, 2.f};
-    drawLine(lineData, 8);
-
-    lineData = {
-        2.f, -1.f, 2.f, 2.f, -1.f, -2.f,
-        2.f, -1.f, -2.f, -2.f, -1.f, -2.f,
-        -2.f, -1.f, -2.f, -2.f, -1.f, 2.f,
-        -2.f, -1.f, 2.f, 2.f, -1.f, 2.f};
-    drawLine(lineData, 8);
-
-    // draw bottom
-    lineData = {2.f, -2.f, 2.f, 2.f, -2.f, -2.f,
-                2.f, -2.f, -2.f, -2.f, -2.f, -2.f,
-                -2.f, -2.f, -2.f, -2.f, -2.f, 2.f,
-                -2.f, -2.f, 2.f, 2.f, -2.f, 2.f};
-    drawLine(lineData, 8);
-
-    // draw vertical pillars separately due to LINE_STRIP
-    lineData = {2.f, 2.f, 2.f, 2.f, -2.f, 2.f};
-    drawLine(lineData, 2);
-    lineData = {2.f, 2.f, -2.f, 2.f, -2.f, -2.f};
-    drawLine(lineData, 2);
-    lineData = {-2.f, 2.f, -2.f, -2.f, -2.f, -2.f};
-    drawLine(lineData, 2);
-    lineData = {-2.f, 2.f, 2.f, -2.f, -2.f, 2.f};
-    drawLine(lineData, 2);
-
-    lineData = {2.f, 2.f, 1.f, 2.f, -2.f, 1.f};
-    drawLine(lineData, 2);
-    lineData = {2.f, 2.f, -1.f, 2.f, -2.f, -1.f};
-    drawLine(lineData, 2);
-    lineData = {-2.f, 2.f, -1.f, -2.f, -2.f, -1.f};
-    drawLine(lineData, 2);
-    lineData = {-2.f, 2.f, 1.f, -2.f, -2.f, 1.f};
-    drawLine(lineData, 2);
-    lineData = {2.f, 2.f, 0.f, 2.f, -2.f, 0.f};
-    drawLine(lineData, 2);
-    lineData = {-2.f, 2.f, 0.f, -2.f, -2.f, 0.f};
-    drawLine(lineData, 2);
-
-    lineData = {1.f, 2.f, 2.f, 1.f, -2.f, 2.f};
-    drawLine(lineData, 2);
-    lineData = {1.f, 2.f, -2.f, 1.f, -2.f, -2.f};
-    drawLine(lineData, 2);
-    lineData = {-1.f, 2.f, -2.f, -1.f, -2.f, -2.f};
-    drawLine(lineData, 2);
-    lineData = {-1.f, 2.f, 2.f, -1.f, -2.f, 2.f};
-    drawLine(lineData, 2);
-    lineData = {0.f, 2.f, 2.f, 0.f, -2.f, 2.f};
-    drawLine(lineData, 2);
-    lineData = {0.f, 2.f, -2.f, 0.f, -2.f, -2.f};
-    drawLine(lineData, 2);
-}
-
-void ShapesScene::drawLine(std::vector<GLfloat> &line, int num_vertices) {
-    m_bbox->setVertexData(&line[0], line.size(), VBO::GEOMETRY_LAYOUT::LAYOUT_LINE_STRIP, num_vertices);
-    m_bbox->setAttribute(ShaderAttrib::POSITION, 3, 0, VBOAttribMarker::DATA_TYPE::FLOAT, false);
-    m_bbox->buildVAO();
-    m_bbox->draw();
+    m_bbox->drawBbox();
 }
 
 void ShapesScene::clearLights() {
@@ -292,28 +221,35 @@ void ShapesScene::settingsChanged() {
         }
         m_simType = settings.simType;
     }
-
-    if (settings.shapeType != m_shapeType) {
+    // TODO: check if params are the same
+    if (settings.shapeType != m_shapeType || settings.shapeParameter1 != m_shapeParameter1
+            || settings.shapeParameter2 != m_shapeParameter2) {
+        m_shapeParameter1 = settings.shapeParameter1;
+        m_shapeParameter2 = settings.shapeParameter2;
         switch (settings.shapeType) {
             case SHAPE_CUBE:
                 std::cout << "shape type: jellooo cube" << std::endl;
-                m_shape = std::make_unique<JelloCube>(settings.shapeParameter1, settings.shapeParameter2);
+                m_shape = std::make_unique<JelloCube>(m_shapeParameter1, m_shapeParameter2);
+            break;
+            case SHAPE_SPRING_MASS_CUBE:
+                std::cout << "shape type: spring mass cube" << std::endl;
+                m_shape = std::make_unique<SpringMassCube>(m_shapeParameter1, m_shapeParameter2);
             break;
             case SHAPE_CYLINDER:
                 std::cout << "shape type: jellooo cylinder" << std::endl;
-                m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
+                m_shape = std::make_unique<ExampleShape>(m_shapeParameter1, m_shapeParameter2);
             break;
             case SHAPE_CONE:
                 std::cout << "shape type: jellooo cone" << std::endl;
-                m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
+                m_shape = std::make_unique<ExampleShape>(m_shapeParameter1, m_shapeParameter2);
             break;
             case SHAPE_SPHERE:
                 std::cout << "shape type: jellooo sphere" << std::endl;
-                 m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
+                 m_shape = std::make_unique<ExampleShape>(m_shapeParameter1, m_shapeParameter2);
             break;
             default:
                 std::cout << "shape type: these shapes have no-impl" << std::endl;
-                m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
+                m_shape = std::make_unique<ExampleShape>(m_shapeParameter1, m_shapeParameter2);
             break;
         }
         m_shapeType = settings.shapeType;

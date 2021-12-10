@@ -10,6 +10,7 @@
 #include "gl/datatype/FBO.h"
 #include "Settings.h"
 #include "shapes/Shape.h"
+#include "shapes/Bbox.h"
 
 namespace CS123 { namespace GL {
 
@@ -71,7 +72,7 @@ private:
     glm::vec4 m_lightDirection = glm::normalize(glm::vec4(1.f, -1.f, -1.f, 0.f));
 
     std::unique_ptr<OpenGLShape> m_shape;
-    std::unique_ptr<OpenGLShape> m_bbox;
+    std::unique_ptr<Bbox> m_bbox;
     int m_shapeParameter1;
     int m_shapeParameter2;
 
@@ -99,7 +100,6 @@ private:
     void renderNormals();
     void renderWireframe();
     void setSceneUniforms(SupportCanvas3D *context); 
-    void drawLine(std::vector<GLfloat> &line, int num_vertices);
 };
 
 #endif // SHAPESSCENE_H

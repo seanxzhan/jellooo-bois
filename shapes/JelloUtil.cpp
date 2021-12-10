@@ -1,4 +1,8 @@
 #include "JelloUtil.h"
+#include "math.h"
+#include "gl/shaders/ShaderAttribLocations.h"
+
+const float epsilon {0.0005f};
 
 namespace JelloUtil {
 
@@ -35,6 +39,10 @@ int indexFromFace(int i, int j, int dim, FACE face) {
             return to1D(i, dim-1, j, dim, dim);
         }
     }
+}
+
+int pEquals(float a, float b) {
+    return abs(a - b) <= epsilon;
 }
 
 }
