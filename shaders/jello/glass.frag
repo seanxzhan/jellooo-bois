@@ -59,6 +59,7 @@ void main()
     // Make Jello-Like
 
     // Keep 1 Channel Color
+    // TODO: Add Uniform for color channel to keep eventually if needed
     float prop = 0.5; // proportion of glass color to keep
     fragColor.x *= 0.1;
     fragColor.y *= 0.1;
