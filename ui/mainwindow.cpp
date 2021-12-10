@@ -102,6 +102,9 @@ MainWindow::MainWindow(QWidget *parent) :
     a += ui->simTypeJelloSim;
     a += ui->simTypeStaticCube;
     a += ui->simTypeExample;
+    a += ui->cnnctnTypeStruct;
+    a += ui->cnnctnTypeShear;
+    a += ui->cnnctnTypeBend;
 
     foreach (QRadioButton *rb, a)
         connect(rb, SIGNAL(clicked()), this, SLOT(activateCanvas3D()));
@@ -133,10 +136,12 @@ void MainWindow::dataBind() {
     QButtonGroup *brushButtonGroup = new QButtonGroup;
     QButtonGroup *simulationGroup = new QButtonGroup;
     QButtonGroup *shapesButtonGroup = new QButtonGroup;
+    QButtonGroup *cnnctnButtonGroup = new QButtonGroup;
     QButtonGroup *filterButtonGroup = new QButtonGroup;
     m_buttonGroups.push_back(brushButtonGroup);
     m_buttonGroups.push_back(simulationGroup);
     m_buttonGroups.push_back(shapesButtonGroup);
+    m_buttonGroups.push_back(cnnctnButtonGroup);
     m_buttonGroups.push_back(filterButtonGroup);
 
     // Shapes dock
@@ -158,6 +163,15 @@ void MainWindow::dataBind() {
         ui->simTypeJelloSim,
         ui->simTypeStaticCube,
         ui->simTypeExample))
+
+
+    BIND(ChoiceBinding::bindRadioButtons(
+        cnnctnButtonGroup,
+        NUM_C_TYPES,
+        settings.cnnctnType,
+        ui->cnnctnTypeStruct,
+        ui->cnnctnTypeShear,
+        ui->cnnctnTypeBend))
 
     BIND(IntBinding::bindSliderAndTextbox(
         ui->shapeParameterSlider1, ui->shapeParameterTextbox1, settings.shapeParameter1, 1.f, 100.f))

@@ -51,6 +51,13 @@ enum SimType {
     NUM_SIM_TYPES
 };
 
+enum CnnctnType {
+    C_STRUCT,
+    C_SHEAR,
+    C_BEND,
+    NUM_C_TYPES
+};
+
 // Enumeration values for the two tabs (2D, 3D) at the bottom of the Window.
 enum UITab {
     TAB_2D,
@@ -113,6 +120,9 @@ struct Settings {
 
     // Simulation
     int simType;
+
+    // Connections
+    int cnnctnType;
 
     // Camtrans
     bool useOrbitCamera;        // Use the built-in orbiting camera instead of the Camtrans camera

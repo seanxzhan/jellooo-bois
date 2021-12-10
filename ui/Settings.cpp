@@ -55,6 +55,9 @@ void Settings::loadSettingsOrDefaults() {
     // Simulation
     simType = s.value("simType", SIM_JELLO_SIM).toInt();
 
+    // Connections
+    cnnctnType = s.value("cnnctnType", C_STRUCT).toInt();
+
     // Camtrans
     useOrbitCamera = s.value("useOrbitCamera", true).toBool();
     cameraFov = s.value("cameraFov", 55).toDouble();
@@ -115,8 +118,11 @@ void Settings::saveSettings() {
     s.setValue("drawWireframe", drawWireframe);
     s.setValue("drawNormals", drawNormals);
 
-    // Simulatoin
+    // Simulation
     s.setValue("simType", simType);
+
+    // Connections
+    s.setValue("cnnctnType", cnnctnType);
 
     // Camtrans
     s.setValue("useOrbitCamera", useOrbitCamera);
