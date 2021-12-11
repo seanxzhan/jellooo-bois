@@ -2,11 +2,13 @@
 #include "gl/shaders/ShaderAttribLocations.h"
 #include <iostream>
 
+/*
 SpringMassCube::SpringMassCube():
     Shape(7, 7)
 {
     generateVertexData();
 }
+*/
 
 SpringMassCube::SpringMassCube(int param1, int param2):
     Shape(param1,param2)
