@@ -22,6 +22,8 @@ private:
 
     void calculateNormals();
     void loadVAO();
+    glm::vec3 applyDampen(double kd, glm::vec3 a, glm::vec3 b, glm::vec3 t1_vec, glm::vec3 t2_vec);
+    glm::vec3 applyHooke(double kd, double rest_len, glm::vec3 a, glm::vec3 b);
     void computeAcceleration(std::vector<glm::vec3> &points,
                              std::vector<glm::vec3> &velocity,
                              std::vector<glm::vec3> &acceleration);
