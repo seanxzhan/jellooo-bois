@@ -37,6 +37,7 @@ enum FilterType {
 // Enumeration values for the Shapes that the user can select in the GUI.
 enum ShapeType {
     SHAPE_CUBE,
+    SHAPE_JELLO_CUBE,
     SHAPE_SPRING_MASS_CUBE,
     SHAPE_CYLINDER,
     SHAPE_CONE,

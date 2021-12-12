@@ -86,8 +86,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>182</width>
-             <height>3061</height>
+             <width>259</width>
+             <height>3066</height>
             </rect>
            </property>
           </widget>
@@ -199,6 +199,11 @@
            <bool>true</bool>
           </property>
          </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="shapeTypeJelloCube">
+          <property name="text">
+           <string>Jello Cube</string>
         </item>
         <item>
          <widget class="QRadioButton" name="shapeTypeSMCube">
@@ -1017,7 +1022,7 @@
      <x>0</x>
      <y>0</y>
      <width>600</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

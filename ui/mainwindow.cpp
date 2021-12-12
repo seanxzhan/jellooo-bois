@@ -93,6 +93,7 @@ MainWindow::MainWindow(QWidget *parent) :
     a.clear();
     a += ui->shapeTypeCone;
     a += ui->shapeTypeCube;
+    a += ui->shapeTypeJelloCube;
     a += ui->shapeTypeSMCube;
     a += ui->shapeTypeCylinder;
     a += ui->shapeTypeSphere;
@@ -151,6 +152,7 @@ void MainWindow::dataBind() {
         NUM_SHAPE_TYPES,
         settings.shapeType,
         ui->shapeTypeCube,
+        ui->shapeTypeJelloCube,
         ui->shapeTypeSMCube,
         ui->shapeTypeCylinder,
         ui->shapeTypeCone,
