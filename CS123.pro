@@ -169,9 +169,12 @@ RESOURCES += \
     resources.qrc
 
 DISTFILES += \
+    shaders/bbox.frag \
+    shaders/bbox.vert \
     shaders/normals/normals.vert \
     shaders/normals/normals.frag \
     shaders/normals/normals.gsh \
     shaders/normals/normalsArrow.gsh \
     shaders/normals/normalsArrow.frag \
-    shaders/normals/normalsArrow.vert
+    shaders/normals/normalsArrow.vert \
+    shaders/test/test.frag

@@ -57,6 +57,7 @@ protected:
     void initializeOpenGLShapeProperties();
     void drawPoints(std::vector<GLfloat> &points);
     void drawLines(std::vector<GLfloat> &lines);
+    void drawTriangleStrips(std::vector<GLfloat> &data);
     void drawPointsAndLines(const std::vector<GLfloat> &points, const std::vector<GLfloat> &lines);
 
     std::vector<GLfloat> m_vertexData;

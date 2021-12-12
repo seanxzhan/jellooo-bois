@@ -12,5 +12,7 @@
         <file alias="normalsArrow.frag">shaders/normals/normalsArrow.frag</file>
         <file alias="normalsArrow.gsh">shaders/normals/normalsArrow.gsh</file>
         <file alias="normalsArrow.vert">shaders/normals/normalsArrow.vert</file>
+        <file alias="bbox.frag">shaders/bbox.frag</file>
+        <file alias="bbox.vert">shaders/bbox.vert</file>
     </qresource>
 </RCC>
