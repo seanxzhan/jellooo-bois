@@ -242,7 +242,7 @@ void MainWindow::updateAspectRatio() {
 
 
 void MainWindow::settingsChanged() {
-    ui->canvas2D->settingsChanged();
+    //ui->canvas2D->settingsChanged();
     m_canvas3D->settingsChanged();
 }
 
