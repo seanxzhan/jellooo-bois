@@ -444,7 +444,7 @@ void JelloCube::rk4() {
 //Should update positions and call on loadVAO and initializeOpenGLShapeProperties() to prep for drawing again
 void JelloCube::tick(float current) {
 //    This just goes up and down - should involve call to compute acceleration and using RK4 integration
-    float increment = sin(current) / 60;
+    float increment = -1.0 / 60;
     int dim = m_param1 + 1;
     //k depth (z)
     for (int k = 0; k < dim; k++) {

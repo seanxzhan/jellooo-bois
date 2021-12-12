@@ -24,6 +24,7 @@ private:
     void loadVAO();
     glm::vec3 applyDampen(double kd, glm::vec3 a, glm::vec3 b, glm::vec3 t1_vec, glm::vec3 t2_vec);
     glm::vec3 applyHooke(double kd, double rest_len, glm::vec3 a, glm::vec3 b);
+    //void applyForces(glm::vec3 *F, double rest_len, int i, int j, int k)
     void computeAcceleration(std::vector<glm::vec3> &points,
                              std::vector<glm::vec3> &velocity,
                              std::vector<glm::vec3> &acceleration);
@@ -35,7 +36,7 @@ private:
     double dElastic; // Damping coefficient for all springs except collision springs
     double kCollision; // Hook's elasticity coefficient for collision springs
     double dCollision; // Damping coefficient collision springs
-    double mass; // mass of each of the control points, mass assumed to be equal for every control point
+    float mass; // mass of each of the control points, mass assumed to be equal for every control point
 
     float dt;
 
