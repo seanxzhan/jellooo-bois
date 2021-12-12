@@ -35,7 +35,7 @@ private:
     double dElastic; // Damping coefficient for all springs except collision springs
     double kCollision; // Hook's elasticity coefficient for collision springs
     double dCollision; // Damping coefficient collision springs
-    double mass; // mass of each of the control points, mass assumed to be equal for every control point
+    float mass; // mass of each of the control points, mass assumed to be equal for every control point
 
     float dt;
 
