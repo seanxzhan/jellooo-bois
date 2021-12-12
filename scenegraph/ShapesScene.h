@@ -11,6 +11,7 @@
 #include "Settings.h"
 #include "shapes/Shape.h"
 //#include "uniforms/uniformvariable.h"
+#include "shapes/Bbox.h"
 
 namespace CS123 { namespace GL {
 
@@ -46,6 +47,7 @@ public:
 
     virtual void render(SupportCanvas3D *context) override;
     virtual void settingsChanged() override;
+    virtual void tick(float current) override;
 
 
 protected:
@@ -78,12 +80,14 @@ private:
     std::unique_ptr<CS123::GL::Shader> m_normalsShader;
     std::unique_ptr<CS123::GL::Shader> m_normalsArrowShader;
     std::unique_ptr<CS123::GL::Shader> m_fsqShader;
+    std::unique_ptr<CS123::GL::CS123Shader> m_testShader;
     CS123SceneLightData  m_light;
     CS123SceneMaterial   m_material;
 
     glm::vec4 m_lightDirection = glm::normalize(glm::vec4(1.f, -1.f, -1.f, 0.f));
 
     std::unique_ptr<OpenGLShape> m_shape;
+    std::unique_ptr<Bbox> m_bbox;
     int m_shapeParameter1;
     int m_shapeParameter2;
 
@@ -98,6 +102,8 @@ private:
     void loadWireframeShader();
     void loadNormalsShader();
     void loadNormalsArrowShader();
+    void loadTestShader();
+
     void renderPhongPass(SupportCanvas3D *context);
     void renderGeometryAsFilledPolygons();
     void renderWireframePass(SupportCanvas3D *context);

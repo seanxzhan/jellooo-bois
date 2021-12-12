@@ -1,4 +1,5 @@
 #include "ExampleShape.h"
+#include <iostream>
 
 ExampleShape::ExampleShape()
 {
@@ -25,4 +26,16 @@ ExampleShape::ExampleShape(int param1, int param2) :
 
 ExampleShape::~ExampleShape()
 {
+}
+
+//current time in seconds
+void ExampleShape::tick(float current) {
+//    float increment = sin(current) / 60;
+//    int length = m_vertexData.size() / 6;
+//    for (int i = 1; i < length; i += 6) {
+//        m_vertexData[i] += increment;
+//    }
+
+//    initializeOpenGLShapeProperties();
+//    std::cout << current << std::endl;
 }

@@ -7,6 +7,7 @@
 #include <QGLWidget>
 
 #include "glm/glm.hpp"
+#include <QTimer>
 
 class RGBA;
 class Camera;
@@ -90,6 +91,10 @@ protected:
     float m_oldPosX, m_oldPosY, m_oldPosZ;
     float m_oldRotU, m_oldRotV, m_oldRotN;
 
+protected slots:
+    /** Repaints the canvas. Called 60 times per second by m_timer. */
+    void tick();
+
 private:
 
     void initializeGlew();
@@ -109,6 +114,15 @@ private:
     OpenGLScene *m_currentScene;
     std::unique_ptr<ShapesScene> m_shapesScene;
     std::unique_ptr<SceneviewScene> m_sceneviewScene;
+
+    /** Timer calls tick() 60 times per second. */
+    QTimer m_timer;
+    float m_fps;
+
+    float m_tick;
+
+    /** Incremented on every call to paintGL. */
+    int m_increment;
 };
 
 #endif // SUPPORTCANVAS3D_H

@@ -13,9 +13,14 @@
 using namespace CS123::GL;
 #include "gl/shaders/CS123Shader.h"
 #include "gl/shaders/Shader.h"
+#include "gl/shaders/ShaderAttribLocations.h"
 
 #include "ResourceLoader.h"
 #include "shapes/ExampleShape.h"
+#include "shapes/JelloCube.h"
+#include "shapes/Bbox.h"
+#include "shapes/SpringMassCube.h"
+
 
 #include "gl/shaders/ShaderAttribLocations.h"
 
@@ -38,6 +43,7 @@ ShapesScene::ShapesScene(int width, int height) :
     loadWireframeShader();
     loadNormalsShader();
     loadNormalsArrowShader();
+    loadTestShader();
 
     //added by Marc
     loadSkyboxShader();
@@ -117,6 +123,12 @@ void ShapesScene::loadNormalsArrowShader() {
     m_normalsArrowShader = std::make_unique<Shader>(vertexSource, geometrySource, fragmentSource);
 }
 
+void ShapesScene::loadTestShader() {
+    std::string vertexSource = ResourceLoader::loadResourceFileToString(":/shaders/bbox.vert");
+    std::string fragmentSource = ResourceLoader::loadResourceFileToString(":/shaders/bbox.frag");
+    m_testShader = std::make_unique<CS123Shader>(vertexSource, fragmentSource);
+}
+
 void ShapesScene::render(SupportCanvas3D *context) {
     // Clear the screen in preparation for the next frame. (Use a gray background instead of a
     // black one for drawing wireframe or normals so they will show up against the background.)
@@ -137,6 +149,21 @@ void ShapesScene::render(SupportCanvas3D *context) {
     } else {
         renderJelloPass(context);
     }
+  
+    
+    m_bbox = std::make_unique<Bbox>();
+
+    m_testShader->bind();
+
+    setMatrixUniforms(m_testShader.get(), context);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    m_bbox->drawBbox();
+    glm::vec3 color = glm::vec3(0.1, 0.8, 0.1);
+    m_testShader->setUniform("color", color);
+    m_bbox->drawFloor();
+
+    m_testShader->unbind();
 }
 
 // Need to confirm this works for both orbiting and camtrans camera D:
@@ -274,6 +301,9 @@ void ShapesScene::renderWireframePass(SupportCanvas3D *context) {
 
 void ShapesScene::renderGeometryAsWireframe() {
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    float lineWidth[2];
+    glGetFloatv(GL_LINE_WIDTH_RANGE, lineWidth);
+    glLineWidth(lineWidth[1]);
     renderGeometry();
 }
 
@@ -286,6 +316,8 @@ void ShapesScene::renderNormalsPass (SupportCanvas3D *context) {
 
     // Render the arrows.
     m_normalsArrowShader->bind();
+//    glm::vec3 color = glm::vec3(0.2, 0.4, 0.8);
+//    m_normalsArrowShader->setUniform("color", color);
     setMatrixUniforms(m_normalsArrowShader.get(), context);
     renderGeometryAsFilledPolygons();
     m_normalsArrowShader->unbind();
@@ -293,8 +325,22 @@ void ShapesScene::renderNormalsPass (SupportCanvas3D *context) {
 
 void ShapesScene::renderGeometry() {
     if (m_shape) {
-        m_shape->draw();
+        if (m_shapeType == SHAPE_SPRING_MASS_CUBE) {
+            m_shape->drawPandL();
+        } else {
+            m_shape->draw();
+        }
     }
+
+//    // anything that needs to persist for any t should be put here
+//    m_bbox = std::make_unique<Bbox>();
+//    m_bbox->drawBbox();
+
+////    m_testShader->bind();
+////    glm::vec3 color = glm::vec3(0.2, 0.4, 0.8);
+////    m_testShader->setUniform("color", color);
+//    m_bbox->drawFloor();
+////    m_testShader->unbind();
 }
 
 void ShapesScene::clearLights() {
@@ -303,6 +349,7 @@ void ShapesScene::clearLights() {
         os << i;
         std::string indexString = "[" + os.str() + "]"; // e.g. [0], [1], etc.
         m_phongShader->setUniform("lightColors" + indexString, glm::vec3(0.0f, 0.0f, 0.0f));
+        m_testShader->setUniform("lightColors" + indexString, glm::vec3(0.0f, 0.0f, 0.0f));
     }
 }
 
@@ -313,6 +360,7 @@ void ShapesScene::setLights(const glm::mat4 viewMatrix) {
 
     clearLights();
     m_phongShader->setLight(m_light);
+    m_testShader->setLight(m_light);
 }
 
 void ShapesScene::settingsChanged() {
@@ -337,37 +385,47 @@ void ShapesScene::settingsChanged() {
         }
         m_simType = settings.simType;
     }
-
-    if (settings.shapeType != m_shapeType) {
+    // TODO: check if params are the same
+    if (settings.shapeType != m_shapeType || settings.shapeParameter1 != m_shapeParameter1
+            || settings.shapeParameter2 != m_shapeParameter2) {
+        m_shapeParameter1 = settings.shapeParameter1;
+        m_shapeParameter2 = settings.shapeParameter2;
         switch (settings.shapeType) {
             case SHAPE_CUBE:
                 std::cout << "shape type: phong cube" << std::endl;
                 m_usePhong = true;
-                m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
+                m_shape = std::make_unique<JelloCube>(m_shapeParameter1, m_shapeParameter2);
             break;
             case SHAPE_JELLO_CUBE:
                 std::cout << "shape type: jello cube" << std::endl;
                 m_usePhong = false;
-                m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
+                m_shape = std::make_unique<JelloCube>(settings.shapeParameter1, settings.shapeParameter2);
+            case SHAPE_SPRING_MASS_CUBE:
+                std::cout << "shape type: spring mass cube" << std::endl;
+                m_shape = std::make_unique<SpringMassCube>(m_shapeParameter1, m_shapeParameter2);
             break;
             case SHAPE_CYLINDER:
                 std::cout << "shape type: jellooo cylinder" << std::endl;
-                m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
+                m_shape = std::make_unique<ExampleShape>(m_shapeParameter1, m_shapeParameter2);
             break;
             case SHAPE_CONE:
                 std::cout << "shape type: jellooo cone" << std::endl;
-                m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
+                m_shape = std::make_unique<ExampleShape>(m_shapeParameter1, m_shapeParameter2);
             break;
             case SHAPE_SPHERE:
                 std::cout << "shape type: jellooo sphere" << std::endl;
-                 m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
+                 m_shape = std::make_unique<ExampleShape>(m_shapeParameter1, m_shapeParameter2);
             break;
             default:
                 std::cout << "shape type: these shapes have no-impl" << std::endl;
-                m_shape = std::make_unique<ExampleShape>(settings.shapeParameter1, settings.shapeParameter2);
+                m_shape = std::make_unique<ExampleShape>(m_shapeParameter1, m_shapeParameter2);
             break;
         }
         m_shapeType = settings.shapeType;
     }
+}
+
+void ShapesScene::tick(float current) {
+    m_shape->tick(current);
 }
 

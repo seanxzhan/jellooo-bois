@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "GL/glew.h"
+#include "VBO.h"
 
 namespace CS123 { namespace GL {
 
@@ -12,7 +13,9 @@ class IBO;
 
 class VAO {
 public:
-    VAO(const VBO &vbo, int numberOfVerticesToRender = 0);
+    enum DRAW_METHOD { DRAW_ARRAYS, DRAW_INDEXED };
+
+    VAO(const VBO &vbo, int numberOfVerticesToRender);
     VAO(const VBO &vbo, const IBO &ibo, int numberOfVerticesToRender = 0);
     VAO(const VAO &that) = delete;
     VAO& operator=(const VAO &that) = delete;
@@ -20,11 +23,11 @@ public:
     VAO& operator=(VAO &&that);
     ~VAO();
 
-    enum DRAW_METHOD { DRAW_ARRAYS, DRAW_INDEXED };
-
     void bind();
     void draw();
-    void draw(int count);
+    void draw(int numVertices);
+    void drawPL(VBO::GEOMETRY_LAYOUT layout1,
+                VBO::GEOMETRY_LAYOUT layout2, int cutoff);
     DRAW_METHOD drawMethod();
     void unbind();
 

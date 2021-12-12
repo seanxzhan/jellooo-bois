@@ -2,6 +2,7 @@
 #define EXAMPLESHAPE_H
 
 #include "OpenGLShape.h"
+#include <QTimer>
 
 // hand-written cube points and normals.. if only there were a way to do this procedurally
 #define CUBE_DATA_POSITIONS {\
@@ -85,10 +86,12 @@ public:
     ExampleShape();
     ExampleShape(int param1, int param2);
     ~ExampleShape();
+    void tick(float current) override;
 
 private:
     int m_param1;
     int m_param2;
+
 };
 
 #endif // EXAMPLESHAPE_H
