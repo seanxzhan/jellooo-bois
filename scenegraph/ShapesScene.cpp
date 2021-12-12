@@ -37,6 +37,7 @@ ShapesScene::ShapesScene(int width, int height) :
     loadWireframeShader();
     loadNormalsShader();
     loadNormalsArrowShader();
+    loadTestShader();
 
     // [SHAPES] Allocate any additional memory you need...
 }
@@ -92,6 +93,12 @@ void ShapesScene::loadNormalsArrowShader() {
     m_normalsArrowShader = std::make_unique<Shader>(vertexSource, geometrySource, fragmentSource);
 }
 
+void ShapesScene::loadTestShader() {
+    std::string vertexSource = ResourceLoader::loadResourceFileToString(":/shaders/bbox.vert");
+    std::string fragmentSource = ResourceLoader::loadResourceFileToString(":/shaders/bbox.frag");
+    m_testShader = std::make_unique<CS123Shader>(vertexSource, fragmentSource);
+}
+
 void ShapesScene::render(SupportCanvas3D *context) {
     // Clear the screen in preparation for the next frame. (Use a gray background instead of a
     // black one for drawing wireframe or normals so they will show up against the background.)
@@ -106,6 +113,20 @@ void ShapesScene::render(SupportCanvas3D *context) {
     if (settings.drawNormals) {
         renderNormalsPass(context);
     }
+
+    m_bbox = std::make_unique<Bbox>();
+
+    m_testShader->bind();
+
+    setMatrixUniforms(m_testShader.get(), context);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    m_bbox->drawBbox();
+    glm::vec3 color = glm::vec3(0.1, 0.8, 0.1);
+    m_testShader->setUniform("color", color);
+    m_bbox->drawFloor();
+
+    m_testShader->unbind();
 }
 
 void ShapesScene::renderPhongPass(SupportCanvas3D *context) {
@@ -162,6 +183,8 @@ void ShapesScene::renderNormalsPass (SupportCanvas3D *context) {
 
     // Render the arrows.
     m_normalsArrowShader->bind();
+//    glm::vec3 color = glm::vec3(0.2, 0.4, 0.8);
+//    m_normalsArrowShader->setUniform("color", color);
     setMatrixUniforms(m_normalsArrowShader.get(), context);
     renderGeometryAsFilledPolygons();
     m_normalsArrowShader->unbind();
@@ -176,9 +199,15 @@ void ShapesScene::renderGeometry() {
         }
     }
 
-    // anything that needs to persist for any t should be put here
-    m_bbox = std::make_unique<Bbox>();
-    m_bbox->drawBbox();
+//    // anything that needs to persist for any t should be put here
+//    m_bbox = std::make_unique<Bbox>();
+//    m_bbox->drawBbox();
+
+////    m_testShader->bind();
+////    glm::vec3 color = glm::vec3(0.2, 0.4, 0.8);
+////    m_testShader->setUniform("color", color);
+//    m_bbox->drawFloor();
+////    m_testShader->unbind();
 }
 
 void ShapesScene::clearLights() {
@@ -187,6 +216,7 @@ void ShapesScene::clearLights() {
         os << i;
         std::string indexString = "[" + os.str() + "]"; // e.g. [0], [1], etc.
         m_phongShader->setUniform("lightColors" + indexString, glm::vec3(0.0f, 0.0f, 0.0f));
+        m_testShader->setUniform("lightColors" + indexString, glm::vec3(0.0f, 0.0f, 0.0f));
     }
 }
 
@@ -197,6 +227,7 @@ void ShapesScene::setLights(const glm::mat4 viewMatrix) {
 
     clearLights();
     m_phongShader->setLight(m_light);
+    m_testShader->setLight(m_light);
 }
 
 void ShapesScene::settingsChanged() {

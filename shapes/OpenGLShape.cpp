@@ -82,6 +82,14 @@ void OpenGLShape::drawLines(std::vector<GLfloat> &line) {
     draw();
 }
 
+void OpenGLShape::drawTriangleStrips(std::vector<GLfloat> &data) {
+    int num_vertices = data.size() / 3;
+    setVertexData(&data[0], data.size(), VBO::GEOMETRY_LAYOUT::LAYOUT_TRIANGLE_STRIP, num_vertices);
+    setAttribute(ShaderAttrib::POSITION, 3, 0, VBOAttribMarker::DATA_TYPE::FLOAT, false);
+    buildVAO();
+    draw();
+}
+
 void OpenGLShape::drawPointsAndLines(const std::vector<GLfloat> &points,
                                      const std::vector<GLfloat> &lines) {
     int total_num_vertices = (int) points.size() / 3 + (int) lines.size() / 3;

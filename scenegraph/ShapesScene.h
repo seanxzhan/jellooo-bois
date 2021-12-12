@@ -66,6 +66,7 @@ private:
     std::unique_ptr<CS123::GL::Shader> m_normalsShader;
     std::unique_ptr<CS123::GL::Shader> m_normalsArrowShader;
     std::unique_ptr<CS123::GL::Shader> m_fsqShader;
+    std::unique_ptr<CS123::GL::CS123Shader> m_testShader;
     CS123SceneLightData  m_light;
     CS123SceneMaterial   m_material;
 
@@ -87,6 +88,8 @@ private:
     void loadWireframeShader();
     void loadNormalsShader();
     void loadNormalsArrowShader();
+    void loadTestShader();
+
     void renderPhongPass(SupportCanvas3D *context);
     void renderGeometryAsFilledPolygons();
     void renderWireframePass(SupportCanvas3D *context);
