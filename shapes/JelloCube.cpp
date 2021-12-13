@@ -5,7 +5,7 @@ JelloCube::JelloCube():
     Shape(8, 8),
     m_kElastic(500),
     m_dElastic(0.25),
-    m_kCollision(1000),
+    m_kCollision(500),
     m_dCollision(0.25),
     m_mass(0.001953),
     dt(0.01),
@@ -16,13 +16,13 @@ JelloCube::JelloCube():
 
 JelloCube::JelloCube(int param1, int param2):
     Shape(param1,param2),
-    m_kElastic(500),
+    m_kElastic(200),
     m_dElastic(0.25),
-    m_kCollision(1000),
+    m_kCollision(400),
     m_dCollision(0.25),
     m_mass(0.001953),
     dt(0.001),
-    m_gravity(glm::vec3(0.f, -0.05, 0.f))
+    m_gravity(glm::vec3(0.f, -1.f, 0.f))
 {
     generateVertexData();
 }
@@ -146,30 +146,15 @@ void JelloCube::loadVAO() {
     }
 }
 
-//with dElastic
 glm::vec3 JelloCube::applyDampen(glm::vec3 a, glm::vec3 b, glm::vec3 t1_vec, glm::vec3 t2_vec) {
-    glm::vec3 L = t1_vec-t2_vec;
-    float dist = glm::distance(a, b);
-    float c = glm::dot(L, a-b)/dist;
-    float T = -(m_dElastic*c);
-    glm::vec3 new_d = T*(a-b)/dist;
-    return new_d;
+    glm::vec3 l = glm::normalize(a - b);
+    return -m_dElastic * glm::dot(t1_vec-t2_vec, l) * l;
 }
 
-// with k_elastc
 glm::vec3 JelloCube::applyHooke(float rest_len, glm::vec3 a, glm::vec3 b) {
     glm::vec3 l = a - b;
     return -m_kElastic * (glm::length(l) - rest_len) * glm::normalize(l);
 }
-/*
-void JelloCube::applyForces(glm::vec3 *F, double rest_len, int i, int j, int k) {
-    int dim = m_param1 + 1;
-    if (i > -1 && i < dim+1 && j > -1 && j < dim+1 && k > -1 && k < dim+1) {
-        *F += applyDampen(dElastic, m_points[index], m_points[index], m_velocity[index], m_velocity[to1D(i+2, j, k, dim, dim)]);
-        *F += applyHooke(kElastic, rest_len, m_points[index], m_points[to1D(i+2, j, k, dim, dim)]);
-    }
-}
-*/
 
 void JelloCube::computeAcceleration(std::vector<glm::vec3> &points,
                                     std::vector<glm::vec3> &velocity,
@@ -184,157 +169,142 @@ void JelloCube::computeAcceleration(std::vector<glm::vec3> &points,
                 for (int j = 0; j < dim; j++) {
                     glm::vec3 F = glm::vec3(0.f);
                     glm::vec3 fCollide = glm::vec3(0.f);
-//                    //Bend Spring
                     int index = to1D(i, j, k, dim, dim);
-//                    if (i + 2 > -1 && i + 2 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i+2, j, k, dim, dim)], velocity[index], velocity[to1D(i+2, j, k, dim, dim)]);
-//                        F += applyHooke(rest_bend, points[index], points[to1D(i+2, j, k, dim, dim)]);
-//                    }
-//                    if (i - 2 > -1 && i - 2 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i-2, j, k, dim, dim)], velocity[index], velocity[to1D(i-2, j, k, dim, dim)]);
-//                        F += applyHooke(rest_bend, points[index], points[to1D(i-2, j, k, dim, dim)]);
-//                    }
-//                    if (j + 2 > -1 && j + 2 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i, j+2, k, dim, dim)], velocity[index], velocity[to1D(i, j+2, k, dim, dim)]);
-//                        F += applyHooke(rest_bend, points[index], points[to1D(i, j+2, k, dim, dim)]);
-//                    }
-//                    if (j - 2 > -1 && j - 2 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i, j-2, k, dim, dim)], velocity[index], velocity[to1D(i, j-2, k, dim, dim)]);
-//                        F += applyHooke(rest_bend, points[index], points[to1D(i, j-2, k, dim, dim)]);
-//                    }
-//                    if (k + 2 > -1 && k + 2 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i, j, k+2, dim, dim)], velocity[index], velocity[to1D(i, j, k+2, dim, dim)]);
-//                        F += applyHooke(rest_bend, points[index], points[to1D(i, j, k+2, dim, dim)]);
-//                    }
-//                    if (k - 2 > -1 && k - 2 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i, j, k-2, dim, dim)], velocity[index], velocity[to1D(i, j, k-2, dim, dim)]);
-//                        F += applyHooke(rest_bend, points[index], points[to1D(i, j, k-2, dim, dim)]);
-//                    }
-//                    //Structural Spring
-//                    if (i + 1 > -1 && i + 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i+1, j, k, dim, dim)], velocity[index], velocity[to1D(i+1, j, k, dim, dim)]);
-//                        F += applyHooke(rest_length, points[index], points[to1D(i+1, j, k, dim, dim)]);
-//                    }
-//                    if (i - 1 > -1 && i - 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i-1, j, k, dim, dim)], velocity[index], velocity[to1D(i-1, j, k, dim, dim)]);
-//                        F += applyHooke(rest_length, points[index], points[to1D(i-1, j, k, dim, dim)]);
-//                    }
-//                    if (j + 1 > -1 && j + 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i, j+1, k, dim, dim)], velocity[index], velocity[to1D(i, j+1, k, dim, dim)]);
-//                        F += applyHooke(rest_length, points[index], points[to1D(i, j+1, k, dim, dim)]);
-//                    }
-//                    if (j - 1 > -1 && j - 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i, j-1, k, dim, dim)], velocity[index], velocity[to1D(i, j-1, k, dim, dim)]);
-//                        F += applyHooke(rest_length, points[index], points[to1D(i, j-1, k, dim, dim)]);
-//                    }
-//                    if (k + 1 > -1 && k + 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i, j, k+1, dim, dim)], velocity[index], velocity[to1D(i, j, k+1, dim, dim)]);
-//                        F += applyHooke(rest_length, points[index], points[to1D(i, j, k+1, dim, dim)]);
-//                    }
-//                    if (k - 1 > -1 && k - 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i, j, k-1, dim, dim)], velocity[index], velocity[to1D(i, j, k-1, dim, dim)]);
-//                        F += applyHooke(rest_length, points[index], points[to1D(i, j, k-1, dim, dim)]);
-//                    }
-//                    //Shear springs
-//                    if (i + 1 > -1 && i + 1 < dim+1 && j + 1 > -1 && j + 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i+1, j+1, k, dim, dim)], velocity[index], velocity[to1D(i+1, j+1, k, dim, dim)]);
-//                        F += applyHooke(rest_shear, points[index], points[to1D(i+1, j+1, k, dim, dim)]);
-//                    }
-//                    if (i + 1 > -1 && i + 1 < dim+1 && j - 1 > -1 && j - 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i+1, j-1, k, dim, dim)], velocity[index], velocity[to1D(i+1, j-1, k, dim, dim)]);
-//                        F += applyHooke(rest_shear, points[index], points[to1D(i+1, j-1, k, dim, dim)]);
-//                    }
-//                    if (i - 1 > -1 && i - 1 < dim+1 && j + 1 > -1 && j + 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i-1, j+1, k, dim, dim)], velocity[index], velocity[to1D(i-1, j+1, k, dim, dim)]);
-//                        F += applyHooke(rest_shear, points[index], points[to1D(i-1, j+1, k, dim, dim)]);
-//                    }
-//                    if (i - 1 > -1 && i - 1 < dim+1 && j - 1 > -1 && j - 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i-1, j-1, k, dim, dim)], velocity[index], velocity[to1D(i-1, j-1, k, dim, dim)]);
-//                        F += applyHooke(rest_shear, points[index], points[to1D(i-1, j-1, k, dim, dim)]);
-//                    }
-//                    if (j + 1 > -1 && j + 1 < dim+1 && k + 1 > -1 && k + 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i, j+1, k+1, dim, dim)], velocity[index], velocity[to1D(i, j+1, k+1, dim, dim)]);
-//                        F += applyHooke(rest_shear, points[index], points[to1D(i, j+1, k+1, dim, dim)]);
-//                    }
-//                    if (j - 1 > -1 && j - 1 < dim+1 && k + 1 > -1 && k + 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i, j-1, k+1, dim, dim)], velocity[index], velocity[to1D(i, j-1, k+1, dim, dim)]);
-//                        F += applyHooke(rest_shear, points[index], points[to1D(i, j-1, k+1, dim, dim)]);
-//                    }
-//                    if (j + 1 > -1 && j + 1 < dim+1 && k - 1 > -1 && k - 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i, j+1, k-1, dim, dim)], velocity[index], velocity[to1D(i, j+1, k-1, dim, dim)]);
-//                        F += applyHooke(rest_shear, points[index], points[to1D(i, j+1, k-1, dim, dim)]);
-//                    }
-//                    if (j - 1 > -1 && j - 1 < dim+1 && k - 1 > -1 && k - 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i, j-1, k-1, dim, dim)], velocity[index], velocity[to1D(i, j-1, k-1, dim, dim)]);
-//                        F += applyHooke(rest_shear, points[index], points[to1D(i, j-1, k-1, dim, dim)]);
-//                    }
-//                    if (i + 1 > -1 && i + 1 < dim+1 && k + 1 > -1 && k + 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i+1, j, k+1, dim, dim)], velocity[index], velocity[to1D(i+1, j, k+1, dim, dim)]);
-//                        F += applyHooke(rest_shear, points[index], points[to1D(i+1, j, k+1, dim, dim)]);
-//                    }
-//                    if (i - 1 > -1 && i - 1 < dim+1 && k + 1 > -1 && k + 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i-1, j, k+1, dim, dim)], velocity[index], velocity[to1D(i-1, j, k+1, dim, dim)]);
-//                        F += applyHooke(rest_shear, points[index], points[to1D(i-1, j, k+1, dim, dim)]);
-//                    }
-//                    if (i + 1 > -1 && i + 1 < dim+1 && k - 1 > -1 && k - 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i+1, j, k-1, dim, dim)], velocity[index], velocity[to1D(i+1, j, k-1, dim, dim)]);
-//                        F += applyHooke(rest_shear, points[index], points[to1D(i+1, j, k-1, dim, dim)]);
-//                    }
-//                    if (i - 1 > -1 && i - 1 < dim+1 && k - 1 > -1 && k - 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i-1, j, k-1, dim, dim)], velocity[index], velocity[to1D(i-1, j, k-1, dim, dim)]);
-//                        F += applyHooke(rest_shear, points[index], points[to1D(i-1, j, k-1, dim, dim)]);
-//                    }
-//                    //Diagonals
-//                    if (i + 1 > -1 && i + 1 < dim+1 && j + 1 > -1 && j + 1 < dim+1 && k + 1 > -1 && k + 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i+1, j+1, k+1, dim, dim)], velocity[index], velocity[to1D(i+1, j+1, k+1, dim, dim)]);
-//                        F += applyHooke(rest_diag, points[index], points[to1D(i+1, j+1, k+1, dim, dim)]);
-//                    }
-//                    if (i - 1 > -1 && i - 1 < dim+1 && j + 1 > -1 && j + 1 < dim+1 && k + 1 > -1 && k + 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i-1, j+1, k+1, dim, dim)], velocity[index], velocity[to1D(i-1, j+1, k+1, dim, dim)]);
-//                        F += applyHooke(rest_diag, points[index], points[to1D(i-1, j+1, k+1, dim, dim)]);
-//                    }
-//                    if (i - 1 > -1 && i - 1 < dim+1 && j - 1 > -1 && j - 1 < dim+1 && k + 1 > -1 && k + 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i-1, j-1, k+1, dim, dim)], velocity[index], velocity[to1D(i-1, j-1, k+1, dim, dim)]);
-//                        F += applyHooke(rest_diag, points[index], points[to1D(i-1, j-1, k+1, dim, dim)]);
-//                    }
-//                    if (i + 1 > -1 && i + 1 < dim+1 && j - 1 > -1 && j - 1 < dim+1 && k + 1 > -1 && k + 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i+1, j-1, k+1, dim, dim)], velocity[index], velocity[to1D(i+1, j-1, k+1, dim, dim)]);
-//                        F += applyHooke(rest_diag, points[index], points[to1D(i+1, j-1, k+1, dim, dim)]);
-//                    }
-//                    if (i + 1 > -1 && i + 1 < dim+1 && j - 1 > -1 && j - 1 < dim+1 && k - 1 > -1 && k - 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i+1, j-1, k-1, dim, dim)], velocity[index], velocity[to1D(i+1, j-1, k-1, dim, dim)]);
-//                        F += applyHooke(rest_diag, points[index], points[to1D(i+1, j-1, k-1, dim, dim)]);
-//                    }
-//                    if (i + 1 > -1 && i + 1 < dim+1 && j + 1 > -1 && j + 1 < dim+1 && k - 1 > -1 && k - 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i+1, j+1, k-1, dim, dim)], velocity[index], velocity[to1D(i+1, j+1, k-1, dim, dim)]);
-//                        F += applyHooke(rest_diag, points[index], points[to1D(i+1, j+1, k-1, dim, dim)]);
-//                    }
-//                    if (i - 1 > -1 && i - 1 < dim+1 && j + 1 > -1 && j + 1 < dim+1 && k - 1 > -1 && k - 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i-1, j+1, k-1, dim, dim)], velocity[index], velocity[to1D(i-1, j+1, k-1, dim, dim)]);
-//                        F += applyHooke(rest_diag, points[index], points[to1D(i-1, j+1, k-1, dim, dim)]);
-//                    }
-//                    if (i - 1 > -1 && i - 1 < dim+1 && j - 1 > -1 && j - 1 < dim+1 && k - 1 > -1 && k - 1 < dim+1) {
-//                        F += applyDampen(points[index], points[to1D(i-1, j-1, k-1, dim, dim)], velocity[index], velocity[to1D(i-1, j-1, k-1, dim, dim)]);
-//                        F += applyHooke(rest_diag, points[index], points[to1D(i-1, j-1, k-1, dim, dim)]);
-//                    }
 
+                    //Structural
                     if (isInRange(i + 1, 0, dim - 1)) {
+                        F += applyDampen(points[index], points[to1D(i+1, j, k, dim, dim)], velocity[index], velocity[to1D(i+1, j, k, dim, dim)]);
                         F += applyHooke(rest_length, points[index], points[to1D(i+1, j, k, dim, dim)]);
                     }
                     if (isInRange(i - 1, 0, dim - 1)) {
+                        F += applyDampen(points[index], points[to1D(i-1, j, k, dim, dim)], velocity[index], velocity[to1D(i-1, j, k, dim, dim)]);
                         F += applyHooke(rest_length, points[index], points[to1D(i-1, j, k, dim, dim)]);
                     }
                     if (isInRange(j + 1, 0, dim - 1)) {
+                        F += applyDampen(points[index], points[to1D(i, j+1, k, dim, dim)], velocity[index], velocity[to1D(i, j+1, k, dim, dim)]);
                         F += applyHooke(rest_length, points[index], points[to1D(i, j+1, k, dim, dim)]);
                     }
                     if (isInRange(j - 1, 0, dim - 1)) {
+                        F += applyDampen(points[index], points[to1D(i, j-1, k, dim, dim)], velocity[index], velocity[to1D(i, j-1, k, dim, dim)]);
                         F += applyHooke(rest_length, points[index], points[to1D(i, j-1, k, dim, dim)]);
                     }
                     if (isInRange(k + 1, 0, dim - 1)) {
+                        F += applyDampen(points[index], points[to1D(i, j, k+1, dim, dim)], velocity[index], velocity[to1D(i, j, k+1, dim, dim)]);
                         F += applyHooke(rest_length, points[index], points[to1D(i, j, k+1, dim, dim)]);
                     }
                     if (isInRange(k - 1, 0, dim - 1)) {
+                        F += applyDampen(points[index], points[to1D(i, j, k-1, dim, dim)], velocity[index], velocity[to1D(i, j, k-1, dim, dim)]);
                         F += applyHooke(rest_length, points[index], points[to1D(i, j, k-1, dim, dim)]);
+                    }
+
+                    //Shear
+                    if (isInRange(i + 1, 0, dim-1) && isInRange(j + 1, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i+1, j+1, k, dim, dim)], velocity[index], velocity[to1D(i+1, j+1, k, dim, dim)]);
+                        F += applyHooke(rest_shear, points[index], points[to1D(i+1, j+1, k, dim, dim)]);
+                    }
+                    if (isInRange(i + 1, 0, dim-1) && isInRange(j - 1, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i+1, j-1, k, dim, dim)], velocity[index], velocity[to1D(i+1, j-1, k, dim, dim)]);
+                        F += applyHooke(rest_shear, points[index], points[to1D(i+1, j-1, k, dim, dim)]);
+                    }
+                    if (isInRange(i - 1, 0, dim-1) && isInRange(j + 1, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i-1, j+1, k, dim, dim)], velocity[index], velocity[to1D(i-1, j+1, k, dim, dim)]);
+                        F += applyHooke(rest_shear, points[index], points[to1D(i-1, j+1, k, dim, dim)]);
+                    }
+                    if (isInRange(i - 1, 0, dim-1) && isInRange(j - 1, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i-1, j-1, k, dim, dim)], velocity[index], velocity[to1D(i-1, j-1, k, dim, dim)]);
+                        F += applyHooke(rest_shear, points[index], points[to1D(i-1, j-1, k, dim, dim)]);
+                    }
+                    if (isInRange(j + 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i, j+1, k+1, dim, dim)], velocity[index], velocity[to1D(i, j+1, k+1, dim, dim)]);
+                        F += applyHooke(rest_shear, points[index], points[to1D(i, j+1, k+1, dim, dim)]);
+                    }
+                    if (isInRange(j - 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i, j-1, k+1, dim, dim)], velocity[index], velocity[to1D(i, j-1, k+1, dim, dim)]);
+                        F += applyHooke(rest_shear, points[index], points[to1D(i, j-1, k+1, dim, dim)]);
+                    }
+                    if (isInRange(j + 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i, j+1, k-1, dim, dim)], velocity[index], velocity[to1D(i, j+1, k-1, dim, dim)]);
+                        F += applyHooke(rest_shear, points[index], points[to1D(i, j+1, k-1, dim, dim)]);
+                    }
+                    if (isInRange(j - 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i, j-1, k-1, dim, dim)], velocity[index], velocity[to1D(i, j-1, k-1, dim, dim)]);
+                        F += applyHooke(rest_shear, points[index], points[to1D(i, j-1, k-1, dim, dim)]);
+                    }
+                    if (isInRange(i + 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i+1, j, k+1, dim, dim)], velocity[index], velocity[to1D(i+1, j, k+1, dim, dim)]);
+                        F += applyHooke(rest_shear, points[index], points[to1D(i+1, j, k+1, dim, dim)]);
+                    }
+                    if (isInRange(i - 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i-1, j, k+1, dim, dim)], velocity[index], velocity[to1D(i-1, j, k+1, dim, dim)]);
+                        F += applyHooke(rest_shear, points[index], points[to1D(i-1, j, k+1, dim, dim)]);
+                    }
+                    if (isInRange(i + 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i+1, j, k-1, dim, dim)], velocity[index], velocity[to1D(i+1, j, k-1, dim, dim)]);
+                        F += applyHooke(rest_shear, points[index], points[to1D(i+1, j, k-1, dim, dim)]);
+                    }
+                    if (isInRange(i - 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i-1, j, k-1, dim, dim)], velocity[index], velocity[to1D(i-1, j, k-1, dim, dim)]);
+                        F += applyHooke(rest_shear, points[index], points[to1D(i-1, j, k-1, dim, dim)]);
+                    }
+
+                    //Bend
+                    if (isInRange(i + 2, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i+2, j, k, dim, dim)], velocity[index], velocity[to1D(i+2, j, k, dim, dim)]);
+                        F += applyHooke(rest_bend, points[index], points[to1D(i+2, j, k, dim, dim)]);
+                    }
+                    if (isInRange(i - 2, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i-2, j, k, dim, dim)], velocity[index], velocity[to1D(i-2, j, k, dim, dim)]);
+                        F += applyHooke(rest_bend, points[index], points[to1D(i-2, j, k, dim, dim)]);
+                    }
+                    if (isInRange(j + 2, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i, j+2, k, dim, dim)], velocity[index], velocity[to1D(i, j+2, k, dim, dim)]);
+                        F += applyHooke(rest_bend, points[index], points[to1D(i, j+2, k, dim, dim)]);
+                    }
+                    if (isInRange(j - 2, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i, j-2, k, dim, dim)], velocity[index], velocity[to1D(i, j-2, k, dim, dim)]);
+                        F += applyHooke(rest_bend, points[index], points[to1D(i, j-2, k, dim, dim)]);
+                    }
+                    if (isInRange(k + 2, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i, j, k+2, dim, dim)], velocity[index], velocity[to1D(i, j, k+2, dim, dim)]);
+                        F += applyHooke(rest_bend, points[index], points[to1D(i, j, k+2, dim, dim)]);
+                    }
+                    if (isInRange(k - 2, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i, j, k-2, dim, dim)], velocity[index], velocity[to1D(i, j, k-2, dim, dim)]);
+                        F += applyHooke(rest_bend, points[index], points[to1D(i, j, k-2, dim, dim)]);
+                    }
+
+                    //Diagonals
+                    if (isInRange(i + 1, 0, dim-1) && isInRange(j + 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i+1, j+1, k+1, dim, dim)], velocity[index], velocity[to1D(i+1, j+1, k+1, dim, dim)]);
+                        F += applyHooke(rest_diag, points[index], points[to1D(i+1, j+1, k+1, dim, dim)]);
+                    }
+                    if (isInRange(i - 1, 0, dim-1) && isInRange(j + 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i-1, j+1, k+1, dim, dim)], velocity[index], velocity[to1D(i-1, j+1, k+1, dim, dim)]);
+                        F += applyHooke(rest_diag, points[index], points[to1D(i-1, j+1, k+1, dim, dim)]);
+                    }
+                    if (isInRange(i - 1, 0, dim-1) && isInRange(j - 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i-1, j-1, k+1, dim, dim)], velocity[index], velocity[to1D(i-1, j-1, k+1, dim, dim)]);
+                        F += applyHooke(rest_diag, points[index], points[to1D(i-1, j-1, k+1, dim, dim)]);
+                    }
+                    if (isInRange(i + 1, 0, dim-1) && isInRange(j - 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i+1, j-1, k+1, dim, dim)], velocity[index], velocity[to1D(i+1, j-1, k+1, dim, dim)]);
+                        F += applyHooke(rest_diag, points[index], points[to1D(i+1, j-1, k+1, dim, dim)]);
+                    }
+                    if (isInRange(i + 1, 0, dim-1) && isInRange(j - 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i+1, j-1, k-1, dim, dim)], velocity[index], velocity[to1D(i+1, j-1, k-1, dim, dim)]);
+                        F += applyHooke(rest_diag, points[index], points[to1D(i+1, j-1, k-1, dim, dim)]);
+                    }
+                    if (isInRange(i + 1, 0, dim-1) && isInRange(j + 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i+1, j+1, k-1, dim, dim)], velocity[index], velocity[to1D(i+1, j+1, k-1, dim, dim)]);
+                        F += applyHooke(rest_diag, points[index], points[to1D(i+1, j+1, k-1, dim, dim)]);
+                    }
+                    if (isInRange(i - 1, 0, dim-1) && isInRange(j + 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i-1, j+1, k-1, dim, dim)], velocity[index], velocity[to1D(i-1, j+1, k-1, dim, dim)]);
+                        F += applyHooke(rest_diag, points[index], points[to1D(i-1, j+1, k-1, dim, dim)]);
+                    }
+                    if (isInRange(i - 1, 0, dim-1) && isInRange(j - 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
+                        F += applyDampen(points[index], points[to1D(i-1, j-1, k-1, dim, dim)], velocity[index], velocity[to1D(i-1, j-1, k-1, dim, dim)]);
+                        F += applyHooke(rest_diag, points[index], points[to1D(i-1, j-1, k-1, dim, dim)]);
                     }
 
                     //Bounding box
@@ -507,7 +477,7 @@ void JelloCube::rk4() {
 
 //Should update positions and call on loadVAO and initializeOpenGLShapeProperties() to prep for drawing again
 void JelloCube::tick(float current) {
-    euler();
+    rk4();
     calculateNormals();
     m_vertexData.clear();
     loadVAO();
