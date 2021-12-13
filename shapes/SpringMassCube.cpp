@@ -2,9 +2,19 @@
 #include "gl/shaders/ShaderAttribLocations.h"
 #include <iostream>
 #include "Settings.h"
+#include <vector>
+#include <glm/glm.hpp>
+#include "GL/glew.h"
 
 SpringMassCube::SpringMassCube(int param1, int param2):
-    Shape(param1,param2)
+    Shape(param1,param2),
+    m_kElastic(200),
+    m_dElastic(0.25),
+    m_kCollision(400),
+    m_dCollision(0.25),
+    m_mass(0.001953),
+    m_dt(0.001),
+    m_gravity(glm::vec3(0.f, -1.f, 0.f))
 {
     generateVertexData();
 }
@@ -27,6 +37,8 @@ void SpringMassCube::generateVertexData(){
     int dim = m_param1 + 1;
     int num_control_points = pow(dim,3);
     m_points.reserve(num_control_points);
+    m_velocity.reserve(num_control_points);
+    m_velocity.insert(m_velocity.begin(), num_control_points, glm::vec3(30.f, 30.f, 30.f));
 
     //Initialize points
     float incr = 1.f / m_param1;
@@ -34,54 +46,49 @@ void SpringMassCube::generateVertexData(){
     //Convention for indexing into cube
     // points[0][0][0] is (-0.5f, 0.5f, 0.5f)
     // points[dim - 1][dim - 1][dim - 1] is (0.5f, -0.5f, -0.5f)
-//    glm::vec3 start = glm::vec3(-0.5f, 0.5f, 0.5f);
-    std::vector<GLfloat> start = {-0.5f, 0.5f, 0.5f};
+    glm::vec3 start = glm::vec3(-0.5f, 0.5f, 0.5f);
     //k depth (z)
     for (int k = 0; k < dim; k++) {
         //i is the row (y)
         for (int i = 0; i < dim; i++) {
             //j is the column (x)
             for (int j = 0; j < dim; j++) {
-//                m_points.push_back(start + glm::vec3(j * incr, i * -incr, k * -incr));
-                m_points.push_back(start[0] + j * incr);
-                m_points.push_back(start[1] + i * -incr);
-                m_points.push_back(start[2] + k * -incr);
+                m_points.push_back(start + glm::vec3(j * incr, i * -incr, k * -incr));
             }
         }
     }
 }
 
-void SpringMassCube::tick(float current) {
-    //This just goes up and down - should involve call to compute acceleration and using RK4 integration
-    float increment = sin(current) / 60;
-    int dim = m_param1 + 1;
-    //k depth (z)
-    for (int k = 0; k < dim; k++) {
-        //i is the row (y)
-        for (int i = 0; i < dim; i++) {
-            //j is the column (x)
-            for (int j = 0; j < dim; j++) {
-//                m_points[to1D(i, j, k, dim, dim)].y += increment;
-                m_points[3 * to1D(i, j, k, dim, dim) + 1] += increment;
-            }
-        }
+std::vector<GLfloat> SpringMassCube::vecToFloats(const std::vector<glm::vec3> &points) {
+    std::vector<GLfloat> floats;
+    floats.resize(points.size() * 3);
+    for (int i = 0; i < points.size(); i++) {
+        floats[3*i] = points[i].x;
+        floats[3*i+1] = points[i].y;
+        floats[3*i+2] = points[i].z;
     }
+    return floats;
+}
+
+void SpringMassCube::tick(float current) {
+    rk4(m_dt, m_param1, m_kElastic, m_dElastic, m_kCollision, m_dCollision,
+        m_mass, m_gravity, m_points, m_velocity);
 
     switch (settings.cnnctnType) {
         case C_STRUCT:
             m_structural_cnnctns.clear();
             make_structural_connections();
-            drawPointsAndLines(m_points, m_structural_cnnctns);
+            drawPointsAndLines(vecToFloats(m_points), m_structural_cnnctns);
         break;
         case C_SHEAR:
             m_shear_cnnctns.clear();
             make_shear_connections();
-            drawPointsAndLines(m_points, m_shear_cnnctns);
+            drawPointsAndLines(vecToFloats(m_points), m_shear_cnnctns);
         break;
         case C_BEND:
             m_bend_cnnctns.clear();
             make_bend_connections();
-            drawPointsAndLines(m_points, m_bend_cnnctns);
+            drawPointsAndLines(vecToFloats(m_points), m_bend_cnnctns);
         break;
         default:
             std::cout << "you should never see this message" << std::endl;
@@ -113,30 +120,30 @@ void SpringMassCube::add_to_connections(std::vector<GLfloat> &connections,
         int dim = m_param1 + 1;
         // first push the original point
         connections.push_back(
-                    m_points[3*to1D(
+                    m_points[to1D(
                         indices[1], indices[0], indices[2],
-                        dim, dim)]);
+                        dim, dim)].x);
         connections.push_back(
-                    m_points[3*to1D(
+                    m_points[to1D(
                         indices[1], indices[0], indices[2],
-                        dim, dim)+1]);
+                        dim, dim)].y);
         connections.push_back(
-                    m_points[3*to1D(
+                    m_points[to1D(
                         indices[1], indices[0], indices[2],
-                        dim, dim)+2]);
+                        dim, dim)].z);
         // then push the neighboring point
         connections.push_back(
-                    m_points[3*to1D(
+                    m_points[to1D(
                         indices[4], indices[3], indices[5],
-                        dim, dim)]);
+                        dim, dim)].x);
         connections.push_back(
-                    m_points[3*to1D(
+                    m_points[to1D(
                         indices[4], indices[3], indices[5],
-                        dim, dim)+1]);
+                        dim, dim)].y);
         connections.push_back(
-                    m_points[3*to1D(
+                    m_points[to1D(
                         indices[4], indices[3], indices[5],
-                        dim, dim)+2]);
+                        dim, dim)].z);
     }
 }
 

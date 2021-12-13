@@ -47,9 +47,7 @@ private:
     float m_kCollision; // Hook's elasticity coefficient for collision springs
     float m_dCollision; // Damping coefficient collision springs
     float m_mass; // mass of each of the control points, mass assumed to be equal for every control point
-
     float m_dt;
-
     glm::vec3 m_gravity;
 
     //Standardizations for how to index in comments
