@@ -17,6 +17,7 @@ class SceneviewScene;
 class OrbitingCamera;
 class CamtransCamera;
 class CS123XmlSceneParser;
+class QGLShaderProgram;
 
 /**
  * @class  SupportCanvas3D
@@ -102,7 +103,6 @@ private:
     void setSceneFromSettings();
     void setSceneToSceneview();
     void setSceneToShapes();
-
 
     glm::vec4      m_cameraEye;
     bool           m_isDragging;

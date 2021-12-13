@@ -1,7 +1,5 @@
 #include "OpenGLShape.h"
 #include "gl/datatype/VAO.h"
-#include "gl/datatype/VBO.h"
-#include "gl/datatype/VBOAttribMarker.h"
 #include "gl/shaders/ShaderAttribLocations.h"
 
 #include <iostream>
@@ -48,18 +46,30 @@ void OpenGLShape::initializeOpenGLShapeProperties() {
     m_VAO = std::make_unique<VAO>(vbo, numVertices);
 }
 
-void OpenGLShape::setVertexData(GLfloat *data, int size, VBO::GEOMETRY_LAYOUT drawMode,
-                                int num_vertices) {
-    // Store the vertex data and other values to be used later when constructing the VAO
+/**
+ * @param data - Vector of floats containing the vertex data.
+ * @param size - number of elements in the array.
+ * @param drawMode - Drawing mode
+ * @param numVertices - Number of vertices to be rendered.
+ */
+void OpenGLShape::setVertexData(GLfloat *data, int size, VBO::GEOMETRY_LAYOUT drawMode, int numVertices) {
     m_data = data;
     m_size = size;
     m_drawMode = drawMode;
-    m_numVertices = num_vertices;
+    m_numVertices = numVertices;
 }
 
-void OpenGLShape::setAttribute(
-         GLuint index, GLuint numElementsPerVertex, int offset, VBOAttribMarker::DATA_TYPE type, bool normalize) {
-    m_markers.push_back(VBOAttribMarker(index, numElementsPerVertex, offset, type, normalize));
+
+/**
+ * @param name OpenGL handle to the attribute location. These are specified in ShaderAttribLocations.h
+ * @param numElementsPerVertex Number of elements per vertex. Must be 1, 2, 3 or 4 (e.g. position = 3 for x,y,z)
+ * @param offset Offset in BYTES from the start of the array to the beginning of the first element
+ * @param type Primitive type (FLOAT, INT, UNSIGNED_BYTE)
+ * @param normalize
+ */
+void OpenGLShape::setAttribute(GLuint name, GLuint numElementsPerVertex, int offset,
+                               VBOAttribMarker::DATA_TYPE type, bool normalize) {
+    m_markers.push_back(VBOAttribMarker(name, numElementsPerVertex, offset, type, normalize));
 }
 
 void OpenGLShape::buildVAO() {
@@ -82,6 +92,14 @@ void OpenGLShape::drawLines(std::vector<GLfloat> &line) {
     draw();
 }
 
+void OpenGLShape::drawTriangleStrips(std::vector<GLfloat> &data) {
+    int num_vertices = data.size() / 3;
+    setVertexData(&data[0], data.size(), VBO::GEOMETRY_LAYOUT::LAYOUT_TRIANGLE_STRIP, num_vertices);
+    setAttribute(ShaderAttrib::POSITION, 3, 0, VBOAttribMarker::DATA_TYPE::FLOAT, false);
+    buildVAO();
+    draw();
+}
+
 void OpenGLShape::drawPointsAndLines(const std::vector<GLfloat> &points,
                                      const std::vector<GLfloat> &lines) {
     int total_num_vertices = (int) points.size() / 3 + (int) lines.size() / 3;
@@ -92,4 +110,3 @@ void OpenGLShape::drawPointsAndLines(const std::vector<GLfloat> &points,
     setAttribute(ShaderAttrib::POSITION, 3, 0, VBOAttribMarker::DATA_TYPE::FLOAT, false);
     buildVAO();
 }
-

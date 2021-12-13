@@ -9,6 +9,7 @@ public:
     Bbox();
     ~Bbox();
     void drawBbox();
+    void drawFloor();
 
     void tick(float current) override;
     virtual void setParam1(int inp) override;

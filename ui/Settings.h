@@ -37,6 +37,7 @@ enum FilterType {
 // Enumeration values for the Shapes that the user can select in the GUI.
 enum ShapeType {
     SHAPE_CUBE,
+    SHAPE_JELLO_CUBE,
     SHAPE_SPRING_MASS_CUBE,
     SHAPE_CYLINDER,
     SHAPE_CONE,
@@ -49,6 +50,13 @@ enum SimType {
     SIM_STATIC_CUBE,
     SIM_EXAMPLE,
     NUM_SIM_TYPES
+};
+
+enum CnnctnType {
+    C_STRUCT,
+    C_SHEAR,
+    C_BEND,
+    NUM_C_TYPES
 };
 
 // Enumeration values for the two tabs (2D, 3D) at the bottom of the Window.
@@ -113,6 +121,9 @@ struct Settings {
 
     // Simulation
     int simType;
+
+    // Connections
+    int cnnctnType;
 
     // Camtrans
     bool useOrbitCamera;        // Use the built-in orbiting camera instead of the Camtrans camera

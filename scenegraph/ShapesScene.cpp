@@ -22,8 +22,15 @@ using namespace CS123::GL;
 #include "shapes/SpringMassCube.h"
 
 
+#include "gl/shaders/ShaderAttribLocations.h"
+
+// added by Marc - from lab 11
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 ShapesScene::ShapesScene(int width, int height) :
     m_shape(nullptr),
+    m_bbox(std::make_unique<Bbox>()),
     m_shapeParameter1(-1),
     m_shapeParameter2(-1),
     m_width(width),
@@ -37,6 +44,12 @@ ShapesScene::ShapesScene(int width, int height) :
     loadWireframeShader();
     loadNormalsShader();
     loadNormalsArrowShader();
+    loadTestShader();
+
+    //added by Marc
+    loadSkyboxShader();
+    m_cubeMapTexture = setSkyboxUniforms(m_skyboxShader.get());
+    loadJelloShader();
 
     // [SHAPES] Allocate any additional memory you need...
 }
@@ -54,7 +67,7 @@ void ShapesScene::initializeSceneMaterial() {
     m_material.cDiffuse.r = 1.0f;
     m_material.cDiffuse.g = 0.5f;
     m_material.cSpecular.r = m_material.cSpecular.g = m_material.cSpecular.b = 1;
-    m_material.shininess = 64;
+    m_material.shininess = 10;
 }
 
 void ShapesScene::initializeSceneLight() {
@@ -64,6 +77,25 @@ void ShapesScene::initializeSceneLight() {
     m_light.dir = m_lightDirection;
     m_light.color.r = m_light.color.g = m_light.color.b = 1;
     m_light.id = 0;
+}
+
+void ShapesScene::loadJelloShader() {
+    std::string vertexSource = ResourceLoader::loadResourceFileToString(":/shaders/glass.vert");
+    std::string fragmentSource = ResourceLoader::loadResourceFileToString(":/shaders/glass.frag");
+
+    m_jelloShader = std::make_unique<CS123Shader>(vertexSource, fragmentSource);
+}
+
+void ShapesScene::loadSkyboxShader() {
+    // using Shader vs CS123Shader bc we don't need light + material info
+    // Loading in Skybox Shader
+    std::string vertexSource = ResourceLoader::loadResourceFileToString(":/shaders/skybox.vert");
+    std::string fragmentSource = ResourceLoader::loadResourceFileToString(":/shaders/skybox.frag");
+
+    m_skyboxShader = std::make_unique<Shader>(vertexSource, fragmentSource);
+
+//      Loading CubeMap data
+    m_skyboxCube = std::make_unique<ExampleShape>(1,1);
 }
 
 void ShapesScene::loadPhongShader() {
@@ -92,26 +124,165 @@ void ShapesScene::loadNormalsArrowShader() {
     m_normalsArrowShader = std::make_unique<Shader>(vertexSource, geometrySource, fragmentSource);
 }
 
+void ShapesScene::loadTestShader() {
+    std::string vertexSource = ResourceLoader::loadResourceFileToString(":/shaders/bbox.vert");
+    std::string fragmentSource = ResourceLoader::loadResourceFileToString(":/shaders/bbox.frag");
+    m_testShader = std::make_unique<CS123Shader>(vertexSource, fragmentSource);
+}
+
 void ShapesScene::render(SupportCanvas3D *context) {
     // Clear the screen in preparation for the next frame. (Use a gray background instead of a
     // black one for drawing wireframe or normals so they will show up against the background.)
     setClearColor();
 
-    renderPhongPass(context);
+    if (m_usePhong) {
+        renderPhongPass(context);
 
-    if (settings.drawWireframe) {
-        renderWireframePass(context);
+        if (settings.drawWireframe) {
+            renderWireframePass(context);
+        }
+
+        if (settings.drawNormals) {
+            renderNormalsPass(context);
+        }
+
+        m_testShader->bind();
+        setMatrixUniforms(m_testShader.get(), context);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        m_bbox->drawBbox();
+        glm::vec3 color = glm::vec3(0.1, 0.8, 0.1);
+        m_testShader->setUniform("color", color);
+        m_bbox->drawFloor();
+        m_testShader->unbind();
+    } else {
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_POLYGON_OFFSET_LINE);
+
+        renderSkybox(context);
+        renderJelloPass(context);
+
+        glEnable(GL_DEPTH_TEST);
+        // Move the polygons back a bit so lines are still drawn even though they are coplanar with the
+        // polygons they came from, which will be drawn before them.
+        glEnable(GL_POLYGON_OFFSET_LINE);
+        glPolygonOffset(-1, -1);
+    }
+  
+}
+
+// Need to confirm this works for both orbiting and camtrans camera D:
+void ShapesScene::renderJelloPass(SupportCanvas3D *context) {
+    m_jelloShader->bind();
+
+    // clearLights()
+    for (int i = 0; i < MAX_NUM_LIGHTS; i++) {
+        std::ostringstream os;
+        os << i;
+        std::string indexString = "[" + os.str() + "]"; // e.g. [0], [1], etc.
+        m_jelloShader->setUniform("lightColors" + indexString, glm::vec3(0.0f, 0.0f, 0.0f));
     }
 
-    if (settings.drawNormals) {
-        renderNormalsPass(context);
+    // setLights()
+    m_light.dir = glm::inverse(context->getCamera()->getViewMatrix()) * m_lightDirection;
+
+    // clearLights();
+    for (int i = 0; i < MAX_NUM_LIGHTS; i++) {
+        std::ostringstream os;
+        os << i;
+        std::string indexString = "[" + os.str() + "]"; // e.g. [0], [1], etc.
+        m_jelloShader->setUniform("lightColors" + indexString, glm::vec3(0.0f, 0.0f, 0.0f));
     }
+    m_jelloShader->setLight(m_light);
+
+    m_jelloShader->setUniform("useLighting", settings.useLighting);
+
+    // Pass in uniforms for view, projection, model (mat4(1.0))
+    setMatrixUniforms(m_jelloShader.get(), context);
+    // Pass in our environment map
+    glBindTexture(GL_TEXTURE_CUBE_MAP, m_cubeMapTexture);
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // may not need this idk
+    m_shape->draw();
+    m_jelloShader->unbind();
+}
+
+void ShapesScene::renderSkybox(SupportCanvas3D *context) {
+
+//    glFrontFace(GL_CW);
+
+//    glDepthMask(GL_FALSE);
+    m_skyboxShader->bind();
+
+    glFrontFace(GL_CW);
+    glDepthMask(GL_FALSE);
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    m_skyboxShader->setUniform("projection", context->getCamera()->getProjectionMatrix());
+    m_skyboxShader->setUniform("view", glm::mat4(glm::mat3(context->getCamera()->getViewMatrix())));
+
+    glBindTexture(GL_TEXTURE_CUBE_MAP, m_cubeMapTexture);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    m_skyboxCube->draw();
+
+    glDepthMask(GL_TRUE);
+    glFrontFace(GL_CCW);
+
+    m_skyboxShader->unbind();
+//    glDepthMask(GL_TRUE);
+
+//    glFrontFace(GL_CCW);
+}
+
+unsigned int ShapesScene::setSkyboxUniforms(Shader *shader) {
+    // [NOTE] Need to use absolute paths
+    std::vector<std::string> faces =  {"C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//posx.jpg",
+                                       "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//negx.jpg",
+                                       "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//posy.jpg",
+                                       "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//negy.jpg",
+                                       "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//posz.jpg",
+                                       "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//negz.jpg"};
+
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+    int width, height, nrChannels;
+    for (unsigned int i = 0; i < 6; i++)
+    {
+        unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+//        std::cout << width << std::endl;
+//        std::cout << height << std::endl;
+//        std::cout << nrChannels << std::endl;
+        if (data)
+        {
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                         0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+            );
+            free(data);
+        }
+        else
+        {
+            std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
+            std::cout << "Possible Fix: Change texture paths in ShapesScene.cpp :D" << std::endl;
+            free(data);
+        }
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    return textureID;
 }
 
 void ShapesScene::renderPhongPass(SupportCanvas3D *context) {
     m_phongShader->bind();
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // -------------------------------------------------
+    if (m_usePhong) {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
     clearLights();
     setLights(context->getCamera()->getViewMatrix());
     setPhongSceneUniforms();
@@ -175,10 +346,6 @@ void ShapesScene::renderGeometry() {
             m_shape->draw();
         }
     }
-
-    // anything that needs to persist for any t should be put here
-    m_bbox = std::make_unique<Bbox>();
-    m_bbox->drawBbox();
 }
 
 void ShapesScene::clearLights() {
@@ -187,6 +354,7 @@ void ShapesScene::clearLights() {
         os << i;
         std::string indexString = "[" + os.str() + "]"; // e.g. [0], [1], etc.
         m_phongShader->setUniform("lightColors" + indexString, glm::vec3(0.0f, 0.0f, 0.0f));
+        m_testShader->setUniform("lightColors" + indexString, glm::vec3(0.0f, 0.0f, 0.0f));
     }
 }
 
@@ -197,6 +365,7 @@ void ShapesScene::setLights(const glm::mat4 viewMatrix) {
 
     clearLights();
     m_phongShader->setLight(m_light);
+    m_testShader->setLight(m_light);
 }
 
 void ShapesScene::settingsChanged() {
@@ -228,11 +397,18 @@ void ShapesScene::settingsChanged() {
         m_shapeParameter2 = settings.shapeParameter2;
         switch (settings.shapeType) {
             case SHAPE_CUBE:
-                std::cout << "shape type: jellooo cube" << std::endl;
+                std::cout << "shape type: phong cube" << std::endl;
+                m_usePhong = true;
+                m_shape = std::make_unique<JelloCube>(m_shapeParameter1, m_shapeParameter2);
+            break;
+            case SHAPE_JELLO_CUBE:
+                std::cout << "shape type: jello cube" << std::endl;
+                m_usePhong = false;
                 m_shape = std::make_unique<JelloCube>(m_shapeParameter1, m_shapeParameter2);
             break;
             case SHAPE_SPRING_MASS_CUBE:
                 std::cout << "shape type: spring mass cube" << std::endl;
+                m_usePhong = true;
                 m_shape = std::make_unique<SpringMassCube>(m_shapeParameter1, m_shapeParameter2);
             break;
             case SHAPE_CYLINDER:
@@ -257,6 +433,8 @@ void ShapesScene::settingsChanged() {
 }
 
 void ShapesScene::tick(float current) {
-    m_shape->tick(current);
+    if (m_simType != SIM_STATIC_CUBE){
+        m_shape->tick(current);
+    }
 }
 

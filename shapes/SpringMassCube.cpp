@@ -1,14 +1,7 @@
 #include "SpringMassCube.h"
 #include "gl/shaders/ShaderAttribLocations.h"
 #include <iostream>
-
-/*
-SpringMassCube::SpringMassCube():
-    Shape(7, 7)
-{
-    generateVertexData();
-}
-*/
+#include "Settings.h"
 
 SpringMassCube::SpringMassCube(int param1, int param2):
     Shape(param1,param2)
@@ -74,10 +67,26 @@ void SpringMassCube::tick(float current) {
         }
     }
 
-    make_structural_connections();
-
-    drawPointsAndLines(m_points, m_structural_cnnctns);
-    m_structural_cnnctns.clear();
+    switch (settings.cnnctnType) {
+        case C_STRUCT:
+            m_structural_cnnctns.clear();
+            make_structural_connections();
+            drawPointsAndLines(m_points, m_structural_cnnctns);
+        break;
+        case C_SHEAR:
+            m_shear_cnnctns.clear();
+            make_shear_connections();
+            drawPointsAndLines(m_points, m_shear_cnnctns);
+        break;
+        case C_BEND:
+            m_bend_cnnctns.clear();
+            make_bend_connections();
+            drawPointsAndLines(m_points, m_bend_cnnctns);
+        break;
+        default:
+            std::cout << "you should never see this message" << std::endl;
+        break;
+    }
 }
 
 std::vector<int> SpringMassCube::get_neighbor(int j, int i, int k,
@@ -98,32 +107,33 @@ std::vector<int> SpringMassCube::get_neighbor(int j, int i, int k,
     }
 }
 
-void SpringMassCube::add_to_structural(const std::vector<int> &indices) {
+void SpringMassCube::add_to_connections(std::vector<GLfloat> &connections,
+                                        const std::vector<int> &indices) {
     if (indices[0] != -1) {
         int dim = m_param1 + 1;
         // first push the original point
-        m_structural_cnnctns.push_back(
+        connections.push_back(
                     m_points[3*to1D(
                         indices[1], indices[0], indices[2],
                         dim, dim)]);
-        m_structural_cnnctns.push_back(
+        connections.push_back(
                     m_points[3*to1D(
                         indices[1], indices[0], indices[2],
                         dim, dim)+1]);
-        m_structural_cnnctns.push_back(
+        connections.push_back(
                     m_points[3*to1D(
                         indices[1], indices[0], indices[2],
                         dim, dim)+2]);
         // then push the neighboring point
-        m_structural_cnnctns.push_back(
+        connections.push_back(
                     m_points[3*to1D(
                         indices[4], indices[3], indices[5],
                         dim, dim)]);
-        m_structural_cnnctns.push_back(
+        connections.push_back(
                     m_points[3*to1D(
                         indices[4], indices[3], indices[5],
                         dim, dim)+1]);
-        m_structural_cnnctns.push_back(
+        connections.push_back(
                     m_points[3*to1D(
                         indices[4], indices[3], indices[5],
                         dim, dim)+2]);
@@ -136,12 +146,62 @@ void SpringMassCube::make_structural_connections() {
     for (int k = 0; k < dim; k++) {
         for (int i = 0; i < dim; i++) {
             for (int j = 0; j < dim; j++) {
-                add_to_structural(get_neighbor(j, i, k, 1, 0, 0));
-                add_to_structural(get_neighbor(j, i, k, 0, 1, 0));
-                add_to_structural(get_neighbor(j, i, k, 0, 0, 1));
-                add_to_structural(get_neighbor(j, i, k, -1, 0, 0));
-                add_to_structural(get_neighbor(j, i, k, 0, -1, 0));
-                add_to_structural(get_neighbor(j, i, k, 0, 0, -1));
+                add_to_connections(m_structural_cnnctns, get_neighbor(j, i, k, 1, 0, 0));
+                add_to_connections(m_structural_cnnctns, get_neighbor(j, i, k, 0, 1, 0));
+                add_to_connections(m_structural_cnnctns, get_neighbor(j, i, k, 0, 0, 1));
+                add_to_connections(m_structural_cnnctns, get_neighbor(j, i, k, -1, 0, 0));
+                add_to_connections(m_structural_cnnctns, get_neighbor(j, i, k, 0, -1, 0));
+                add_to_connections(m_structural_cnnctns, get_neighbor(j, i, k, 0, 0, -1));
+            }
+        }
+    }
+}
+
+void SpringMassCube::make_shear_connections() {
+    // edge case: abs(pos(i)) == abs(pos(j)) == abs(pos(k)) == 0.5
+    int dim = m_param1 + 1;
+    for (int k = 0; k < dim; k++) {
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
+                add_to_connections(m_shear_cnnctns, get_neighbor(j, i, k, 1, 1, 0));
+                add_to_connections(m_shear_cnnctns, get_neighbor(j, i, k, -1, 1, 0));
+                add_to_connections(m_shear_cnnctns, get_neighbor(j, i, k, -1, -1, 0));
+                add_to_connections(m_shear_cnnctns, get_neighbor(j, i, k, 1, -1, 0));
+                add_to_connections(m_shear_cnnctns, get_neighbor(j, i, k, 0, 1, 1));
+                add_to_connections(m_shear_cnnctns, get_neighbor(j, i, k, 0, -1, 1));
+
+                add_to_connections(m_shear_cnnctns, get_neighbor(j, i, k, 0, -1, -1));
+                add_to_connections(m_shear_cnnctns, get_neighbor(j, i, k, 0, 1, -1));
+                add_to_connections(m_shear_cnnctns, get_neighbor(j, i, k, 1, 0, 1));
+                add_to_connections(m_shear_cnnctns, get_neighbor(j, i, k, -1, 0, 1));
+                add_to_connections(m_shear_cnnctns, get_neighbor(j, i, k, -1, 0, -1));
+                add_to_connections(m_shear_cnnctns, get_neighbor(j, i, k, 1, 0, -1));
+
+                add_to_connections(m_shear_cnnctns, get_neighbor(j, i, k, 1, 1, 1));
+                add_to_connections(m_shear_cnnctns, get_neighbor(j, i, k, -1, 1, 1));
+                add_to_connections(m_shear_cnnctns, get_neighbor(j, i, k, -1, -1, 1));
+                add_to_connections(m_shear_cnnctns, get_neighbor(j, i, k, 1, -1, 1));
+                add_to_connections(m_shear_cnnctns, get_neighbor(j, i, k, 1, 1, -1));
+                add_to_connections(m_shear_cnnctns, get_neighbor(j, i, k, -1, 1, -1));
+                add_to_connections(m_shear_cnnctns, get_neighbor(j, i, k, -1, -1, -1));
+                add_to_connections(m_shear_cnnctns, get_neighbor(j, i, k, 1, -1, -1));
+            }
+        }
+    }
+}
+
+void SpringMassCube::make_bend_connections() {
+    // edge case: abs(pos(i)) == abs(pos(j)) == abs(pos(k)) == 0.5
+    int dim = m_param1 + 1;
+    for (int k = 0; k < dim; k++) {
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
+                add_to_connections(m_bend_cnnctns, get_neighbor(j, i, k, 2, 0, 0));
+                add_to_connections(m_bend_cnnctns, get_neighbor(j, i, k, 0, 2, 0));
+                add_to_connections(m_bend_cnnctns, get_neighbor(j, i, k, 0, 0, 2));
+                add_to_connections(m_bend_cnnctns, get_neighbor(j, i, k, -2, 0, 0));
+                add_to_connections(m_bend_cnnctns, get_neighbor(j, i, k, 0, -2, 0));
+                add_to_connections(m_bend_cnnctns, get_neighbor(j, i, k, 0, 0, -2));
             }
         }
     }
