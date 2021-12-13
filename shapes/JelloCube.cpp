@@ -17,7 +17,7 @@ JelloCube::JelloCube():
 JelloCube::JelloCube(int param1, int param2):
     Shape(param1,param2),
     m_kElastic(200),
-    m_dElastic(0.15),
+    m_dElastic(0.25),
     m_kCollision(400),
     m_dCollision(0.25),
     m_mass(0.001953),
@@ -46,7 +46,7 @@ void JelloCube::generateVertexData(){
     int num_control_points = pow(dim,3);
     m_points.reserve(num_control_points);
     m_velocity.reserve(num_control_points);
-    m_velocity.insert(m_velocity.begin(), num_control_points, glm::vec3(0.f));
+    m_velocity.insert(m_velocity.begin(), num_control_points, glm::vec3(30.f, 30.f, 30.f));
     m_normals.reserve(dim * dim * 6);
 
     //Initialize points
@@ -354,17 +354,9 @@ void JelloCube::euler() {
 
     computeAcceleration(m_points, m_velocity, acceleration);
 
-    //k depth (z)
-    for (int k = 0; k < dim; k++) {
-        //i is the row (y)
-        for (int i = 0; i < dim; i++) {
-            //j is the column (x)
-            for (int j = 0; j < dim; j++) {
-                int index = to1D(i, j, k, dim, dim);
-                m_points[index] += dt * m_velocity[index];
-                m_velocity[index] += dt * acceleration[index];
-            }
-        }
+    for (int i = 0; i < num_control_points; i ++) {
+        m_points[i] += dt * m_velocity[i];
+        m_velocity[i] += dt * acceleration[i];
     }
 
 }
@@ -403,75 +395,56 @@ void JelloCube::rk4() {
     velocity4.reserve(num_control_points);
 
     computeAcceleration(m_points, m_velocity, acceleration);
-    for (int k = 0; k < dim; k++) {
-        for (int i = 0; i < dim; i++) {
-            for (int j = 0; j < dim; j++) {
-                int index = to1D(i, j, k, dim, dim);
-                points1[index] = dt * m_velocity[index];
-                velocity1[index] = dt * acceleration[index];
-                buffer_points[index] = 0.5f * points1[index];
-                buffer_velocity[index] = 0.5f * velocity1[index];
-                buffer_points[index] += m_points[index];
-                buffer_velocity[index] += m_velocity[index];
-            }
-        }
+
+    for (int i = 0; i < num_control_points; i++) {
+        points1[i] = dt * m_velocity[i];
+        velocity1[i] = dt * acceleration[i];
+        buffer_points[i] = 0.5f * points1[i];
+        buffer_velocity[i] = 0.5f * velocity1[i];
+        buffer_points[i] += m_points[i];
+        buffer_velocity[i] += m_velocity[i];
     }
 
     computeAcceleration(buffer_points, buffer_velocity, acceleration);
-    for (int k = 0; k < dim; k++) {
-        for (int i = 0; i < dim; i++) {
-            for (int j = 0; j < dim; j++) {
-                int index = to1D(i, j, k, dim, dim);
-                points2[index] = dt * buffer_velocity[index];
-                velocity2[index] = dt * acceleration[index];
-                buffer_points[index] = 0.5f * points2[index];
-                buffer_velocity[index] = 0.5f * velocity2[index];
-                buffer_points[index] += m_points[index];
-                buffer_velocity[index] += m_velocity[index];
-            }
-        }
+    for (int i = 0; i < num_control_points; i++) {
+        points2[i] = dt * buffer_velocity[i];
+        velocity2[i] = dt * acceleration[i];
+        buffer_points[i] = 0.5f * points2[i];
+        buffer_velocity[i] = 0.5f * velocity2[i];
+        buffer_points[i] += m_points[i];
+        buffer_velocity[i] += m_velocity[i];
     }
 
     computeAcceleration(buffer_points, buffer_velocity, acceleration);
-    for (int k = 0; k < dim; k++) {
-        for (int i = 0; i < dim; i++) {
-            for (int j = 0; j < dim; j++) {
-                int index = to1D(i, j, k, dim, dim);
-                points3[index] = dt * buffer_velocity[index];
-                velocity3[index] = dt * acceleration[index];
-                buffer_points[index] = 0.5f * points3[index];
-                buffer_velocity[index] = 0.5f * velocity3[index];
-                buffer_points[index] += m_points[index];
-                buffer_velocity[index] += m_velocity[index];
-            }
-        }
+    for (int i = 0; i < num_control_points; i++) {
+        points3[i] = dt * buffer_velocity[i];
+        velocity3[i] = dt * acceleration[i];
+        buffer_points[i] = 0.5f * points3[i];
+        buffer_velocity[i] = 0.5f * velocity3[i];
+        buffer_points[i] += m_points[i];
+        buffer_velocity[i] += m_velocity[i];
     }
 
     computeAcceleration(buffer_points, buffer_velocity, acceleration);
-    for (int k = 0; k < dim; k++) {
-        for (int i = 0; i < dim; i++) {
-            for (int j = 0; j < dim; j++) {
-                int index = to1D(i, j, k, dim, dim);
-                points4[index] = dt * buffer_velocity[index];
-                velocity4[index] = dt * acceleration[index];
+    for (int i = 0; i < num_control_points; i++) {
+        points4[i] = dt * buffer_velocity[i];
+        velocity4[i] = dt * acceleration[i];
 
-                buffer_points[index] = 2.f * points2[index];
-                buffer_velocity[index] = 2.f * points3[index];
-                buffer_points[index] += buffer_velocity[index];
-                buffer_points[index] += points1[index];
-                buffer_points[index] += points4[index];
-                buffer_points[index] /= 6.f;
-                m_points[index] += buffer_points[index];
+        buffer_points[i] = 2.f * points2[i];
+        buffer_velocity[i] = 2.f * points3[i];
+        buffer_points[i] += buffer_velocity[i];
+        buffer_points[i] += points1[i];
+        buffer_points[i] += points4[i];
+        buffer_points[i] /= 6.f;
+        m_points[i] += buffer_points[i];
 
-                buffer_points[index] = 2.f * velocity2[index];
-                buffer_velocity[index] = 2.f * velocity3[index];
-                buffer_points[index] += buffer_velocity[index];
-                buffer_points[index] += velocity1[index];
-                buffer_points[index] += velocity4[index];
-                buffer_points[index] /= 6.f;
-                m_velocity[index] += buffer_points[index];
-            }
-        }
+        buffer_points[i] = 2.f * velocity2[i];
+        buffer_velocity[i] = 2.f * velocity3[i];
+        buffer_points[i] += buffer_velocity[i];
+        buffer_points[i] += velocity1[i];
+        buffer_points[i] += velocity4[i];
+        buffer_points[i] /= 6.f;
+        m_velocity[i] += buffer_points[i];
     }
 }
 
