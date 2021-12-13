@@ -15,7 +15,14 @@ JelloCube::JelloCube():
 }
 
 JelloCube::JelloCube(int param1, int param2):
-    Shape(param1,param2)
+    Shape(param1,param2),
+    m_kElastic(500),
+    m_dElastic(0.25),
+    m_kCollision(1000),
+    m_dCollision(0.25),
+    m_mass(0.001953),
+    dt(0.001),
+    m_gravity(glm::vec3(0.f, -0.05, 0.f))
 {
     generateVertexData();
 }

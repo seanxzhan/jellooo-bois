@@ -292,6 +292,8 @@ void SupportCanvas3D::resizeEvent(QResizeEvent *event) {
 void SupportCanvas3D::tick()
 {
     float time = m_tick++ / (float) m_fps;
-    m_currentScene->tick(time);
-    update();
+    if (m_currentScene){
+        m_currentScene->tick(time);
+        update();
+    }
 }
