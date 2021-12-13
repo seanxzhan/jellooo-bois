@@ -27,6 +27,24 @@ void Bbox::drawFloor() {
         2.f, -2.f, 2.f
     };
     drawTriangleStrips(floorData);
+    glCullFace(GL_FRONT);
+    drawTriangleStrips(floorData);
+    glCullFace(GL_BACK);
+
+
+}
+
+void Bbox::drawPlane() {
+    std::vector<GLfloat> planeData = {
+        -2.f, 2.f, -2.f,
+        -2.f, -2.f, 2.f,
+        2.f, -2.f, -2.f,
+        2.f, -2.f, 2.f
+    };
+    drawTriangleStrips(planeData);
+    glCullFace(GL_FRONT);
+    drawTriangleStrips(planeData);
+    glCullFace(GL_BACK);
 }
 
 void Bbox::drawBbox() {

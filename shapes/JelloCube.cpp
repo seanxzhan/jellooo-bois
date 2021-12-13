@@ -380,6 +380,8 @@ void JelloCube::computeAcceleration(std::vector<glm::vec3> &points,
                         fCollide.z += -m_dCollision * velocity[index].z + m_kCollision*std::fabs(points[index].z + 2);
                     }
 
+
+
                     F += fCollide;
 
                     //Force Field Calculation - by default exerts gravity everywhere
