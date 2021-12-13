@@ -1,4 +1,5 @@
 #include "JelloCube.h"
+#include "JelloUtil.h"
 #include <iostream>
 
 JelloCube::JelloCube():
@@ -8,7 +9,7 @@ JelloCube::JelloCube():
     m_kCollision(400),
     m_dCollision(0.25),
     m_mass(0.001953),
-    dt(0.001),
+    m_dt(0.001),
     m_gravity(glm::vec3(0.f, -1.f, 0.f))
 {
     generateVertexData();
@@ -21,7 +22,7 @@ JelloCube::JelloCube(int param1, int param2):
     m_kCollision(400),
     m_dCollision(0.25),
     m_mass(0.001953),
-    dt(0.001),
+    m_dt(0.001),
     m_gravity(glm::vec3(0.f, -1.f, 0.f))
 {
     generateVertexData();
@@ -194,205 +195,6 @@ void JelloCube::loadVAO() {
     }
 }
 
-glm::vec3 JelloCube::applyDampen(glm::vec3 a, glm::vec3 b, glm::vec3 t1_vec, glm::vec3 t2_vec) {
-    glm::vec3 l = glm::normalize(a - b);
-    return -m_dElastic * glm::dot(t1_vec-t2_vec, l) * l;
-}
-
-glm::vec3 JelloCube::applyHooke(float rest_len, glm::vec3 a, glm::vec3 b) {
-    glm::vec3 l = a - b;
-    return -m_kElastic * (glm::length(l) - rest_len) * glm::normalize(l);
-}
-
-void JelloCube::computeAcceleration(std::vector<glm::vec3> &points,
-                                    std::vector<glm::vec3> &velocity,
-                                    std::vector<glm::vec3> &acceleration) {
-    int dim = m_param1 + 1;
-    float rest_length = 1.f / (dim-1), rest_shear, rest_bend, rest_diag;
-    rest_shear = rest_length * sqrt(2);
-    rest_diag = rest_length * sqrt(3);
-    rest_bend = rest_length * 2;
-    for (int k = 0; k < dim; k++) {
-            for (int i = 0; i < dim; i++) {
-                for (int j = 0; j < dim; j++) {
-                    glm::vec3 F = glm::vec3(0.f);
-                    glm::vec3 fCollide = glm::vec3(0.f);
-                    int index = to1D(i, j, k, dim, dim);
-
-                    //Structural
-                    if (isInRange(i + 1, 0, dim - 1)) {
-                        F += applyDampen(points[index], points[to1D(i+1, j, k, dim, dim)], velocity[index], velocity[to1D(i+1, j, k, dim, dim)]);
-                        F += applyHooke(rest_length, points[index], points[to1D(i+1, j, k, dim, dim)]);
-                    }
-                    if (isInRange(i - 1, 0, dim - 1)) {
-                        F += applyDampen(points[index], points[to1D(i-1, j, k, dim, dim)], velocity[index], velocity[to1D(i-1, j, k, dim, dim)]);
-                        F += applyHooke(rest_length, points[index], points[to1D(i-1, j, k, dim, dim)]);
-                    }
-                    if (isInRange(j + 1, 0, dim - 1)) {
-                        F += applyDampen(points[index], points[to1D(i, j+1, k, dim, dim)], velocity[index], velocity[to1D(i, j+1, k, dim, dim)]);
-                        F += applyHooke(rest_length, points[index], points[to1D(i, j+1, k, dim, dim)]);
-                    }
-                    if (isInRange(j - 1, 0, dim - 1)) {
-                        F += applyDampen(points[index], points[to1D(i, j-1, k, dim, dim)], velocity[index], velocity[to1D(i, j-1, k, dim, dim)]);
-                        F += applyHooke(rest_length, points[index], points[to1D(i, j-1, k, dim, dim)]);
-                    }
-                    if (isInRange(k + 1, 0, dim - 1)) {
-                        F += applyDampen(points[index], points[to1D(i, j, k+1, dim, dim)], velocity[index], velocity[to1D(i, j, k+1, dim, dim)]);
-                        F += applyHooke(rest_length, points[index], points[to1D(i, j, k+1, dim, dim)]);
-                    }
-                    if (isInRange(k - 1, 0, dim - 1)) {
-                        F += applyDampen(points[index], points[to1D(i, j, k-1, dim, dim)], velocity[index], velocity[to1D(i, j, k-1, dim, dim)]);
-                        F += applyHooke(rest_length, points[index], points[to1D(i, j, k-1, dim, dim)]);
-                    }
-
-                    //Shear
-                    if (isInRange(i + 1, 0, dim-1) && isInRange(j + 1, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i+1, j+1, k, dim, dim)], velocity[index], velocity[to1D(i+1, j+1, k, dim, dim)]);
-                        F += applyHooke(rest_shear, points[index], points[to1D(i+1, j+1, k, dim, dim)]);
-                    }
-                    if (isInRange(i + 1, 0, dim-1) && isInRange(j - 1, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i+1, j-1, k, dim, dim)], velocity[index], velocity[to1D(i+1, j-1, k, dim, dim)]);
-                        F += applyHooke(rest_shear, points[index], points[to1D(i+1, j-1, k, dim, dim)]);
-                    }
-                    if (isInRange(i - 1, 0, dim-1) && isInRange(j + 1, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i-1, j+1, k, dim, dim)], velocity[index], velocity[to1D(i-1, j+1, k, dim, dim)]);
-                        F += applyHooke(rest_shear, points[index], points[to1D(i-1, j+1, k, dim, dim)]);
-                    }
-                    if (isInRange(i - 1, 0, dim-1) && isInRange(j - 1, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i-1, j-1, k, dim, dim)], velocity[index], velocity[to1D(i-1, j-1, k, dim, dim)]);
-                        F += applyHooke(rest_shear, points[index], points[to1D(i-1, j-1, k, dim, dim)]);
-                    }
-                    if (isInRange(j + 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i, j+1, k+1, dim, dim)], velocity[index], velocity[to1D(i, j+1, k+1, dim, dim)]);
-                        F += applyHooke(rest_shear, points[index], points[to1D(i, j+1, k+1, dim, dim)]);
-                    }
-                    if (isInRange(j - 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i, j-1, k+1, dim, dim)], velocity[index], velocity[to1D(i, j-1, k+1, dim, dim)]);
-                        F += applyHooke(rest_shear, points[index], points[to1D(i, j-1, k+1, dim, dim)]);
-                    }
-                    if (isInRange(j + 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i, j+1, k-1, dim, dim)], velocity[index], velocity[to1D(i, j+1, k-1, dim, dim)]);
-                        F += applyHooke(rest_shear, points[index], points[to1D(i, j+1, k-1, dim, dim)]);
-                    }
-                    if (isInRange(j - 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i, j-1, k-1, dim, dim)], velocity[index], velocity[to1D(i, j-1, k-1, dim, dim)]);
-                        F += applyHooke(rest_shear, points[index], points[to1D(i, j-1, k-1, dim, dim)]);
-                    }
-                    if (isInRange(i + 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i+1, j, k+1, dim, dim)], velocity[index], velocity[to1D(i+1, j, k+1, dim, dim)]);
-                        F += applyHooke(rest_shear, points[index], points[to1D(i+1, j, k+1, dim, dim)]);
-                    }
-                    if (isInRange(i - 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i-1, j, k+1, dim, dim)], velocity[index], velocity[to1D(i-1, j, k+1, dim, dim)]);
-                        F += applyHooke(rest_shear, points[index], points[to1D(i-1, j, k+1, dim, dim)]);
-                    }
-                    if (isInRange(i + 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i+1, j, k-1, dim, dim)], velocity[index], velocity[to1D(i+1, j, k-1, dim, dim)]);
-                        F += applyHooke(rest_shear, points[index], points[to1D(i+1, j, k-1, dim, dim)]);
-                    }
-                    if (isInRange(i - 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i-1, j, k-1, dim, dim)], velocity[index], velocity[to1D(i-1, j, k-1, dim, dim)]);
-                        F += applyHooke(rest_shear, points[index], points[to1D(i-1, j, k-1, dim, dim)]);
-                    }
-
-                    //Bend
-                    if (isInRange(i + 2, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i+2, j, k, dim, dim)], velocity[index], velocity[to1D(i+2, j, k, dim, dim)]);
-                        F += applyHooke(rest_bend, points[index], points[to1D(i+2, j, k, dim, dim)]);
-                    }
-                    if (isInRange(i - 2, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i-2, j, k, dim, dim)], velocity[index], velocity[to1D(i-2, j, k, dim, dim)]);
-                        F += applyHooke(rest_bend, points[index], points[to1D(i-2, j, k, dim, dim)]);
-                    }
-                    if (isInRange(j + 2, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i, j+2, k, dim, dim)], velocity[index], velocity[to1D(i, j+2, k, dim, dim)]);
-                        F += applyHooke(rest_bend, points[index], points[to1D(i, j+2, k, dim, dim)]);
-                    }
-                    if (isInRange(j - 2, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i, j-2, k, dim, dim)], velocity[index], velocity[to1D(i, j-2, k, dim, dim)]);
-                        F += applyHooke(rest_bend, points[index], points[to1D(i, j-2, k, dim, dim)]);
-                    }
-                    if (isInRange(k + 2, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i, j, k+2, dim, dim)], velocity[index], velocity[to1D(i, j, k+2, dim, dim)]);
-                        F += applyHooke(rest_bend, points[index], points[to1D(i, j, k+2, dim, dim)]);
-                    }
-                    if (isInRange(k - 2, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i, j, k-2, dim, dim)], velocity[index], velocity[to1D(i, j, k-2, dim, dim)]);
-                        F += applyHooke(rest_bend, points[index], points[to1D(i, j, k-2, dim, dim)]);
-                    }
-
-                    //Diagonals
-                    if (isInRange(i + 1, 0, dim-1) && isInRange(j + 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i+1, j+1, k+1, dim, dim)], velocity[index], velocity[to1D(i+1, j+1, k+1, dim, dim)]);
-                        F += applyHooke(rest_diag, points[index], points[to1D(i+1, j+1, k+1, dim, dim)]);
-                    }
-                    if (isInRange(i - 1, 0, dim-1) && isInRange(j + 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i-1, j+1, k+1, dim, dim)], velocity[index], velocity[to1D(i-1, j+1, k+1, dim, dim)]);
-                        F += applyHooke(rest_diag, points[index], points[to1D(i-1, j+1, k+1, dim, dim)]);
-                    }
-                    if (isInRange(i - 1, 0, dim-1) && isInRange(j - 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i-1, j-1, k+1, dim, dim)], velocity[index], velocity[to1D(i-1, j-1, k+1, dim, dim)]);
-                        F += applyHooke(rest_diag, points[index], points[to1D(i-1, j-1, k+1, dim, dim)]);
-                    }
-                    if (isInRange(i + 1, 0, dim-1) && isInRange(j - 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i+1, j-1, k+1, dim, dim)], velocity[index], velocity[to1D(i+1, j-1, k+1, dim, dim)]);
-                        F += applyHooke(rest_diag, points[index], points[to1D(i+1, j-1, k+1, dim, dim)]);
-                    }
-                    if (isInRange(i + 1, 0, dim-1) && isInRange(j - 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i+1, j-1, k-1, dim, dim)], velocity[index], velocity[to1D(i+1, j-1, k-1, dim, dim)]);
-                        F += applyHooke(rest_diag, points[index], points[to1D(i+1, j-1, k-1, dim, dim)]);
-                    }
-                    if (isInRange(i + 1, 0, dim-1) && isInRange(j + 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i+1, j+1, k-1, dim, dim)], velocity[index], velocity[to1D(i+1, j+1, k-1, dim, dim)]);
-                        F += applyHooke(rest_diag, points[index], points[to1D(i+1, j+1, k-1, dim, dim)]);
-                    }
-                    if (isInRange(i - 1, 0, dim-1) && isInRange(j + 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i-1, j+1, k-1, dim, dim)], velocity[index], velocity[to1D(i-1, j+1, k-1, dim, dim)]);
-                        F += applyHooke(rest_diag, points[index], points[to1D(i-1, j+1, k-1, dim, dim)]);
-                    }
-                    if (isInRange(i - 1, 0, dim-1) && isInRange(j - 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
-                        F += applyDampen(points[index], points[to1D(i-1, j-1, k-1, dim, dim)], velocity[index], velocity[to1D(i-1, j-1, k-1, dim, dim)]);
-                        F += applyHooke(rest_diag, points[index], points[to1D(i-1, j-1, k-1, dim, dim)]);
-                    }
-
-                    //Bounding box
-                    if (points[index].x > 2) {
-                        fCollide.x += -m_dCollision * velocity[index].x + m_kCollision*std::fabs(points[index].x - 2) * -1;
-                    }
-
-                    if (points[index].x < -2) {
-                        fCollide.x += -m_dCollision * velocity[index].x + m_kCollision*std::fabs(points[index].x + 2);
-                    }
-
-                    if (points[index].y > 2) {
-                        fCollide.y += -m_dCollision * velocity[index].y + m_kCollision*std::fabs(points[index].y - 2) * -1;
-                    }
-
-                    if (points[index].y < -2) {
-                        fCollide.y += -m_dCollision * velocity[index].y + m_kCollision*std::fabs(points[index].y + 2);
-                    }
-
-                    if (points[index].z > 2) {
-                        fCollide.z += -m_dCollision * velocity[index].z + m_kCollision*std::fabs(points[index].z - 2) * -1;
-                    }
-
-                    if (points[index].z < -2) {
-                        fCollide.z += -m_dCollision * velocity[index].z + m_kCollision*std::fabs(points[index].z + 2);
-                    }
-
-                    F += fCollide;
-
-                    //Force Field Calculation - by default exerts gravity everywhere
-                    //In the future this should taken from as an input
-                    F += m_gravity;
-
-                    acceleration[index] = F * 1.0f/m_mass;
-
-                }
-          }
-    }
-}
-
 void JelloCube::euler() {
     int dim = m_param1 + 1;
     int num_control_points = pow(dim,3);
@@ -400,105 +202,22 @@ void JelloCube::euler() {
     std::vector<glm::vec3> acceleration;
     acceleration.reserve(num_control_points);
 
-    computeAcceleration(m_points, m_velocity, acceleration);
+    computeAcceleration(
+                m_param1, m_kElastic, m_dElastic,
+                m_kCollision, m_dCollision, m_mass, m_gravity,
+                m_points, m_velocity, acceleration);
 
     for (int i = 0; i < num_control_points; i ++) {
-        m_points[i] += dt * m_velocity[i];
-        m_velocity[i] += dt * acceleration[i];
+        m_points[i] += m_dt * m_velocity[i];
+        m_velocity[i] += m_dt * acceleration[i];
     }
 
-}
-
-//Is it possible to optimize this thing?
-void JelloCube::rk4() {
-    int dim = m_param1 + 1;
-    int num_control_points = pow(dim,3);
-
-    std::vector<glm::vec3> buffer_points;
-    std::vector<glm::vec3> buffer_velocity;
-    buffer_points.reserve(num_control_points);
-    buffer_velocity.reserve(num_control_points);
-
-    std::vector<glm::vec3> acceleration;
-    acceleration.reserve(num_control_points);
-
-    std::vector<glm::vec3> points1;
-    std::vector<glm::vec3> velocity1;
-    points1.reserve(num_control_points);
-    velocity1.reserve(num_control_points);
-
-    std::vector<glm::vec3> points2;
-    std::vector<glm::vec3> velocity2;
-    points2.reserve(num_control_points);
-    velocity2.reserve(num_control_points);
-
-    std::vector<glm::vec3> points3;
-    std::vector<glm::vec3> velocity3;
-    points3.reserve(num_control_points);
-    velocity3.reserve(num_control_points);
-
-    std::vector<glm::vec3> points4;
-    std::vector<glm::vec3> velocity4;
-    points4.reserve(num_control_points);
-    velocity4.reserve(num_control_points);
-
-    computeAcceleration(m_points, m_velocity, acceleration);
-
-    for (int i = 0; i < num_control_points; i++) {
-        points1[i] = dt * m_velocity[i];
-        velocity1[i] = dt * acceleration[i];
-        buffer_points[i] = 0.5f * points1[i];
-        buffer_velocity[i] = 0.5f * velocity1[i];
-        buffer_points[i] += m_points[i];
-        buffer_velocity[i] += m_velocity[i];
-    }
-
-    computeAcceleration(buffer_points, buffer_velocity, acceleration);
-    for (int i = 0; i < num_control_points; i++) {
-        points2[i] = dt * buffer_velocity[i];
-        velocity2[i] = dt * acceleration[i];
-        buffer_points[i] = 0.5f * points2[i];
-        buffer_velocity[i] = 0.5f * velocity2[i];
-        buffer_points[i] += m_points[i];
-        buffer_velocity[i] += m_velocity[i];
-    }
-
-    computeAcceleration(buffer_points, buffer_velocity, acceleration);
-    for (int i = 0; i < num_control_points; i++) {
-        points3[i] = dt * buffer_velocity[i];
-        velocity3[i] = dt * acceleration[i];
-        buffer_points[i] = 0.5f * points3[i];
-        buffer_velocity[i] = 0.5f * velocity3[i];
-        buffer_points[i] += m_points[i];
-        buffer_velocity[i] += m_velocity[i];
-    }
-
-    computeAcceleration(buffer_points, buffer_velocity, acceleration);
-    for (int i = 0; i < num_control_points; i++) {
-        points4[i] = dt * buffer_velocity[i];
-        velocity4[i] = dt * acceleration[i];
-
-        buffer_points[i] = 2.f * points2[i];
-        buffer_velocity[i] = 2.f * points3[i];
-        buffer_points[i] += buffer_velocity[i];
-        buffer_points[i] += points1[i];
-        buffer_points[i] += points4[i];
-        buffer_points[i] /= 6.f;
-        m_points[i] += buffer_points[i];
-
-        buffer_points[i] = 2.f * velocity2[i];
-        buffer_velocity[i] = 2.f * velocity3[i];
-        buffer_points[i] += buffer_velocity[i];
-        buffer_points[i] += velocity1[i];
-        buffer_points[i] += velocity4[i];
-        buffer_points[i] /= 6.f;
-        m_velocity[i] += buffer_points[i];
-    }
 }
 
 //Should update positions and call on loadVAO and initializeOpenGLShapeProperties() to prep for drawing again
 void JelloCube::tick(float current) {
-    rk4();
+    rk4(m_dt, m_param1, m_kElastic, m_dElastic, m_kCollision, m_dCollision,
+        m_mass, m_gravity, m_points, m_velocity);
     calculateNormals();
     m_vertexData.clear();
     loadVAO();
