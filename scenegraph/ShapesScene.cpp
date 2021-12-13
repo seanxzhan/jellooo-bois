@@ -263,6 +263,7 @@ unsigned int ShapesScene::setSkyboxUniforms(Shader *shader) {
         else
         {
             std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
+            std::cout << "Possible Fix: Change texture paths in ShapesScene.cpp :D" << std::endl;
             free(data);
         }
     }
