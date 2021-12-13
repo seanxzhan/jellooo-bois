@@ -30,6 +30,7 @@ using namespace CS123::GL;
 
 ShapesScene::ShapesScene(int width, int height) :
     m_shape(nullptr),
+    m_bbox(std::make_unique<Bbox>()),
     m_shapeParameter1(-1),
     m_shapeParameter2(-1),
     m_width(width),
@@ -146,24 +147,19 @@ void ShapesScene::render(SupportCanvas3D *context) {
         if (settings.drawNormals) {
             renderNormalsPass(context);
         }
+
+        m_testShader->bind();
+        setMatrixUniforms(m_testShader.get(), context);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        m_bbox->drawBbox();
+        glm::vec3 color = glm::vec3(0.1, 0.8, 0.1);
+        m_testShader->setUniform("color", color);
+        m_bbox->drawFloor();
+        m_testShader->unbind();
     } else {
         renderJelloPass(context);
     }
   
-    
-    m_bbox = std::make_unique<Bbox>();
-
-    m_testShader->bind();
-
-    setMatrixUniforms(m_testShader.get(), context);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-    m_bbox->drawBbox();
-    glm::vec3 color = glm::vec3(0.1, 0.8, 0.1);
-    m_testShader->setUniform("color", color);
-    m_bbox->drawFloor();
-
-    m_testShader->unbind();
 }
 
 // Need to confirm this works for both orbiting and camtrans camera D:
@@ -204,10 +200,14 @@ void ShapesScene::renderJelloPass(SupportCanvas3D *context) {
 
 void ShapesScene::renderSkybox(SupportCanvas3D *context) {
 
-    glFrontFace(GL_CW);
+//    glFrontFace(GL_CW);
 
-    glDepthMask(GL_FALSE);
+//    glDepthMask(GL_FALSE);
     m_skyboxShader->bind();
+
+    glFrontFace(GL_CW);
+    glDepthMask(GL_FALSE);
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     m_skyboxShader->setUniform("projection", context->getCamera()->getProjectionMatrix());
     m_skyboxShader->setUniform("view", glm::mat4(glm::mat3(context->getCamera()->getViewMatrix())));
@@ -215,20 +215,24 @@ void ShapesScene::renderSkybox(SupportCanvas3D *context) {
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_cubeMapTexture);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     m_skyboxCube->draw();
-    m_skyboxShader->unbind();
-    glDepthMask(GL_TRUE);
 
+    glDepthMask(GL_TRUE);
     glFrontFace(GL_CCW);
+
+    m_skyboxShader->unbind();
+//    glDepthMask(GL_TRUE);
+
+//    glFrontFace(GL_CCW);
 }
 
 unsigned int ShapesScene::setSkyboxUniforms(Shader *shader) {
     // [NOTE] Need to use absolute paths
-    std::vector<std::string> faces = {"C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//posx.jpg",
-                                      "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//negx.jpg",
-                                      "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//posy.jpg",
-                                      "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//negy.jpg",
-                                      "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//posz.jpg",
-                                      "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//negz.jpg"};
+    std::vector<std::string> faces = {"/Users/seanzhan/course/cs1230/jellooo-bois/textures/MarriottMadisonWest/posx.jpg",
+                                      "/Users/seanzhan/course/cs1230/jellooo-bois/textures/MarriottMadisonWest/negx.jpg",
+                                      "/Users/seanzhan/course/cs1230/jellooo-bois/textures/MarriottMadisonWest/posy.jpg",
+                                      "/Users/seanzhan/course/cs1230/jellooo-bois/textures/MarriottMadisonWest/negy.jpg",
+                                      "/Users/seanzhan/course/cs1230/jellooo-bois/textures/MarriottMadisonWest/posz.jpg",
+                                      "/Users/seanzhan/course/cs1230/jellooo-bois/textures/MarriottMadisonWest/negz.jpg"};
 
     unsigned int textureID;
     glGenTextures(1, &textureID);
@@ -266,6 +270,10 @@ unsigned int ShapesScene::setSkyboxUniforms(Shader *shader) {
 void ShapesScene::renderPhongPass(SupportCanvas3D *context) {
     m_phongShader->bind();
 
+        // -------------------------------------------------
+    if (m_usePhong) {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
     clearLights();
     setLights(context->getCamera()->getViewMatrix());
     setPhongSceneUniforms();
@@ -316,8 +324,6 @@ void ShapesScene::renderNormalsPass (SupportCanvas3D *context) {
 
     // Render the arrows.
     m_normalsArrowShader->bind();
-//    glm::vec3 color = glm::vec3(0.2, 0.4, 0.8);
-//    m_normalsArrowShader->setUniform("color", color);
     setMatrixUniforms(m_normalsArrowShader.get(), context);
     renderGeometryAsFilledPolygons();
     m_normalsArrowShader->unbind();
@@ -331,16 +337,6 @@ void ShapesScene::renderGeometry() {
             m_shape->draw();
         }
     }
-
-//    // anything that needs to persist for any t should be put here
-//    m_bbox = std::make_unique<Bbox>();
-//    m_bbox->drawBbox();
-
-////    m_testShader->bind();
-////    glm::vec3 color = glm::vec3(0.2, 0.4, 0.8);
-////    m_testShader->setUniform("color", color);
-//    m_bbox->drawFloor();
-////    m_testShader->unbind();
 }
 
 void ShapesScene::clearLights() {
@@ -399,9 +395,11 @@ void ShapesScene::settingsChanged() {
             case SHAPE_JELLO_CUBE:
                 std::cout << "shape type: jello cube" << std::endl;
                 m_usePhong = false;
-                m_shape = std::make_unique<JelloCube>(settings.shapeParameter1, settings.shapeParameter2);
+                m_shape = std::make_unique<JelloCube>(m_shapeParameter1, m_shapeParameter2);
+            break;
             case SHAPE_SPRING_MASS_CUBE:
                 std::cout << "shape type: spring mass cube" << std::endl;
+                m_usePhong = true;
                 m_shape = std::make_unique<SpringMassCube>(m_shapeParameter1, m_shapeParameter2);
             break;
             case SHAPE_CYLINDER:

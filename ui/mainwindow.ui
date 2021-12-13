@@ -204,6 +204,8 @@
          <widget class="QRadioButton" name="shapeTypeJelloCube">
           <property name="text">
            <string>Jello Cube</string>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QRadioButton" name="shapeTypeSMCube">

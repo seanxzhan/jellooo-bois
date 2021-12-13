@@ -48,17 +48,6 @@ public:
     /** Build the VAO given the specified vertex data and atrributes */
     void buildVAO();
 
-    // Added by Marc - from Lab11
-    /** Initialize the VBO with the given vertex data. */
-    void setVertexData(GLfloat *data, int size, CS123::GL::VBO::GEOMETRY_LAYOUT drawMode, int numVertices);
-
-    /** Enables the specified attribute and calls glVertexAttribPointer with the given arguments. */
-    void setAttribute(GLuint index, GLuint numElementsPerVertex, int offset, CS123::GL::VBOAttribMarker::DATA_TYPE type,
-                      bool normalize);
-
-    /** Build the VAO given the specified vertex data and atrributes */
-    void buildVAO();
-
 protected:
     /**
      * initializes the relavant openGL properties for the shape
