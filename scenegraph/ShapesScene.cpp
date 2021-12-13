@@ -135,8 +135,6 @@ void ShapesScene::render(SupportCanvas3D *context) {
     // black one for drawing wireframe or normals so they will show up against the background.)
     setClearColor();
 
-    renderSkybox(context);
-
     if (m_usePhong) {
         renderPhongPass(context);
 
@@ -157,7 +155,17 @@ void ShapesScene::render(SupportCanvas3D *context) {
         m_bbox->drawFloor();
         m_testShader->unbind();
     } else {
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_POLYGON_OFFSET_LINE);
+
+        renderSkybox(context);
         renderJelloPass(context);
+
+        glEnable(GL_DEPTH_TEST);
+        // Move the polygons back a bit so lines are still drawn even though they are coplanar with the
+        // polygons they came from, which will be drawn before them.
+        glEnable(GL_POLYGON_OFFSET_LINE);
+        glPolygonOffset(-1, -1);
     }
   
 }
@@ -227,12 +235,12 @@ void ShapesScene::renderSkybox(SupportCanvas3D *context) {
 
 unsigned int ShapesScene::setSkyboxUniforms(Shader *shader) {
     // [NOTE] Need to use absolute paths
-    std::vector<std::string> faces = {"/Users/seanzhan/course/cs1230/jellooo-bois/textures/MarriottMadisonWest/posx.jpg",
-                                      "/Users/seanzhan/course/cs1230/jellooo-bois/textures/MarriottMadisonWest/negx.jpg",
-                                      "/Users/seanzhan/course/cs1230/jellooo-bois/textures/MarriottMadisonWest/posy.jpg",
-                                      "/Users/seanzhan/course/cs1230/jellooo-bois/textures/MarriottMadisonWest/negy.jpg",
-                                      "/Users/seanzhan/course/cs1230/jellooo-bois/textures/MarriottMadisonWest/posz.jpg",
-                                      "/Users/seanzhan/course/cs1230/jellooo-bois/textures/MarriottMadisonWest/negz.jpg"};
+    std::vector<std::string> faces =  {"C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//posx.jpg",
+                                       "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//negx.jpg",
+                                       "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//posy.jpg",
+                                       "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//negy.jpg",
+                                       "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//posz.jpg",
+                                       "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//negz.jpg"};
 
     unsigned int textureID;
     glGenTextures(1, &textureID);
@@ -424,6 +432,8 @@ void ShapesScene::settingsChanged() {
 }
 
 void ShapesScene::tick(float current) {
-    m_shape->tick(current);
+    if (m_simType != SIM_STATIC_CUBE){
+        m_shape->tick(current);
+    }
 }
 

@@ -65,4 +65,6 @@ void main()
     fragColor.y *= 0.1;
     fragColor.z = (1-prop) * 1.0 + prop * fragColor.z;
     fragColor.w = 0.8;
+
+//    fragColor = vec4(1.0, 0, 1.0, 1.0);
 }
