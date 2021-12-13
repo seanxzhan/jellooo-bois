@@ -17,6 +17,22 @@ public:
     virtual void setParam1(int inp) override;
     virtual void setParam2(int inp) override;
 
+    //Getters and setters for constants
+    float getkElastic();
+    void setkElastic(float kElastic);
+    float getdElastic();
+    void setdElastic(float dCollision);
+
+    float getkCollision();
+    void setkCollision(float kCollision);
+    float getdCollision();
+    void setdCollision(float dCollision);
+
+    float getMass();
+    void setMass(float mass);
+
+    float getGravity();
+    void setGravity(float yValue);
 private:
     virtual void generateVertexData() override;
 

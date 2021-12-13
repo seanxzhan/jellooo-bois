@@ -41,6 +41,54 @@ void JelloCube::setParam2(int inp) {
     generateVertexData();
 }
 
+float JelloCube::getkElastic() {
+    return m_kElastic;
+}
+
+void JelloCube::setkElastic(float kElastic) {
+    m_kElastic = kElastic;
+}
+
+float JelloCube::getdElastic() {
+    return m_dElastic;
+}
+
+void JelloCube::setdElastic(float dCollision) {
+    m_dCollision = dCollision;
+}
+
+float JelloCube::getkCollision() {
+    return m_kCollision;
+}
+
+void JelloCube::setkCollision(float kCollision) {
+    m_kCollision = kCollision;
+}
+
+float JelloCube::getdCollision() {
+    return m_dCollision;
+}
+
+void JelloCube::setdCollision(float dCollision) {
+    m_dCollision = dCollision;
+}
+
+float JelloCube::getMass() {
+    return m_mass;
+}
+
+void JelloCube::setMass(float mass) {
+    m_mass = mass;
+}
+
+float JelloCube::getGravity() {
+    return m_gravity.y;
+}
+
+void JelloCube::setGravity(float yValue) {
+    m_gravity.y = yValue;
+}
+
 void JelloCube::generateVertexData(){
     int dim = m_param1 + 1;
     int num_control_points = pow(dim,3);
