@@ -195,6 +195,7 @@ void ShapesScene::renderJelloPass(SupportCanvas3D *context) {
     m_jelloShader->setLight(m_light);
 
     m_jelloShader->setUniform("useLighting", settings.useLighting);
+    m_jelloShader->setUniform("jelloColor", 2);
 
     // Pass in uniforms for view, projection, model (mat4(1.0))
     setMatrixUniforms(m_jelloShader.get(), context);

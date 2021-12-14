@@ -14,6 +14,7 @@ uniform mat4 v;
 uniform mat4 m;
 
 uniform samplerCube skyBox;
+uniform int jelloColor;
 
 out vec4 fragColor;
 
@@ -59,12 +60,28 @@ void main()
     // Make Jello-Like
 
     // Keep 1 Channel Color
-    // TODO: Add Uniform for color channel to keep eventually if needed
-    float prop = 0.5; // proportion of glass color to keep
-    fragColor.x *= 0.1;
-    fragColor.y *= 0.1;
-    fragColor.z = (1-prop) * 1.0 + prop * fragColor.z;
-    fragColor.w = 0.8;
+
+
+    if (jelloColor == 0) { // Blue
+        float prop = 0.5; // proportion of glass color to keep
+        fragColor.x *= 0.1;
+        fragColor.y *= 0.1;
+        fragColor.z = (1-prop) * 1.0 + prop * fragColor.z;
+        fragColor.w = 0.8;
+    } else if (jelloColor == 1) { // Red
+        float prop = 0.4; // proportion of glass color to keep
+        fragColor.z *= 0.1;
+        fragColor.y *= 0.1;
+        fragColor.x = (1-prop) * 1.0 + prop * fragColor.z;
+        fragColor.w = 0.8;
+    } else { // Green
+        float prop = 0.5; // proportion of glass color to keep
+        fragColor.x *= 0.1;
+        fragColor.z *= 0.1;
+        fragColor.y = (1-prop) * 1.0 + prop * fragColor.z;
+        fragColor.w = 0.8;
+    }
+
 
 //    fragColor = vec4(1.0, 0, 1.0, 1.0);
 }
