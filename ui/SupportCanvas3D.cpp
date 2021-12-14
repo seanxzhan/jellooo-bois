@@ -23,7 +23,7 @@ SupportCanvas3D::SupportCanvas3D(QGLFormat format, QWidget *parent) : QGLWidget(
     m_defaultOrbitingCamera(new OrbitingCamera()),
     m_currentScene(nullptr),
     m_timer(this),
-    m_fps(24.0f),
+    m_fps(48.0f),
     m_increment(0)
 {
     // Set up 60 FPS draw loop.
