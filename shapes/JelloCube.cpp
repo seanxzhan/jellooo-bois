@@ -5,7 +5,7 @@ JelloCube::JelloCube():
     Shape(8,8),
     m_kElastic(200),
     m_dElastic(0.15),
-    m_kCollision(400),
+    m_kCollision(200),
     m_dCollision(0.25),
     m_mass(0.001953),
     dt(0.001),
@@ -18,7 +18,7 @@ JelloCube::JelloCube(int param1, int param2):
     Shape(param1,param2),
     m_kElastic(200),
     m_dElastic(0.25),
-    m_kCollision(400),
+    m_kCollision(200),
     m_dCollision(0.25),
     m_mass(0.001953),
     dt(0.001),
@@ -388,7 +388,8 @@ void JelloCube::computeAcceleration(std::vector<glm::vec3> &points,
                     glm::vec3 b(-2, 2, -2);
                     glm::vec3 c(-2,-2, 2);
 
-                    glm::vec3 planeNormal = glm::normalize(glm::cross(c-b, a-b));
+                    glm::vec3 planeCross = glm::cross(c-b, a-b);
+                    glm::vec3 planeNormal = glm::normalize(planeCross);
 
                     glm::vec3 currentPoint = points[index];
                     float D;
@@ -399,13 +400,13 @@ void JelloCube::computeAcceleration(std::vector<glm::vec3> &points,
                               planeNormal.z * (currentPoint.z - a.z)) < 0) {
 
                         // Dampen Velocity
-                        fCollide += -1 * m_dCollision * velocity[index];
+//                        fCollide += -1.f * 0.5f * velocity[index];
+                        fCollide += -1.f * m_dCollision * velocity[index];
+
                         // m_kCollision * Distance from point to plane * Normal
-                        float distToPlane = fabs(planeNormal.x * currentPoint.x +
-                                                 planeNormal.y * currentPoint.y +
-                                                 planeNormal.z * currentPoint.z -
-                                                 D);
-                        fCollide += m_kCollision * distToPlane * planeNormal;
+                        float distToPlane = fabs(glm::dot(planeNormal, currentPoint - a));
+                        fCollide += 50 * distToPlane * planeNormal;
+//                        fCollide += m_kCollision * distToPlane * planeNormal;
                     }
 
                     F += fCollide;
