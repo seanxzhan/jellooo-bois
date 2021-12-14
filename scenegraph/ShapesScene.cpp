@@ -153,12 +153,16 @@ void ShapesScene::render(SupportCanvas3D *context) {
         glm::vec3 color = glm::vec3(0.1, 0.8, 0.1);
         m_testShader->setUniform("color", color);
         m_bbox->drawFloor();
+        m_testShader->setUniform("color", glm::vec3(0.7, 0.1, 0.7));
+        m_bbox->drawPlane();
+        m_testShader->setUniform("color", color); // setting back to classic green color :D
         m_testShader->unbind();
     } else {
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_POLYGON_OFFSET_LINE);
 
         renderSkybox(context);
+
 
         m_testShader->bind();
         setMatrixUniforms(m_testShader.get(), context);
@@ -167,7 +171,11 @@ void ShapesScene::render(SupportCanvas3D *context) {
         glm::vec3 color = glm::vec3(0.1, 0.8, 0.1);
         m_testShader->setUniform("color", color);
         m_bbox->drawFloor();
+        m_testShader->setUniform("color", glm::vec3(0.7, 0.1, 0.7));
+        m_bbox->drawPlane();
+        m_testShader->setUniform("color", color); // setting back to classic green color :D
         m_testShader->unbind();
+
 
         renderJelloPass(context);
 

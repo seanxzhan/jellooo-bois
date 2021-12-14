@@ -233,7 +233,34 @@ void computeAcceleration(int param_1,
                     if (points[index].z < -2) {
                         fCollide.z += -m_dCollision * velocity[index].z + m_kCollision*std::fabs(points[index].z + 2);
                     }
+                    // Plane Collisions
+                                        // TODO: We're using one plane, so I can factor out the math, but keeping it for demo purposes laterrrr
 
+                                        // 3 Points to Define a Plane
+                                        glm::vec3 a(2, -2, -2);
+                                        glm::vec3 b(-2, 2, -2);
+                                        glm::vec3 c(-2,-2, 2);
+
+                                        glm::vec3 planeCross = glm::cross(c-b, a-b);
+                                        glm::vec3 planeNormal = glm::normalize(planeCross);
+
+                                        glm::vec3 currentPoint = points[index];
+                                        float D;
+
+                                        if (  // Intersects Plane
+                                                (D = planeNormal.x * (currentPoint.x - a.x) +
+                                                  planeNormal.y * (currentPoint.y - a.y) +
+                                                  planeNormal.z * (currentPoint.z - a.z)) < 0) {
+
+                                            // Dampen Velocity
+                    //                        fCollide += -1.f * 0.5f * velocity[index];
+                                            fCollide += -1.f * m_dCollision * velocity[index];
+
+                                            // m_kCollision * Distance from point to plane * Normal
+                                            float distToPlane = fabs(glm::dot(planeNormal, currentPoint - a));
+                                            fCollide += 50 * distToPlane * planeNormal;
+                    //                        fCollide += m_kCollision * distToPlane * planeNormal;
+                                        }
                     F += fCollide;
 
                     //Force Field Calculation - by default exerts gravity everywhere
