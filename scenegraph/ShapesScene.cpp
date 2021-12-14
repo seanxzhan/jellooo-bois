@@ -9,6 +9,7 @@
 #include <iostream>
 
 #include "shapes/ExampleShape.h"
+#include "shapes/ExampleShape2.h"
 
 using namespace CS123::GL;
 #include "gl/shaders/CS123Shader.h"
@@ -96,7 +97,7 @@ void ShapesScene::loadSkyboxShader() {
     m_skyboxShader = std::make_unique<Shader>(vertexSource, fragmentSource);
 
 //      Loading CubeMap data
-    m_skyboxCube = std::make_unique<ExampleShape>(1,1);
+    m_skyboxCube = std::make_unique<ExampleShape2>(1,1);
 }
 
 void ShapesScene::loadPhongShader() {
@@ -137,16 +138,7 @@ void ShapesScene::render(SupportCanvas3D *context) {
     setClearColor();
 
     if (m_usePhong) {
-        renderPhongPass(context);
-
-        if (settings.drawWireframe) {
-            renderWireframePass(context);
-        }
-
-        if (settings.drawNormals) {
-            renderNormalsPass(context);
-        }
-
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         m_testShader->bind();
         setMatrixUniforms(m_testShader.get(), context);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -158,9 +150,21 @@ void ShapesScene::render(SupportCanvas3D *context) {
         m_bbox->drawPlane();
         m_testShader->setUniform("color", color);
         m_testShader->unbind();
+
+        renderPhongPass(context);
+
+        if (settings.drawWireframe) {
+            renderWireframePass(context);
+        }
+
+        if (settings.drawNormals) {
+            renderNormalsPass(context);
+        }
     } else {
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_POLYGON_OFFSET_LINE);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+//        glDisable(GL_DEPTH_TEST);
+//        glDisable(GL_POLYGON_OFFSET_LINE);
 
         renderSkybox(context);
 
@@ -178,11 +182,11 @@ void ShapesScene::render(SupportCanvas3D *context) {
 
         renderJelloPass(context);
 
-        glEnable(GL_DEPTH_TEST);
-        // Move the polygons back a bit so lines are still drawn even though they are coplanar with the
-        // polygons they came from, which will be drawn before them.
-        glEnable(GL_POLYGON_OFFSET_LINE);
-        glPolygonOffset(-1, -1);
+//        glEnable(GL_DEPTH_TEST);
+//        // Move the polygons back a bit so lines are still drawn even though they are coplanar with the
+//        // polygons they came from, which will be drawn before them.
+//        glEnable(GL_POLYGON_OFFSET_LINE);
+//        glPolygonOffset(-1, -1);
     }
   
 }
@@ -234,7 +238,7 @@ void ShapesScene::renderSkybox(SupportCanvas3D *context) {
     glFrontFace(GL_CW);
     glDepthMask(GL_FALSE);
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     m_skyboxShader->setUniform("projection", context->getCamera()->getProjectionMatrix());
     m_skyboxShader->setUniform("view", glm::mat4(glm::mat3(context->getCamera()->getViewMatrix())));
 
@@ -298,9 +302,9 @@ void ShapesScene::renderPhongPass(SupportCanvas3D *context) {
     m_phongShader->bind();
 
         // -------------------------------------------------
-    if (m_usePhong) {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    }
+//    if (m_usePhong) {
+//        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//    }
     clearLights();
     setLights(context->getCamera()->getViewMatrix());
     setPhongSceneUniforms();
