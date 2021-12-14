@@ -17,7 +17,7 @@ JelloCube::JelloCube():
 
 JelloCube::JelloCube(int param1, int param2):
     Shape(param1,param2),
-    m_kElastic(200),
+    m_kElastic(1000),
     m_dElastic(0.25),
     m_kCollision(400),
     m_dCollision(0.25),

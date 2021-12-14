@@ -50,6 +50,7 @@ ShapesScene::ShapesScene(int width, int height) :
     loadSkyboxShader();
     m_cubeMapTexture = setSkyboxUniforms(m_skyboxShader.get());
     loadJelloShader();
+    glDisable(GL_DEPTH_TEST);
 
     // [SHAPES] Allocate any additional memory you need...
 }
