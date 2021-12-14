@@ -7,9 +7,8 @@ in vec3 eyeNormal;	        // Normal of the vertex, in camera space!
 in float SpecularIntensity;
 
 // [NOTE] These are hyperparamters we can experiment with
-float r0 = 0.8; // The R0 value to use in Schlick's approximation
-//vec3  eta = vec3(0.79, 0.8, 0.81);  // Contains one eta for each channel (use eta.r, eta.g, eta.b in your code)
-vec3  eta = vec3(0.4, 0.4, 0.4);  // Contains one eta for each channel (use eta.r, eta.g, eta.b in your code)
+float r0 = 0.3; // The R0 value to use in Schlick's approximation
+vec3  eta = vec3(0.79, 0.8, 0.81);  // Contains one eta for each channel (use eta.r, eta.g, eta.b in your code)
 
 uniform mat4 v;
 uniform mat4 m;
@@ -75,12 +74,17 @@ void main()
         fragColor.y *= 0.1;
         fragColor.x = (1-prop) * 1.0 + prop * fragColor.z;
         fragColor.w = 0.8;
-    } else { // Green
+    } else if (jelloColor == 2) { // Green
         float prop = 0.5; // proportion of glass color to keep
         fragColor.x *= 0.2;
         fragColor.z *= 0.2;
         fragColor.y = (1-prop) * 1.0 + prop * fragColor.z;
         fragColor.w = 0.8;
+    } else { // glass ish
+        fragColor.x *= 1.0;
+        fragColor.z *= 1.0;
+        fragColor.y *= 1.0;
+        fragColor.w = 0.1;
     }
 
 

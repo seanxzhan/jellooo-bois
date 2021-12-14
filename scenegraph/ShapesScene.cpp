@@ -216,7 +216,7 @@ void ShapesScene::renderJelloPass(SupportCanvas3D *context) {
     m_jelloShader->setLight(m_light);
 
     m_jelloShader->setUniform("useLighting", settings.useLighting);
-    m_jelloShader->setUniform("jelloColor", 2);
+    m_jelloShader->setUniform("jelloColor", 3);
 
     // Pass in uniforms for view, projection, model (mat4(1.0))
     setMatrixUniforms(m_jelloShader.get(), context);
@@ -257,12 +257,12 @@ void ShapesScene::renderSkybox(SupportCanvas3D *context) {
 
 unsigned int ShapesScene::setSkyboxUniforms(Shader *shader) {
     // [NOTE] Need to use absolute paths
-    std::vector<std::string> faces =  {"/Users/seanzhan/course/cs1230/jellooo-bois/textures/MarriottMadisonWest/posx.jpg",
-                                       "/Users/seanzhan/course/cs1230/jellooo-bois/textures/MarriottMadisonWest/negx.jpg",
-                                       "/Users/seanzhan/course/cs1230/jellooo-bois/textures/MarriottMadisonWest/posy.jpg",
-                                       "/Users/seanzhan/course/cs1230/jellooo-bois/textures/MarriottMadisonWest/negy.jpg",
-                                       "/Users/seanzhan/course/cs1230/jellooo-bois/textures/MarriottMadisonWest/posz.jpg",
-                                       "/Users/seanzhan/course/cs1230/jellooo-bois/textures/MarriottMadisonWest/negz.jpg"};
+    std::vector<std::string> faces =  {"/Users/seanzhan/course/cs1230/jellooo-bois/textures/bridge-waterfall/posx.jpg",
+                                       "/Users/seanzhan/course/cs1230/jellooo-bois/textures/bridge-waterfall/negx.jpg",
+                                       "/Users/seanzhan/course/cs1230/jellooo-bois/textures/bridge-waterfall/posy.jpg",
+                                       "/Users/seanzhan/course/cs1230/jellooo-bois/textures/bridge-waterfall/negy.jpg",
+                                       "/Users/seanzhan/course/cs1230/jellooo-bois/textures/bridge-waterfall/posz.jpg",
+                                       "/Users/seanzhan/course/cs1230/jellooo-bois/textures/bridge-waterfall/negz.jpg"};
 
     unsigned int textureID;
     glGenTextures(1, &textureID);
