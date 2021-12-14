@@ -36,9 +36,9 @@ void Bbox::drawFloor() {
 
 void Bbox::drawPlane() {
     std::vector<GLfloat> planeData = {
-        -2.f, 2.f, -2.f,
-        -2.f, -2.f, 2.f,
-        2.f, -2.f, -2.f,
+        -2.f, 2.f, -2.f, // b
+        -2.f, -2.f, 2.f, // c
+        2.f, -2.f, -2.f, // a
         2.f, -2.f, 2.f
     };
     drawTriangleStrips(planeData);

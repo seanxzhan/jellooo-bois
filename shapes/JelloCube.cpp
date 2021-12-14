@@ -388,7 +388,7 @@ void JelloCube::computeAcceleration(std::vector<glm::vec3> &points,
                     glm::vec3 b(-2, 2, -2);
                     glm::vec3 c(-2,-2, 2);
 
-                    glm::vec3 planeNormal = glm::normalize(glm::cross(b-a, b-c));
+                    glm::vec3 planeNormal = glm::normalize(glm::cross(c-b, a-b));
 
                     glm::vec3 currentPoint = points[index];
                     float D;
@@ -399,13 +399,13 @@ void JelloCube::computeAcceleration(std::vector<glm::vec3> &points,
                               planeNormal.z * (currentPoint.z - a.z)) < 0) {
 
                         // Dampen Velocity
-                        fCollide += m_dCollision * velocity[index];
+                        fCollide += -1 * m_dCollision * velocity[index];
                         // m_kCollision * Distance from point to plane * Normal
                         float distToPlane = fabs(planeNormal.x * currentPoint.x +
                                                  planeNormal.y * currentPoint.y +
                                                  planeNormal.z * currentPoint.z -
                                                  D);
-                        fCollide += m_kCollision * distToPlane *planeNormal;
+                        fCollide += m_kCollision * distToPlane * planeNormal;
                     }
 
                     F += fCollide;
@@ -415,7 +415,6 @@ void JelloCube::computeAcceleration(std::vector<glm::vec3> &points,
                     F += m_gravity;
 
                     acceleration[index] = F * 1.0f/m_mass;
-
                 }
           }
     }
