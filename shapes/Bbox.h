@@ -9,6 +9,7 @@ public:
     Bbox();
     ~Bbox();
     void drawBbox();
+    void drawPlane();
     void drawFloor();
 
     void tick(float current) override;
