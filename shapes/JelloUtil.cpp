@@ -304,7 +304,7 @@ void rk4(float dt,
     computeAcceleration(
                 m_param1, m_kElastic, m_dElastic,
                 m_kCollision, m_dCollision, m_mass, m_gravity,
-                points, velocity, acceleration);
+                buffer_points, buffer_velocity, acceleration);
     for (int i = 0; i < num_control_points; i++) {
         points2[i] = dt * buffer_velocity[i];
         velocity2[i] = dt * acceleration[i];
@@ -317,7 +317,7 @@ void rk4(float dt,
     computeAcceleration(
                 m_param1, m_kElastic, m_dElastic,
                 m_kCollision, m_dCollision, m_mass, m_gravity,
-                points, velocity, acceleration);
+                buffer_points, buffer_velocity, acceleration);
     for (int i = 0; i < num_control_points; i++) {
         points3[i] = dt * buffer_velocity[i];
         velocity3[i] = dt * acceleration[i];
@@ -330,7 +330,7 @@ void rk4(float dt,
     computeAcceleration(
                 m_param1, m_kElastic, m_dElastic,
                 m_kCollision, m_dCollision, m_mass, m_gravity,
-                points, velocity, acceleration);
+                buffer_points, buffer_velocity, acceleration);
     for (int i = 0; i < num_control_points; i++) {
         points4[i] = dt * buffer_velocity[i];
         velocity4[i] = dt * acceleration[i];
