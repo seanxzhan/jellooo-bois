@@ -156,6 +156,7 @@ void ShapesScene::render(SupportCanvas3D *context) {
         m_bbox->drawFloor();
         m_testShader->setUniform("color", glm::vec3(0.7, 0.1, 0.7));
         m_bbox->drawPlane();
+        m_testShader->setUniform("color", color);
         m_testShader->unbind();
     } else {
         glDisable(GL_DEPTH_TEST);
@@ -172,6 +173,7 @@ void ShapesScene::render(SupportCanvas3D *context) {
         m_bbox->drawFloor();
         m_testShader->setUniform("color", glm::vec3(0.7, 0.1, 0.7));
         m_bbox->drawPlane();
+        m_testShader->setUniform("color", color);
         m_testShader->unbind();
 
         renderJelloPass(context);
