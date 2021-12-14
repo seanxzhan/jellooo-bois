@@ -1,7 +1,7 @@
 #version 330 core
 
-in vec3 position;
-in vec3 normal;
+layout (location = 0) in vec3 position;
+layout (location = 1) in vec3 normal;
 
 out vec3 vertex;	    // The position of the vertex, in camera space
 out vec3 vertexToCamera;    // Vector from the vertex to the eye, which is the camera
@@ -26,8 +26,13 @@ uniform bool useLighting;     // Whether to calculate lighting using lighting eq
 
 void main()
 {
+//    vertex = vec3(v*m*vec4(position, 1.0).x, v*m*vec4(position, 1.0).y, v*m*vec4(position, 1.0).z);
+//    vertex = vec3(0.0, 0.0, 0.0);
     vertex = ((v*m)*(vec4(position, 1.0))).xyz;
     eyeNormal = normalize(mat3(transpose(inverse(v*m))) * normal);
+//    eyeNormal = normalize(transpose(inverse(v*m)) * vec4(normal, 0.0));
+//    eyeNormal = normal;
+//      eyeNormal = vec3(0.0, 0.0, 0.0);
     vertexToCamera = -normalize(vertex);
     gl_Position = p*v*m*vec4(position,1.0);
 

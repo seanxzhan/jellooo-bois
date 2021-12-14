@@ -153,12 +153,30 @@ void ShapesScene::render(SupportCanvas3D *context) {
         glm::vec3 color = glm::vec3(0.1, 0.8, 0.1);
         m_testShader->setUniform("color", color);
         m_bbox->drawFloor();
+        m_testShader->setUniform("color", glm::vec3(0.7, 0.1, 0.7));
+        m_bbox->drawPlane();
+        m_testShader->setUniform("color", color); // setting back to classic green color :D
         m_testShader->unbind();
     } else {
         glDisable(GL_DEPTH_TEST);
         glDisable(GL_POLYGON_OFFSET_LINE);
 
         renderSkybox(context);
+
+
+        m_testShader->bind();
+        setMatrixUniforms(m_testShader.get(), context);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        m_bbox->drawBbox();
+        glm::vec3 color = glm::vec3(0.1, 0.8, 0.1);
+        m_testShader->setUniform("color", color);
+        m_bbox->drawFloor();
+        m_testShader->setUniform("color", glm::vec3(0.7, 0.1, 0.7));
+        m_bbox->drawPlane();
+        m_testShader->setUniform("color", color); // setting back to classic green color :D
+        m_testShader->unbind();
+
+
         renderJelloPass(context);
 
         glEnable(GL_DEPTH_TEST);
@@ -236,12 +254,12 @@ void ShapesScene::renderSkybox(SupportCanvas3D *context) {
 
 unsigned int ShapesScene::setSkyboxUniforms(Shader *shader) {
     // [NOTE] Need to use absolute paths
-    std::vector<std::string> faces =  {"C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//posx.jpg",
-                                       "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//negx.jpg",
-                                       "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//posy.jpg",
-                                       "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//negy.jpg",
-                                       "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//posz.jpg",
-                                       "C://Users//marcm//Documents//cs1230//jello-final//textures//MarriottMadisonWest//negz.jpg"};
+    std::vector<std::string> faces =  {"/Users/seanzhan/course/cs1230/jellooo-bois/textures/MarriottMadisonWest/posx.jpg",
+                                       "/Users/seanzhan/course/cs1230/jellooo-bois/textures/MarriottMadisonWest/negx.jpg",
+                                       "/Users/seanzhan/course/cs1230/jellooo-bois/textures/MarriottMadisonWest/posy.jpg",
+                                       "/Users/seanzhan/course/cs1230/jellooo-bois/textures/MarriottMadisonWest/negy.jpg",
+                                       "/Users/seanzhan/course/cs1230/jellooo-bois/textures/MarriottMadisonWest/posz.jpg",
+                                       "/Users/seanzhan/course/cs1230/jellooo-bois/textures/MarriottMadisonWest/negz.jpg"};
 
     unsigned int textureID;
     glGenTextures(1, &textureID);
