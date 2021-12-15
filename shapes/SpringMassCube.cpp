@@ -6,15 +6,15 @@
 #include <glm/glm.hpp>
 #include "GL/glew.h"
 
-SpringMassCube::SpringMassCube(int param1, int param2):
+SpringMassCube::SpringMassCube(int param1, int param2, float kElastic, float dElastic, float kCollision, float dCollision, float mass, float gravity):
     Shape(param1,param2),
-    m_kElastic(200),
-    m_dElastic(0.25),
-    m_kCollision(400),
-    m_dCollision(0.25),
-    m_mass(0.001953),
+    m_kElastic(kElastic),
+    m_dElastic(dElastic),
+    m_kCollision(kCollision),
+    m_dCollision(dCollision),
+    m_mass(mass),
     m_dt(0.001),
-    m_gravity(glm::vec3(0.f, -1.f, 0.f))
+    m_gravity(glm::vec3(0.f, -gravity, 0.f))
 {
     generateVertexData();
 }
