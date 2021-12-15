@@ -106,6 +106,10 @@ MainWindow::MainWindow(QWidget *parent) :
     a += ui->cnnctnTypeStruct;
     a += ui->cnnctnTypeShear;
     a += ui->cnnctnTypeBend;
+    a += ui->jelloColorRed;
+    a += ui->jelloColorGreen;
+    a += ui->jelloColorBlue;
+    a += ui->jelloColorWhite;
 
     foreach (QRadioButton *rb, a)
         connect(rb, SIGNAL(clicked()), this, SLOT(activateCanvas3D()));
@@ -139,11 +143,13 @@ void MainWindow::dataBind() {
     QButtonGroup *shapesButtonGroup = new QButtonGroup;
     QButtonGroup *cnnctnButtonGroup = new QButtonGroup;
     QButtonGroup *filterButtonGroup = new QButtonGroup;
+    QButtonGroup *jelloColorGroup = new QButtonGroup;
     m_buttonGroups.push_back(brushButtonGroup);
     m_buttonGroups.push_back(simulationGroup);
     m_buttonGroups.push_back(shapesButtonGroup);
     m_buttonGroups.push_back(cnnctnButtonGroup);
     m_buttonGroups.push_back(filterButtonGroup);
+    m_buttonGroups.push_back(jelloColorGroup);
 
     // Shapes dock
 //    BIND(BoolBinding::bindCheckbox(ui->showSceneviewInstead, settings.useSceneviewScene))
@@ -174,6 +180,15 @@ void MainWindow::dataBind() {
         ui->cnnctnTypeStruct,
         ui->cnnctnTypeShear,
         ui->cnnctnTypeBend))
+
+    BIND(ChoiceBinding::bindRadioButtons(
+        jelloColorGroup,
+        NUM_JC_TYPES,
+        settings.jelloColor,
+        ui->jelloColorRed,
+        ui->jelloColorGreen,
+        ui->jelloColorBlue,
+        ui->jelloColorWhite))
 
     BIND(IntBinding::bindSliderAndTextbox(
         ui->shapeParameterSlider1, ui->shapeParameterTextbox1, settings.shapeParameter1, 1.f, 100.f))
