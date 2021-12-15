@@ -27,6 +27,12 @@ void Settings::loadSettingsOrDefaults() {
     // Set the default values below
     QSettings s("CS123", "CS123");
 
+    kElastic = s.value("kElastic", 200).toFloat();
+    dElastic = s.value("dElastic", 0.25).toFloat();
+    kCollision = s.value("kCollision", 400).toFloat();
+    dCollision = s.value("dCollision", 0.25).toFloat();
+    mass = s.value("mass", 0.001953).toFloat();
+    gravity = s.value("gravity", 1.f).toFloat();
     // Brush
     brushType = s.value("brushType", BRUSH_LINEAR).toInt();
     brushRadius = s.value("brushRadius", 50).toInt();

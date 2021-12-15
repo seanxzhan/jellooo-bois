@@ -409,25 +409,24 @@ void ShapesScene::settingsChanged() {
         m_simType = settings.simType;
     }
     // TODO: check if params are the same
-    if (settings.shapeType != m_shapeType || settings.shapeParameter1 != m_shapeParameter1
-            || settings.shapeParameter2 != m_shapeParameter2) {
+
         m_shapeParameter1 = settings.shapeParameter1;
         m_shapeParameter2 = settings.shapeParameter2;
         switch (settings.shapeType) {
             case SHAPE_CUBE:
                 std::cout << "shape type: phong cube" << std::endl;
                 m_usePhong = true;
-                m_shape = std::make_unique<JelloCube>(m_shapeParameter1, m_shapeParameter2);
+                m_shape = std::make_unique<JelloCube>(m_shapeParameter1, m_shapeParameter2, settings.kElastic, settings.dElastic, settings.kCollision, settings.dCollision, settings.mass, settings.gravity);
             break;
             case SHAPE_JELLO_CUBE:
                 std::cout << "shape type: jello cube" << std::endl;
                 m_usePhong = false;
-                m_shape = std::make_unique<JelloCube>(m_shapeParameter1, m_shapeParameter2);
+                m_shape = std::make_unique<JelloCube>(m_shapeParameter1, m_shapeParameter2, settings.kElastic, settings.dElastic, settings.kCollision, settings.dCollision, settings.mass, settings.gravity);
             break;
             case SHAPE_SPRING_MASS_CUBE:
                 std::cout << "shape type: spring mass cube" << std::endl;
                 m_usePhong = true;
-                m_shape = std::make_unique<SpringMassCube>(m_shapeParameter1, m_shapeParameter2);
+                m_shape = std::make_unique<SpringMassCube>(m_shapeParameter1, m_shapeParameter2, settings.kElastic, settings.dElastic, settings.kCollision, settings.dCollision, settings.mass, settings.gravity);
             break;
             case SHAPE_CYLINDER:
                 std::cout << "shape type: jellooo cylinder" << std::endl;
@@ -447,7 +446,6 @@ void ShapesScene::settingsChanged() {
             break;
         }
         m_shapeType = settings.shapeType;
-    }
 }
 
 void ShapesScene::tick(float current) {

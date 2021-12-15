@@ -95,6 +95,13 @@ struct Settings {
     // Saves the current settings to disk.
     void saveSettings();
 
+    float kElastic;
+    float dElastic;
+    float kCollision;
+    float dCollision;
+    float mass;
+    float gravity;
+
     // Brush
     int brushType;      // The user's selected brush @see BrushType
     int brushRadius;    // The brush radius

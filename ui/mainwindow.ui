@@ -63,6 +63,12 @@
         </property>
         <item row="0" column="0">
          <widget class="QScrollArea" name="scrollArea">
+          <property name="minimumSize">
+           <size>
+            <width>40</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
           </property>
@@ -86,7 +92,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>128</width>
+             <width>84</width>
              <height>3061</height>
             </rect>
            </property>
@@ -395,19 +401,10 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
-         <widget class="QLineEdit" name="kElastic">
-          <property name="minimumSize">
-           <size>
-            <width>40</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>40</width>
-            <height>16777215</height>
-           </size>
+        <item row="0" column="2">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>dElastic</string>
           </property>
          </widget>
         </item>
@@ -424,10 +421,49 @@
           </property>
          </widget>
         </item>
+        <item row="0" column="7">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>dCollision</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="kElastic">
+          <property name="minimumSize">
+           <size>
+            <width>40</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>40</width>
+            <height>16777215</height>
+           </size>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="5">
          <widget class="QLabel" name="label_4">
           <property name="text">
            <string>kCollision</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="8">
+         <widget class="QLineEdit" name="dCollision">
+          <property name="minimumSize">
+           <size>
+            <width>40</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>40</width>
+            <height>16777215</height>
+           </size>
           </property>
          </widget>
         </item>
@@ -447,28 +483,38 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="2">
-         <widget class="QLabel" name="label_3">
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_6">
           <property name="text">
-           <string>dElastic</string>
+           <string>Mass</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="7">
-         <widget class="QLabel" name="label_5">
-          <property name="text">
-           <string>dCollision</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="8">
-         <widget class="QLineEdit" name="dCollision">
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="mass">
           <property name="minimumSize">
            <size>
-            <width>40</width>
+            <width>80</width>
             <height>0</height>
            </size>
           </property>
+          <property name="maximumSize">
+           <size>
+            <width>80</width>
+            <height>16777215</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>Gravity</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="4">
+         <widget class="QLineEdit" name="gravity">
           <property name="maximumSize">
            <size>
             <width>40</width>
@@ -525,6 +571,71 @@
         </property>
         <property name="text">
          <string>Use lighting</string>
+        </property>
+       </widget>
+       <widget class="QSlider" name="dElasticSlider">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>740</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QSlider" name="kCollisionSlider">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>780</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QSlider" name="dCollisionSlider">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>710</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QSlider" name="massSlider">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>810</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QSlider" name="gravitySlider">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>680</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </widget>
@@ -1101,6 +1212,19 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <widget class="QSlider" name="kElasticSlider">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>1260</y>
+          <width>160</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
       </widget>
      </item>
     </layout>
