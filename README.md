@@ -1,7 +1,7 @@
 # jellooo-bois
 
 Note: In ShapesScene.cpp, in the function setSkyboxUniforms(), you should
-change the absolute paths appropriately.
+change the **absolute** paths appropriately.
 
 Added 
 - tick function called m_fps times per second (specified in SupportCanvas3D)
@@ -23,8 +23,8 @@ Allocation of work
 
 Adrian: Physics, tick functionality, tesselating faces and calculating normals 
 
-Sean: Wireframe bounding box visualization, Spring mass cube visualization, GUI, shaders 
+Sean: Spring mass cube visualization, GUI, shaders, GL stuff
 
-Marc: Environment mapping, glass shader, plane intersection, shaders 
+Marc: Environment mapping, glass shaders, plane intersection
 
 Luca: Physics, GUI, tried multithreading (somehow slower so not included)
