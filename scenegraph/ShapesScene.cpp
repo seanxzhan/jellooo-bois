@@ -33,7 +33,6 @@ ShapesScene::ShapesScene(int width, int height) :
     m_shape(nullptr),
     m_bbox(std::make_unique<Bbox>()),
     m_shapeParameter1(-1),
-    m_shapeParameter2(-1),
     m_width(width),
     m_height(height),
     m_simType(-1),
@@ -97,7 +96,7 @@ void ShapesScene::loadSkyboxShader() {
     m_skyboxShader = std::make_unique<Shader>(vertexSource, fragmentSource);
 
 //      Loading CubeMap data
-    m_skyboxCube = std::make_unique<ExampleShape2>(1,1);
+    m_skyboxCube = std::make_unique<ExampleShape2>(1);
 }
 
 void ShapesScene::loadPhongShader() {
@@ -144,6 +143,8 @@ void ShapesScene::render(SupportCanvas3D *context) {
 
     setClearColor();
 
+    glm::vec3 planeColor = glm::vec3(0.01, 0.66, 0.99);
+
     if (m_usePhong) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         m_testShader->bind();
@@ -151,10 +152,14 @@ void ShapesScene::render(SupportCanvas3D *context) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         m_bbox->drawBbox();
         glm::vec3 color = glm::vec3(0.1, 0.8, 0.1);
-        m_testShader->setUniform("color", color);
-        m_bbox->drawFloor();
-        m_testShader->setUniform("color", glm::vec3(0.7, 0.1, 0.7));
-        m_bbox->drawPlane();
+//        m_testShader->setUniform("color", color);
+//        m_bbox->drawFloor();
+
+        if (settings.usePlane) {
+            m_testShader->setUniform("color", planeColor);
+            m_bbox->drawPlane();
+        }
+
         m_testShader->setUniform("color", color);
         m_testShader->unbind();
 
@@ -180,10 +185,12 @@ void ShapesScene::render(SupportCanvas3D *context) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         m_bbox->drawBbox();
         glm::vec3 color = glm::vec3(0.1, 0.8, 0.1);
-        m_testShader->setUniform("color", color);
-        m_bbox->drawFloor();
-        m_testShader->setUniform("color", glm::vec3(0.7, 0.1, 0.7));
-        m_bbox->drawPlane();
+//        m_testShader->setUniform("color", color);
+//        m_bbox->drawFloor();
+        if (settings.usePlane) {
+            m_testShader->setUniform("color", planeColor);
+            m_bbox->drawPlane();
+        }
         m_testShader->setUniform("color", color);
         m_testShader->unbind();
 
@@ -421,9 +428,9 @@ void ShapesScene::settingsChanged() {
             case SIM_STATIC_CUBE:
                 std::cout << "sim type: static cube" << std::endl;
             break;
-            case SIM_EXAMPLE:
-                std::cout << "sim type: example" << std::endl;
-            break;
+//            case SIM_EXAMPLE:
+//                std::cout << "sim type: example" << std::endl;
+//            break;
             default:
                 std::cout << "sim type: these sim types have no-impl" << std::endl;
             break;
@@ -433,38 +440,38 @@ void ShapesScene::settingsChanged() {
     // TODO: check if params are the same
 
         m_shapeParameter1 = settings.shapeParameter1;
-        m_shapeParameter2 = settings.shapeParameter2;
+//        m_shapeParameter2 = settings.shapeParameter2;
         switch (settings.shapeType) {
             case SHAPE_CUBE:
                 std::cout << "shape type: phong cube" << std::endl;
                 m_usePhong = true;
-                m_shape = std::make_unique<JelloCube>(m_shapeParameter1, m_shapeParameter2, settings.kElastic, settings.dElastic, settings.kCollision, settings.dCollision, settings.mass, settings.gravity);
+                m_shape = std::make_unique<JelloCube>(m_shapeParameter1, settings.kElastic, settings.dElastic, settings.kCollision, settings.dCollision, settings.mass, settings.gravity);
             break;
             case SHAPE_JELLO_CUBE:
                 std::cout << "shape type: jello cube" << std::endl;
                 m_usePhong = false;
-                m_shape = std::make_unique<JelloCube>(m_shapeParameter1, m_shapeParameter2, settings.kElastic, settings.dElastic, settings.kCollision, settings.dCollision, settings.mass, settings.gravity);
+                m_shape = std::make_unique<JelloCube>(m_shapeParameter1, settings.kElastic, settings.dElastic, settings.kCollision, settings.dCollision, settings.mass, settings.gravity);
             break;
             case SHAPE_SPRING_MASS_CUBE:
                 std::cout << "shape type: spring mass cube" << std::endl;
                 m_usePhong = true;
-                m_shape = std::make_unique<SpringMassCube>(m_shapeParameter1, m_shapeParameter2, settings.kElastic, settings.dElastic, settings.kCollision, settings.dCollision, settings.mass, settings.gravity);
+                m_shape = std::make_unique<SpringMassCube>(m_shapeParameter1, settings.kElastic, settings.dElastic, settings.kCollision, settings.dCollision, settings.mass, settings.gravity);
             break;
-            case SHAPE_CYLINDER:
-                std::cout << "shape type: jellooo cylinder" << std::endl;
-                m_shape = std::make_unique<ExampleShape>(m_shapeParameter1, m_shapeParameter2);
-            break;
-            case SHAPE_CONE:
-                std::cout << "shape type: jellooo cone" << std::endl;
-                m_shape = std::make_unique<ExampleShape>(m_shapeParameter1, m_shapeParameter2);
-            break;
-            case SHAPE_SPHERE:
-                std::cout << "shape type: jellooo sphere" << std::endl;
-                 m_shape = std::make_unique<ExampleShape>(m_shapeParameter1, m_shapeParameter2);
-            break;
+//            case SHAPE_CYLINDER:
+//                std::cout << "shape type: jellooo cylinder" << std::endl;
+//                m_shape = std::make_unique<ExampleShape>(m_shapeParameter1, m_shapeParameter2);
+//            break;
+//            case SHAPE_CONE:
+//                std::cout << "shape type: jellooo cone" << std::endl;
+//                m_shape = std::make_unique<ExampleShape>(m_shapeParameter1, m_shapeParameter2);
+//            break;
+//            case SHAPE_SPHERE:
+//                std::cout << "shape type: jellooo sphere" << std::endl;
+//                 m_shape = std::make_unique<ExampleShape>(m_shapeParameter1, m_shapeParameter2);
+//            break;
             default:
                 std::cout << "shape type: these shapes have no-impl" << std::endl;
-                m_shape = std::make_unique<ExampleShape>(m_shapeParameter1, m_shapeParameter2);
+                m_shape = std::make_unique<ExampleShape>(m_shapeParameter1);
             break;
         }
         m_shapeType = settings.shapeType;

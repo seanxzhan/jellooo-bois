@@ -9,7 +9,7 @@ using namespace JelloUtil;
 class SpringMassCube : public Shape
 {
 public:
-    SpringMassCube(int param1, int param2, float kElastic, float dElastic, float kCollision, float dCollision, float mass, float gravity);
+    SpringMassCube(int param1, float kElastic, float dElastic, float kCollision, float dCollision, float mass, float gravity);
     ~SpringMassCube();
     void tick(float current) override;
     void setGravity(float scale, glm::vec3 new_direction) override;

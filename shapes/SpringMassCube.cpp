@@ -6,8 +6,8 @@
 #include <glm/glm.hpp>
 #include "GL/glew.h"
 
-SpringMassCube::SpringMassCube(int param1, int param2, float kElastic, float dElastic, float kCollision, float dCollision, float mass, float gravity):
-    Shape(param1,param2),
+SpringMassCube::SpringMassCube(int param1, float kElastic, float dElastic, float kCollision, float dCollision, float mass, float gravity):
+    Shape(param1),
     m_kElastic(kElastic),
     m_dElastic(dElastic),
     m_kCollision(kCollision),
@@ -34,6 +34,11 @@ void SpringMassCube::setParam2(int inp) {
 }
 
 void SpringMassCube::setGravity(float scale, glm::vec3 new_direction) {
+    if (settings.fallCameraY) {
+        m_gravity = scale * new_direction;
+    } else {
+        m_gravity = scale * glm::vec3(0, -1, 0);
+    }
 }
 
 void SpringMassCube::generateVertexData(){
@@ -41,7 +46,7 @@ void SpringMassCube::generateVertexData(){
     int num_control_points = pow(dim,3);
     m_points.reserve(num_control_points);
     m_velocity.reserve(num_control_points);
-    m_velocity.insert(m_velocity.begin(), num_control_points, glm::vec3(30.f, 30.f, 30.f));
+    m_velocity.insert(m_velocity.begin(), num_control_points, glm::vec3(0.f, 0.f, 0.f));
 
     //Initialize points
     float incr = 1.f / m_param1;

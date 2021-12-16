@@ -39,16 +39,16 @@ enum ShapeType {
     SHAPE_CUBE,
     SHAPE_JELLO_CUBE,
     SHAPE_SPRING_MASS_CUBE,
-    SHAPE_CYLINDER,
-    SHAPE_CONE,
-    SHAPE_SPHERE,
+//    SHAPE_CYLINDER,
+//    SHAPE_CONE,
+//    SHAPE_SPHERE,
     NUM_SHAPE_TYPES
 };
 
 enum SimType {
     SIM_JELLO_SIM,
     SIM_STATIC_CUBE,
-    SIM_EXAMPLE,
+//    SIM_EXAMPLE,
     NUM_SIM_TYPES
 };
 
@@ -111,6 +111,8 @@ struct Settings {
     float gravity;
 
     int jelloColor;
+    bool usePlane;
+    bool fallCameraY;
 
     // Brush
     int brushType;      // The user's selected brush @see BrushType

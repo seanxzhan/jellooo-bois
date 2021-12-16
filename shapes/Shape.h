@@ -8,7 +8,7 @@
 class Shape : public OpenGLShape
 {
 public:
-    Shape(int param1, int param2);
+    Shape(int param1);
     virtual ~Shape();
 
     //Getters

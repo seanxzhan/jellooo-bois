@@ -10,7 +10,7 @@ class JelloCube : public Shape
 {
 public:
     JelloCube();
-    JelloCube(int param1, int param2, float kElastic, float dElastic, float kCollision, float dCollision, float mass, float gravity);
+    JelloCube(int param1, float kElastic, float dElastic, float kCollision, float dCollision, float mass, float gravity);
     ~JelloCube();
     void tick(float current) override;
 

@@ -171,16 +171,6 @@
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QRadioButton" name="simTypeExample">
-          <property name="contextMenuPolicy">
-           <enum>Qt::DefaultContextMenu</enum>
-          </property>
-          <property name="text">
-           <string>Example Simulation 3</string>
-          </property>
-         </widget>
-        </item>
        </layout>
       </widget>
      </item>
@@ -217,27 +207,6 @@
          <widget class="QRadioButton" name="shapeTypeSMCube">
           <property name="text">
            <string>Spring-Mass Cube</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QRadioButton" name="shapeTypeCylinder">
-          <property name="text">
-           <string>Cylinder</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QRadioButton" name="shapeTypeCone">
-          <property name="text">
-           <string>Cone</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QRadioButton" name="shapeTypeSphere">
-          <property name="text">
-           <string>Sphere</string>
           </property>
          </widget>
         </item>
@@ -304,46 +273,10 @@
         <property name="verticalSpacing">
          <number>5</number>
         </property>
-        <item row="2" column="0">
-         <widget class="QLabel" name="shapeParameterLabel2">
-          <property name="text">
-           <string>2</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="2">
-         <widget class="QLineEdit" name="shapeParameterTextbox2">
-          <property name="minimumSize">
-           <size>
-            <width>40</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>40</width>
-            <height>16777215</height>
-           </size>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="0">
          <widget class="QLabel" name="shapeParameterLabel1">
           <property name="text">
            <string>1</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QSlider" name="shapeParameterSlider2">
-          <property name="minimumSize">
-           <size>
-            <width>100</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
           </property>
          </widget>
         </item>
@@ -590,7 +523,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>60</y>
+          <y>130</y>
           <width>388</width>
           <height>22</height>
          </rect>
@@ -603,7 +536,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>30</y>
+          <y>100</y>
           <width>388</width>
           <height>22</height>
          </rect>
@@ -616,7 +549,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
+          <y>70</y>
           <width>388</width>
           <height>22</height>
          </rect>
@@ -688,6 +621,32 @@
         </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="usePlaneCheckbox">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>10</y>
+          <width>86</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Use Plane</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="fallCameraY">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>40</y>
+          <width>241</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Fall Towards Camera Negative Y</string>
         </property>
        </widget>
       </widget>

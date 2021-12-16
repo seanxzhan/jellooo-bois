@@ -1,9 +1,8 @@
 #include "Shape.h"
 #include <iostream>
 
-Shape::Shape(int param1, int param2):
-    m_param1((param1 < 1) ? 1 : param1),
-    m_param2((param2 < 1) ? 1 : param2)
+Shape::Shape(int param1):
+    m_param1((param1 < 1) ? 1 : param1)
 {
 
 }
