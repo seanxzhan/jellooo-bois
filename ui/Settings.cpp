@@ -33,6 +33,7 @@ void Settings::loadSettingsOrDefaults() {
     dCollision = s.value("dCollision", 0.25).toFloat();
     mass = s.value("mass", 0.001953).toFloat();
     gravity = s.value("gravity", 1.f).toFloat();
+
     // Brush
     brushType = s.value("brushType", BRUSH_LINEAR).toInt();
     brushRadius = s.value("brushRadius", 50).toInt();
@@ -63,6 +64,9 @@ void Settings::loadSettingsOrDefaults() {
 
     // Connections
     cnnctnType = s.value("cnnctnType", C_STRUCT).toInt();
+
+    // Jello Colors
+    jelloColor = s.value("jelloColor", JC_White).toInt();
 
     // Camtrans
     useOrbitCamera = s.value("useOrbitCamera", true).toBool();

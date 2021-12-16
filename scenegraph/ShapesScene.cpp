@@ -216,7 +216,18 @@ void ShapesScene::renderJelloPass(SupportCanvas3D *context) {
     m_jelloShader->setLight(m_light);
 
     m_jelloShader->setUniform("useLighting", settings.useLighting);
-    m_jelloShader->setUniform("jelloColor", 3);
+    int color = 0;
+    if (settings.jelloColor == JC_Red) {
+        color = 1;
+    } else if (settings.jelloColor == JC_Green) {
+        color = 2;
+    } else if (settings.jelloColor == JC_Blue) {
+        color = 0;
+    } else {
+        // white
+        color = 3;
+    }
+    m_jelloShader->setUniform("jelloColor", color);
 
     // Pass in uniforms for view, projection, model (mat4(1.0))
     setMatrixUniforms(m_jelloShader.get(), context);

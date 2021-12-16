@@ -59,6 +59,14 @@ enum CnnctnType {
     NUM_C_TYPES
 };
 
+enum JelloColor {
+    JC_Red,
+    JC_Green,
+    JC_Blue,
+    JC_White,
+    NUM_JC_TYPES
+};
+
 // Enumeration values for the two tabs (2D, 3D) at the bottom of the Window.
 enum UITab {
     TAB_2D,
@@ -101,6 +109,8 @@ struct Settings {
     float dCollision;
     float mass;
     float gravity;
+
+    int jelloColor;
 
     // Brush
     int brushType;      // The user's selected brush @see BrushType

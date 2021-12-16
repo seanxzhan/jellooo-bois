@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
+    <width>626</width>
     <height>3112</height>
    </rect>
   </property>
@@ -92,7 +92,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>84</width>
+             <width>123</width>
              <height>3061</height>
             </rect>
            </property>
@@ -247,7 +247,7 @@
      <item>
       <widget class="QGroupBox" name="cnnctnType">
        <property name="title">
-        <string>Connections Types (rn only for vis purpose)</string>
+        <string>Connections Types</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <property name="leftMargin">
@@ -520,6 +520,58 @@
             <width>40</width>
             <height>16777215</height>
            </size>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="jelloColor">
+       <property name="title">
+        <string>Jello Color</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <property name="leftMargin">
+         <number>9</number>
+        </property>
+        <property name="topMargin">
+         <number>5</number>
+        </property>
+        <property name="rightMargin">
+         <number>9</number>
+        </property>
+        <property name="bottomMargin">
+         <number>5</number>
+        </property>
+        <item>
+         <widget class="QRadioButton" name="jelloColorRed">
+          <property name="text">
+           <string>Red</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="jelloColorGreen">
+          <property name="text">
+           <string>Green</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="jelloColorBlue">
+          <property name="text">
+           <string>Blue</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="jelloColorWhite">
+          <property name="text">
+           <string>White</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -1235,8 +1287,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>600</width>
-     <height>22</height>
+     <width>626</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

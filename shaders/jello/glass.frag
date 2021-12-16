@@ -80,11 +80,16 @@ void main()
         fragColor.z *= 0.2;
         fragColor.y = (1-prop) * 1.0 + prop * fragColor.z;
         fragColor.w = 0.8;
-    } else { // glass ish
-        fragColor.x *= 1.0;
-        fragColor.z *= 1.0;
-        fragColor.y *= 1.0;
-        fragColor.w = 0.1;
+    } else { // white jello ish
+//        fragColor.x *= 1.0;
+//        fragColor.z *= 1.0;
+//        fragColor.y *= 1.0;
+//        fragColor.w = 0.1;
+        float prop = 0.4; // proportion of glass color to keep
+        fragColor.x = (1-prop) * 1.0 + prop * fragColor.x;
+        fragColor.z = (1-prop) * 1.0 + prop * fragColor.z;
+        fragColor.y = (1-prop) * 1.0 + prop * fragColor.y;
+        fragColor.w = 0.8;
     }
 
 
