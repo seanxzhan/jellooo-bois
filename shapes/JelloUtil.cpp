@@ -1,6 +1,9 @@
 #include "JelloUtil.h"
 #include "math.h"
+#include <iostream>
+#include <thread>
 #include "gl/shaders/ShaderAttribLocations.h"
+#include <future>
 
 const float epsilon {0.0005f};
 
@@ -51,6 +54,217 @@ glm::vec3 applyHooke(float m_kElastic, float rest_len, glm::vec3 a, glm::vec3 b)
     return -m_kElastic * (glm::length(l) - rest_len) * glm::normalize(l);
 }
 
+void computeAdd(int dim,
+                float m_kElastic,
+                float m_dElastic,
+                float m_kCollision,
+                float m_dCollision,
+                float m_mass,
+                const glm::vec3 &m_gravity,
+                std::vector<glm::vec3> points,
+                std::vector<glm::vec3> velocity,
+                std::promise<glm::vec3> && out, int i, int j, int k, float rest_length, float rest_shear, float rest_bend, float rest_diag) {
+    glm::vec3 F = glm::vec3(0.f);
+    glm::vec3 fCollide = glm::vec3(0.f);
+    int index = to1D(i, j, k, dim, dim);
+
+    //Structural
+    if (isInRange(i + 1, 0, dim - 1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i+1, j, k, dim, dim)], velocity[index], velocity[to1D(i+1, j, k, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_length, points[index], points[to1D(i+1, j, k, dim, dim)]);
+    }
+    if (isInRange(i - 1, 0, dim - 1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i-1, j, k, dim, dim)], velocity[index], velocity[to1D(i-1, j, k, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_length, points[index], points[to1D(i-1, j, k, dim, dim)]);
+    }
+    if (isInRange(j + 1, 0, dim - 1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i, j+1, k, dim, dim)], velocity[index], velocity[to1D(i, j+1, k, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_length, points[index], points[to1D(i, j+1, k, dim, dim)]);
+    }
+    if (isInRange(j - 1, 0, dim - 1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i, j-1, k, dim, dim)], velocity[index], velocity[to1D(i, j-1, k, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_length, points[index], points[to1D(i, j-1, k, dim, dim)]);
+    }
+    if (isInRange(k + 1, 0, dim - 1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i, j, k+1, dim, dim)], velocity[index], velocity[to1D(i, j, k+1, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_length, points[index], points[to1D(i, j, k+1, dim, dim)]);
+    }
+    if (isInRange(k - 1, 0, dim - 1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i, j, k-1, dim, dim)], velocity[index], velocity[to1D(i, j, k-1, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_length, points[index], points[to1D(i, j, k-1, dim, dim)]);
+    }
+
+    //Shear
+    if (isInRange(i + 1, 0, dim-1) && isInRange(j + 1, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i+1, j+1, k, dim, dim)], velocity[index], velocity[to1D(i+1, j+1, k, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_shear, points[index], points[to1D(i+1, j+1, k, dim, dim)]);
+    }
+    if (isInRange(i + 1, 0, dim-1) && isInRange(j - 1, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i+1, j-1, k, dim, dim)], velocity[index], velocity[to1D(i+1, j-1, k, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_shear, points[index], points[to1D(i+1, j-1, k, dim, dim)]);
+    }
+    if (isInRange(i - 1, 0, dim-1) && isInRange(j + 1, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i-1, j+1, k, dim, dim)], velocity[index], velocity[to1D(i-1, j+1, k, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_shear, points[index], points[to1D(i-1, j+1, k, dim, dim)]);
+    }
+    if (isInRange(i - 1, 0, dim-1) && isInRange(j - 1, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i-1, j-1, k, dim, dim)], velocity[index], velocity[to1D(i-1, j-1, k, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_shear, points[index], points[to1D(i-1, j-1, k, dim, dim)]);
+    }
+    if (isInRange(j + 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i, j+1, k+1, dim, dim)], velocity[index], velocity[to1D(i, j+1, k+1, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_shear, points[index], points[to1D(i, j+1, k+1, dim, dim)]);
+    }
+    if (isInRange(j - 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i, j-1, k+1, dim, dim)], velocity[index], velocity[to1D(i, j-1, k+1, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_shear, points[index], points[to1D(i, j-1, k+1, dim, dim)]);
+    }
+    if (isInRange(j + 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i, j+1, k-1, dim, dim)], velocity[index], velocity[to1D(i, j+1, k-1, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_shear, points[index], points[to1D(i, j+1, k-1, dim, dim)]);
+    }
+    if (isInRange(j - 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i, j-1, k-1, dim, dim)], velocity[index], velocity[to1D(i, j-1, k-1, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_shear, points[index], points[to1D(i, j-1, k-1, dim, dim)]);
+    }
+    if (isInRange(i + 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i+1, j, k+1, dim, dim)], velocity[index], velocity[to1D(i+1, j, k+1, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_shear, points[index], points[to1D(i+1, j, k+1, dim, dim)]);
+    }
+    if (isInRange(i - 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i-1, j, k+1, dim, dim)], velocity[index], velocity[to1D(i-1, j, k+1, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_shear, points[index], points[to1D(i-1, j, k+1, dim, dim)]);
+    }
+    if (isInRange(i + 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i+1, j, k-1, dim, dim)], velocity[index], velocity[to1D(i+1, j, k-1, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_shear, points[index], points[to1D(i+1, j, k-1, dim, dim)]);
+    }
+    if (isInRange(i - 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i-1, j, k-1, dim, dim)], velocity[index], velocity[to1D(i-1, j, k-1, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_shear, points[index], points[to1D(i-1, j, k-1, dim, dim)]);
+    }
+
+    //Bend
+    if (isInRange(i + 2, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i+2, j, k, dim, dim)], velocity[index], velocity[to1D(i+2, j, k, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_bend, points[index], points[to1D(i+2, j, k, dim, dim)]);
+    }
+    if (isInRange(i - 2, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i-2, j, k, dim, dim)], velocity[index], velocity[to1D(i-2, j, k, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_bend, points[index], points[to1D(i-2, j, k, dim, dim)]);
+    }
+    if (isInRange(j + 2, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i, j+2, k, dim, dim)], velocity[index], velocity[to1D(i, j+2, k, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_bend, points[index], points[to1D(i, j+2, k, dim, dim)]);
+    }
+    if (isInRange(j - 2, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i, j-2, k, dim, dim)], velocity[index], velocity[to1D(i, j-2, k, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_bend, points[index], points[to1D(i, j-2, k, dim, dim)]);
+    }
+    if (isInRange(k + 2, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i, j, k+2, dim, dim)], velocity[index], velocity[to1D(i, j, k+2, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_bend, points[index], points[to1D(i, j, k+2, dim, dim)]);
+    }
+    if (isInRange(k - 2, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i, j, k-2, dim, dim)], velocity[index], velocity[to1D(i, j, k-2, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_bend, points[index], points[to1D(i, j, k-2, dim, dim)]);
+    }
+
+    //Diagonals
+    if (isInRange(i + 1, 0, dim-1) && isInRange(j + 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i+1, j+1, k+1, dim, dim)], velocity[index], velocity[to1D(i+1, j+1, k+1, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_diag, points[index], points[to1D(i+1, j+1, k+1, dim, dim)]);
+    }
+    if (isInRange(i - 1, 0, dim-1) && isInRange(j + 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i-1, j+1, k+1, dim, dim)], velocity[index], velocity[to1D(i-1, j+1, k+1, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_diag, points[index], points[to1D(i-1, j+1, k+1, dim, dim)]);
+    }
+    if (isInRange(i - 1, 0, dim-1) && isInRange(j - 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i-1, j-1, k+1, dim, dim)], velocity[index], velocity[to1D(i-1, j-1, k+1, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_diag, points[index], points[to1D(i-1, j-1, k+1, dim, dim)]);
+    }
+    if (isInRange(i + 1, 0, dim-1) && isInRange(j - 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i+1, j-1, k+1, dim, dim)], velocity[index], velocity[to1D(i+1, j-1, k+1, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_diag, points[index], points[to1D(i+1, j-1, k+1, dim, dim)]);
+    }
+    if (isInRange(i + 1, 0, dim-1) && isInRange(j - 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i+1, j-1, k-1, dim, dim)], velocity[index], velocity[to1D(i+1, j-1, k-1, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_diag, points[index], points[to1D(i+1, j-1, k-1, dim, dim)]);
+    }
+    if (isInRange(i + 1, 0, dim-1) && isInRange(j + 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i+1, j+1, k-1, dim, dim)], velocity[index], velocity[to1D(i+1, j+1, k-1, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_diag, points[index], points[to1D(i+1, j+1, k-1, dim, dim)]);
+    }
+    if (isInRange(i - 1, 0, dim-1) && isInRange(j + 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i-1, j+1, k-1, dim, dim)], velocity[index], velocity[to1D(i-1, j+1, k-1, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_diag, points[index], points[to1D(i-1, j+1, k-1, dim, dim)]);
+    }
+    if (isInRange(i - 1, 0, dim-1) && isInRange(j - 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
+        F += applyDampen(m_dElastic, points[index], points[to1D(i-1, j-1, k-1, dim, dim)], velocity[index], velocity[to1D(i-1, j-1, k-1, dim, dim)]);
+        F += applyHooke(m_kElastic, rest_diag, points[index], points[to1D(i-1, j-1, k-1, dim, dim)]);
+    }
+
+    //Bounding box
+    if (points[index].x > 2) {
+        fCollide.x += -m_dCollision * velocity[index].x + m_kCollision*std::fabs(points[index].x - 2) * -1;
+    }
+
+    if (points[index].x < -2) {
+        fCollide.x += -m_dCollision * velocity[index].x + m_kCollision*std::fabs(points[index].x + 2);
+    }
+
+    if (points[index].y > 2) {
+        fCollide.y += -m_dCollision * velocity[index].y + m_kCollision*std::fabs(points[index].y - 2) * -1;
+    }
+
+    if (points[index].y < -2) {
+        fCollide.y += -m_dCollision * velocity[index].y + m_kCollision*std::fabs(points[index].y + 2);
+    }
+
+    if (points[index].z > 2) {
+        fCollide.z += -m_dCollision * velocity[index].z + m_kCollision*std::fabs(points[index].z - 2) * -1;
+    }
+
+    if (points[index].z < -2) {
+        fCollide.z += -m_dCollision * velocity[index].z + m_kCollision*std::fabs(points[index].z + 2);
+    }
+    // TODO: We're using one plane, so I can factor out the math, but keeping it for demo purposes laterrrr
+
+                        // 3 Points to Define a Plane
+                        glm::vec3 a(2, -2, -2);
+                        glm::vec3 b(-2, 2, -2);
+                        glm::vec3 c(-2,-2, 2);
+
+                        glm::vec3 planeCross = glm::cross(c-b, a-b);
+                        glm::vec3 planeNormal = glm::normalize(planeCross);
+
+                        glm::vec3 currentPoint = points[index];
+                        float D;
+
+                        if (  // Intersects Plane
+                                (D = planeNormal.x * (currentPoint.x - a.x) +
+                                  planeNormal.y * (currentPoint.y - a.y) +
+                                  planeNormal.z * (currentPoint.z - a.z)) < 0) {
+
+                            // Dampen Velocity
+    //                        fCollide += -1.f * 0.5f * velocity[index];
+                            fCollide += -1.f * m_dCollision * velocity[index];
+
+                            // m_kCollision * Distance from point to plane * Normal
+                            float distToPlane = fabs(glm::dot(planeNormal, currentPoint - a));
+                            fCollide += 50 * distToPlane * planeNormal;
+    //                        fCollide += m_kCollision * distToPlane * planeNormal;
+                        }
+    F += fCollide;
+
+
+    //Force Field Calculation - by default exerts gravity everywhere
+    //In the future this should taken from as an input
+    F += m_gravity;
+
+    out.set_value(F * 1.0f/m_mass);
+}
+
 void computeAcceleration(int param_1,
                          float m_kElastic,
                          float m_dElastic,
@@ -66,211 +280,60 @@ void computeAcceleration(int param_1,
     rest_shear = rest_length * sqrt(2);
     rest_diag = rest_length * sqrt(3);
     rest_bend = rest_length * 2;
+    bool multiThreading = true;
+    if (multiThreading) {
+    for (int x = 0; x < std::ceil(dim*dim*dim/3.0); x++) {
+        int y = x*3;
+        int i1 = std::floor(y/(dim*dim));
+        int j1 = std::floor((y-i1*dim*dim)/dim);
+        int k1 = y%dim;
+        int i2 = std::floor((y+1)/(dim*dim));
+        int j2 = std::floor(((y+1)-i2*dim*dim)/dim);
+        int k2 = (y+1)%dim;
+        int i3 = std::floor((y+2)/(dim*dim));
+        int j3 = std::floor(((y+2)-i3*dim*dim)/dim);
+        int k3 = (y+2)%dim;
+        std::promise<glm::vec3> out1;
+        std::promise<glm::vec3> out2;
+        std::promise<glm::vec3> out3;
+        auto f1 = out1.get_future();
+        auto f2 = out2.get_future();
+        auto f3 = out3.get_future();
+        if (i3 > dim-1) {
+            if (i2 > dim-1) {
+                computeAdd(dim, m_kElastic, m_dElastic, m_kCollision, m_dCollision, m_mass, m_gravity, points, velocity, std::move(out1), i1, j1, k1, rest_length, rest_shear, rest_bend, rest_diag);
+                acceleration[to1D(i1, j1, k1, dim, dim)] = f1.get();
+            } else {
+                std::thread th1(&computeAdd, dim, m_kElastic, m_dElastic, m_kCollision, m_dCollision, m_mass, m_gravity, points, velocity, std::move(out1), i1, j1, k1, rest_length, rest_shear, rest_bend, rest_diag);
+                std::thread th2(&computeAdd, dim, m_kElastic, m_dElastic, m_kCollision, m_dCollision, m_mass, m_gravity, points, velocity, std::move(out2), i2, j2, k2, rest_length, rest_shear, rest_bend, rest_diag);
+                th1.join();
+                th2.join();
+                acceleration[to1D(i1, j1, k1, dim, dim)] = f1.get();
+                acceleration[to1D(i2, j2, k2, dim, dim)] = f2.get();
+            }
+        } else {
+            std::thread th1(&computeAdd, dim, m_kElastic, m_dElastic, m_kCollision, m_dCollision, m_mass, m_gravity, points, velocity, std::move(out1), i1, j1, k1, rest_length, rest_shear, rest_bend, rest_diag);
+            std::thread th2(&computeAdd, dim, m_kElastic, m_dElastic, m_kCollision, m_dCollision, m_mass, m_gravity, points, velocity, std::move(out2), i2, j2, k2, rest_length, rest_shear, rest_bend, rest_diag);
+            std::thread th3(&computeAdd, dim, m_kElastic, m_dElastic, m_kCollision, m_dCollision, m_mass, m_gravity, points, velocity, std::move(out3), i3, j3, k3, rest_length, rest_shear, rest_bend, rest_diag);
+            th1.join();
+            th2.join();
+            th3.join();
+            acceleration[to1D(i1, j1, k1, dim, dim)] = f1.get();
+            acceleration[to1D(i2, j2, k2, dim, dim)] = f2.get();
+            acceleration[to1D(i3, j3, k3, dim, dim)] = f3.get();
+        }
+    }
+    } else {
     for (int k = 0; k < dim; k++) {
             for (int i = 0; i < dim; i++) {
                 for (int j = 0; j < dim; j++) {
-                    glm::vec3 F = glm::vec3(0.f);
-                    glm::vec3 fCollide = glm::vec3(0.f);
-                    int index = to1D(i, j, k, dim, dim);
-
-                    //Structural
-                    if (isInRange(i + 1, 0, dim - 1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i+1, j, k, dim, dim)], velocity[index], velocity[to1D(i+1, j, k, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_length, points[index], points[to1D(i+1, j, k, dim, dim)]);
-                    }
-                    if (isInRange(i - 1, 0, dim - 1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i-1, j, k, dim, dim)], velocity[index], velocity[to1D(i-1, j, k, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_length, points[index], points[to1D(i-1, j, k, dim, dim)]);
-                    }
-                    if (isInRange(j + 1, 0, dim - 1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i, j+1, k, dim, dim)], velocity[index], velocity[to1D(i, j+1, k, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_length, points[index], points[to1D(i, j+1, k, dim, dim)]);
-                    }
-                    if (isInRange(j - 1, 0, dim - 1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i, j-1, k, dim, dim)], velocity[index], velocity[to1D(i, j-1, k, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_length, points[index], points[to1D(i, j-1, k, dim, dim)]);
-                    }
-                    if (isInRange(k + 1, 0, dim - 1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i, j, k+1, dim, dim)], velocity[index], velocity[to1D(i, j, k+1, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_length, points[index], points[to1D(i, j, k+1, dim, dim)]);
-                    }
-                    if (isInRange(k - 1, 0, dim - 1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i, j, k-1, dim, dim)], velocity[index], velocity[to1D(i, j, k-1, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_length, points[index], points[to1D(i, j, k-1, dim, dim)]);
-                    }
-
-                    //Shear
-                    if (isInRange(i + 1, 0, dim-1) && isInRange(j + 1, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i+1, j+1, k, dim, dim)], velocity[index], velocity[to1D(i+1, j+1, k, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_shear, points[index], points[to1D(i+1, j+1, k, dim, dim)]);
-                    }
-                    if (isInRange(i + 1, 0, dim-1) && isInRange(j - 1, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i+1, j-1, k, dim, dim)], velocity[index], velocity[to1D(i+1, j-1, k, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_shear, points[index], points[to1D(i+1, j-1, k, dim, dim)]);
-                    }
-                    if (isInRange(i - 1, 0, dim-1) && isInRange(j + 1, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i-1, j+1, k, dim, dim)], velocity[index], velocity[to1D(i-1, j+1, k, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_shear, points[index], points[to1D(i-1, j+1, k, dim, dim)]);
-                    }
-                    if (isInRange(i - 1, 0, dim-1) && isInRange(j - 1, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i-1, j-1, k, dim, dim)], velocity[index], velocity[to1D(i-1, j-1, k, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_shear, points[index], points[to1D(i-1, j-1, k, dim, dim)]);
-                    }
-                    if (isInRange(j + 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i, j+1, k+1, dim, dim)], velocity[index], velocity[to1D(i, j+1, k+1, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_shear, points[index], points[to1D(i, j+1, k+1, dim, dim)]);
-                    }
-                    if (isInRange(j - 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i, j-1, k+1, dim, dim)], velocity[index], velocity[to1D(i, j-1, k+1, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_shear, points[index], points[to1D(i, j-1, k+1, dim, dim)]);
-                    }
-                    if (isInRange(j + 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i, j+1, k-1, dim, dim)], velocity[index], velocity[to1D(i, j+1, k-1, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_shear, points[index], points[to1D(i, j+1, k-1, dim, dim)]);
-                    }
-                    if (isInRange(j - 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i, j-1, k-1, dim, dim)], velocity[index], velocity[to1D(i, j-1, k-1, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_shear, points[index], points[to1D(i, j-1, k-1, dim, dim)]);
-                    }
-                    if (isInRange(i + 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i+1, j, k+1, dim, dim)], velocity[index], velocity[to1D(i+1, j, k+1, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_shear, points[index], points[to1D(i+1, j, k+1, dim, dim)]);
-                    }
-                    if (isInRange(i - 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i-1, j, k+1, dim, dim)], velocity[index], velocity[to1D(i-1, j, k+1, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_shear, points[index], points[to1D(i-1, j, k+1, dim, dim)]);
-                    }
-                    if (isInRange(i + 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i+1, j, k-1, dim, dim)], velocity[index], velocity[to1D(i+1, j, k-1, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_shear, points[index], points[to1D(i+1, j, k-1, dim, dim)]);
-                    }
-                    if (isInRange(i - 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i-1, j, k-1, dim, dim)], velocity[index], velocity[to1D(i-1, j, k-1, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_shear, points[index], points[to1D(i-1, j, k-1, dim, dim)]);
-                    }
-
-                    //Bend
-                    if (isInRange(i + 2, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i+2, j, k, dim, dim)], velocity[index], velocity[to1D(i+2, j, k, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_bend, points[index], points[to1D(i+2, j, k, dim, dim)]);
-                    }
-                    if (isInRange(i - 2, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i-2, j, k, dim, dim)], velocity[index], velocity[to1D(i-2, j, k, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_bend, points[index], points[to1D(i-2, j, k, dim, dim)]);
-                    }
-                    if (isInRange(j + 2, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i, j+2, k, dim, dim)], velocity[index], velocity[to1D(i, j+2, k, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_bend, points[index], points[to1D(i, j+2, k, dim, dim)]);
-                    }
-                    if (isInRange(j - 2, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i, j-2, k, dim, dim)], velocity[index], velocity[to1D(i, j-2, k, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_bend, points[index], points[to1D(i, j-2, k, dim, dim)]);
-                    }
-                    if (isInRange(k + 2, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i, j, k+2, dim, dim)], velocity[index], velocity[to1D(i, j, k+2, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_bend, points[index], points[to1D(i, j, k+2, dim, dim)]);
-                    }
-                    if (isInRange(k - 2, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i, j, k-2, dim, dim)], velocity[index], velocity[to1D(i, j, k-2, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_bend, points[index], points[to1D(i, j, k-2, dim, dim)]);
-                    }
-
-                    //Diagonals
-                    if (isInRange(i + 1, 0, dim-1) && isInRange(j + 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i+1, j+1, k+1, dim, dim)], velocity[index], velocity[to1D(i+1, j+1, k+1, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_diag, points[index], points[to1D(i+1, j+1, k+1, dim, dim)]);
-                    }
-                    if (isInRange(i - 1, 0, dim-1) && isInRange(j + 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i-1, j+1, k+1, dim, dim)], velocity[index], velocity[to1D(i-1, j+1, k+1, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_diag, points[index], points[to1D(i-1, j+1, k+1, dim, dim)]);
-                    }
-                    if (isInRange(i - 1, 0, dim-1) && isInRange(j - 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i-1, j-1, k+1, dim, dim)], velocity[index], velocity[to1D(i-1, j-1, k+1, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_diag, points[index], points[to1D(i-1, j-1, k+1, dim, dim)]);
-                    }
-                    if (isInRange(i + 1, 0, dim-1) && isInRange(j - 1, 0, dim-1) && isInRange(k + 1, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i+1, j-1, k+1, dim, dim)], velocity[index], velocity[to1D(i+1, j-1, k+1, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_diag, points[index], points[to1D(i+1, j-1, k+1, dim, dim)]);
-                    }
-                    if (isInRange(i + 1, 0, dim-1) && isInRange(j - 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i+1, j-1, k-1, dim, dim)], velocity[index], velocity[to1D(i+1, j-1, k-1, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_diag, points[index], points[to1D(i+1, j-1, k-1, dim, dim)]);
-                    }
-                    if (isInRange(i + 1, 0, dim-1) && isInRange(j + 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i+1, j+1, k-1, dim, dim)], velocity[index], velocity[to1D(i+1, j+1, k-1, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_diag, points[index], points[to1D(i+1, j+1, k-1, dim, dim)]);
-                    }
-                    if (isInRange(i - 1, 0, dim-1) && isInRange(j + 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i-1, j+1, k-1, dim, dim)], velocity[index], velocity[to1D(i-1, j+1, k-1, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_diag, points[index], points[to1D(i-1, j+1, k-1, dim, dim)]);
-                    }
-                    if (isInRange(i - 1, 0, dim-1) && isInRange(j - 1, 0, dim-1) && isInRange(k - 1, 0, dim-1)) {
-                        F += applyDampen(m_dElastic, points[index], points[to1D(i-1, j-1, k-1, dim, dim)], velocity[index], velocity[to1D(i-1, j-1, k-1, dim, dim)]);
-                        F += applyHooke(m_kElastic, rest_diag, points[index], points[to1D(i-1, j-1, k-1, dim, dim)]);
-                    }
-
-                    //Bounding box
-                    if (points[index].x > 2) {
-                        fCollide.x += -m_dCollision * velocity[index].x + m_kCollision*std::fabs(points[index].x - 2) * -1;
-                    }
-
-                    if (points[index].x < -2) {
-                        fCollide.x += -m_dCollision * velocity[index].x + m_kCollision*std::fabs(points[index].x + 2);
-                    }
-
-                    if (points[index].y > 2) {
-                        fCollide.y += -m_dCollision * velocity[index].y + m_kCollision*std::fabs(points[index].y - 2) * -1;
-                    }
-
-                    if (points[index].y < -2) {
-                        fCollide.y += -m_dCollision * velocity[index].y + m_kCollision*std::fabs(points[index].y + 2);
-                    }
-
-                    if (points[index].z > 2) {
-                        fCollide.z += -m_dCollision * velocity[index].z + m_kCollision*std::fabs(points[index].z - 2) * -1;
-                    }
-
-                    if (points[index].z < -2) {
-                        fCollide.z += -m_dCollision * velocity[index].z + m_kCollision*std::fabs(points[index].z + 2);
-                    }
-                    // TODO: We're using one plane, so I can factor out the math, but keeping it for demo purposes laterrrr
-
-                                        // 3 Points to Define a Plane
-                                        glm::vec3 a(2, -2, -2);
-                                        glm::vec3 b(-2, 2, -2);
-                                        glm::vec3 c(-2,-2, 2);
-
-                                        glm::vec3 planeCross = glm::cross(c-b, a-b);
-                                        glm::vec3 planeNormal = glm::normalize(planeCross);
-
-                                        glm::vec3 currentPoint = points[index];
-                                        float D;
-
-                                        if (  // Intersects Plane
-                                                (D = planeNormal.x * (currentPoint.x - a.x) +
-                                                  planeNormal.y * (currentPoint.y - a.y) +
-                                                  planeNormal.z * (currentPoint.z - a.z)) < 0) {
-
-                                            // Dampen Velocity
-                    //                        fCollide += -1.f * 0.5f * velocity[index];
-                                            fCollide += -1.f * m_dCollision * velocity[index];
-
-                                            // m_kCollision * Distance from point to plane * Normal
-                                            float distToPlane = fabs(glm::dot(planeNormal, currentPoint - a));
-                                            fCollide += 50 * distToPlane * planeNormal;
-                    //                        fCollide += m_kCollision * distToPlane * planeNormal;
-                                        }
-                    F += fCollide;
-
-
-                    //Force Field Calculation - by default exerts gravity everywhere
-                    //In the future this should taken from as an input
-                    F += m_gravity;
-
-                    acceleration[index] = F * 1.0f/m_mass;
-
+                    std::promise<glm::vec3> out;
+                    auto f = out.get_future();
+                    computeAdd(dim, m_kElastic, m_dElastic, m_kCollision, m_dCollision, m_mass, m_gravity, points, velocity, std::move(out), i, j, k, rest_length, rest_shear, rest_bend, rest_diag);
+                    acceleration[to1D(i, j, k, dim, dim)] = f.get();
                 }
           }
+    }
     }
 }
 
