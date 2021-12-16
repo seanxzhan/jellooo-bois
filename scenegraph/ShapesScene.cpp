@@ -135,6 +135,13 @@ void ShapesScene::loadTestShader() {
 void ShapesScene::render(SupportCanvas3D *context) {
     // Clear the screen in preparation for the next frame. (Use a gray background instead of a
     // black one for drawing wireframe or normals so they will show up against the background.)
+    glm::mat4x4 viewMat = context->getCamera()->getViewMatrix();
+    viewMat = glm::transpose(viewMat);
+
+    glm::vec3 worldSpaceDown = glm::vec3(0, -1, 0);
+    m_shape->setGravity(settings.gravity,
+                        glm::inverse(glm::transpose(glm::mat3x3(viewMat)))*worldSpaceDown);
+
     setClearColor();
 
     if (m_usePhong) {

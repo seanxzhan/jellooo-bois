@@ -20,6 +20,7 @@ public:
     virtual void setParam2(int inp);
 
     void tick(float current) override;
+    void setGravity(float scale, glm::vec3 gravity) override;
 
 protected:
     int m_param1;

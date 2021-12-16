@@ -219,7 +219,7 @@ void MainWindow::dataBind() {
     BIND(ChoiceBinding::bindTabs(ui->tabWidget, settings.currentTab))
     BIND(FloatBinding::bindSliderAndTextbox(ui->kElasticSlider, ui->kElastic, settings.kElastic, 0, 2000));
     BIND(FloatBinding::bindSliderAndTextbox(ui->dElasticSlider, ui->dElastic, settings.dElastic, 0, 2000));
-    BIND(FloatBinding::bindSliderAndTextbox(ui->kCollisionSlider, ui->kCollision, settings.kCollision, 0, 100));
+    BIND(FloatBinding::bindSliderAndTextbox(ui->kCollisionSlider, ui->kCollision, settings.kCollision, 0, 10000));
     BIND(FloatBinding::bindSliderAndTextbox(ui->dCollisionSlider, ui->dCollision, settings.dCollision, 0, 100));
     BIND(FloatBinding::bindSliderAndTextbox(ui->massSlider, ui->mass, settings.mass, 0, 100));
     BIND(FloatBinding::bindSliderAndTextbox(ui->gravitySlider, ui->gravity, settings.gravity, 0, 100));

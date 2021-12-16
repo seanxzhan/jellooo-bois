@@ -19,6 +19,9 @@ void Bbox::setParam2(int inp) {
 void Bbox::generateVertexData(){
 }
 
+void Bbox::setGravity(float scale, glm::vec3 new_direction) {
+}
+
 void Bbox::drawFloor() {
     std::vector<GLfloat> floorData = {
         -2.f, -2.f, -2.f,

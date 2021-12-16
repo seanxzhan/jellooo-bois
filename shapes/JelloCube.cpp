@@ -86,8 +86,8 @@ float JelloCube::getGravity() {
     return m_gravity.y;
 }
 
-void JelloCube::setGravity(float yValue) {
-    m_gravity.y = yValue;
+void JelloCube::setGravity(float scale, glm::vec3 new_direction) {
+    m_gravity = scale * new_direction;
 }
 
 void JelloCube::generateVertexData(){
@@ -95,7 +95,7 @@ void JelloCube::generateVertexData(){
     int num_control_points = pow(dim,3);
     m_points.reserve(num_control_points);
     m_velocity.reserve(num_control_points);
-    m_velocity.insert(m_velocity.begin(), num_control_points, glm::vec3(30.f, 30.f, 30.f));
+    m_velocity.insert(m_velocity.begin(), num_control_points, glm::vec3(0.f, 0.f, 0.f));
     m_normals.reserve(dim * dim * 6);
 
     //Initialize points

@@ -70,3 +70,6 @@ void Shape::tick(float current) {
     std::cout << "Shape:";
     std::cout << current << std::endl;
 }
+
+void Shape::setGravity(float scale, glm::vec3 gravity) {
+};

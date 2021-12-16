@@ -33,6 +33,9 @@ void SpringMassCube::setParam2(int inp) {
     generateVertexData();
 }
 
+void SpringMassCube::setGravity(float scale, glm::vec3 new_direction) {
+}
+
 void SpringMassCube::generateVertexData(){
     int dim = m_param1 + 1;
     int num_control_points = pow(dim,3);

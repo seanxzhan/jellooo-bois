@@ -37,6 +37,7 @@ public:
     void draw();
     void drawPandL();
     virtual void tick(float current) = 0;
+    virtual void setGravity(float scale, glm::vec3 gravity) = 0;
 
     /** Initialize the VBO with the given vertex data. */
     void setVertexData(GLfloat *data, int size, VBO::GEOMETRY_LAYOUT drawMode, int num_vertices);

@@ -32,7 +32,7 @@ public:
     void setMass(float mass);
 
     float getGravity();
-    void setGravity(float yValue);
+    void setGravity(float scale, glm::vec3 new_direction) override;
 private:
     virtual void generateVertexData() override;
 

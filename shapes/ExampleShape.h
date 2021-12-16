@@ -87,6 +87,7 @@ public:
     ExampleShape(int param1, int param2);
     ~ExampleShape();
     void tick(float current) override;
+    void setGravity(float scale, glm::vec3 new_direction) override;
 
 private:
     int m_param1;

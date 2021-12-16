@@ -257,8 +257,8 @@ void computeAcceleration(int param_1,
 
                                             // m_kCollision * Distance from point to plane * Normal
                                             float distToPlane = fabs(glm::dot(planeNormal, currentPoint - a));
-                                            fCollide += 50 * distToPlane * planeNormal;
-                    //                        fCollide += m_kCollision * distToPlane * planeNormal;
+//                                            fCollide += 50 * distToPlane * planeNormal;
+                                            fCollide += m_kCollision * distToPlane * planeNormal;
                                         }
                     F += fCollide;
 

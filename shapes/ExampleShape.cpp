@@ -28,6 +28,9 @@ ExampleShape::~ExampleShape()
 {
 }
 
+void ExampleShape::setGravity(float scale, glm::vec3 new_direction) {
+}
+
 //current time in seconds
 void ExampleShape::tick(float current) {
 //    float increment = sin(current) / 60;
