@@ -20,7 +20,11 @@ Added
     - Turn environment mapping on/off
 
 Allocation of work
+
 Adrian: Physics, tick functionality, tesselating faces and calculating normals 
+
 Sean: Wireframe bounding box visualization, Spring mass cube visualization, GUI, shaders 
+
 Marc: Environment mapping, glass shader, plane intersection, shaders 
+
 Luca: Physics, GUI, tried multithreading (somehow slower so not included)
