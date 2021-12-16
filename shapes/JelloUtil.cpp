@@ -1,5 +1,6 @@
 #include "JelloUtil.h"
 #include "math.h"
+#include "Settings.h"
 #include "gl/shaders/ShaderAttribLocations.h"
 
 const float epsilon {0.0005f};
@@ -235,34 +236,36 @@ void computeAcceleration(int param_1,
                     }
                     // TODO: We're using one plane, so I can factor out the math, but keeping it for demo purposes laterrrr
 
-                                        // 3 Points to Define a Plane
-                                        glm::vec3 a(2, -2, -2);
-                                        glm::vec3 b(-2, 2, -2);
-                                        glm::vec3 c(-2,-2, 2);
+                    if (settings.usePlane) {
+                        // 3 Points to Define a Plane
+                        glm::vec3 a(2, -2, -2);
+                        glm::vec3 b(-2, 2, -2);
+                        glm::vec3 c(-2,-2, 2);
 
-                                        glm::vec3 planeCross = glm::cross(c-b, a-b);
-                                        glm::vec3 planeNormal = glm::normalize(planeCross);
+                        glm::vec3 planeCross = glm::cross(c-b, a-b);
+                        glm::vec3 planeNormal = glm::normalize(planeCross);
 
-                                        glm::vec3 currentPoint = points[index];
-                                        float D;
+                        glm::vec3 currentPoint = points[index];
+                        float D;
 
-                                        if (  // Intersects Plane
-                                                (D = planeNormal.x * (currentPoint.x - a.x) +
-                                                  planeNormal.y * (currentPoint.y - a.y) +
-                                                  planeNormal.z * (currentPoint.z - a.z)) < 0) {
+                        if (  // Intersects Plane
+                                (D = planeNormal.x * (currentPoint.x - a.x) +
+                                  planeNormal.y * (currentPoint.y - a.y) +
+                                  planeNormal.z * (currentPoint.z - a.z)) < 0) {
 
-                                            // Dampen Velocity
-                    //                        fCollide += -1.f * 0.5f * velocity[index];
-                                            fCollide += -1.f * m_dCollision * velocity[index];
+                            // Dampen Velocity
+    //                        fCollide += -1.f * 0.5f * velocity[index];
+                            fCollide += -1.f * m_dCollision * velocity[index];
 
-                                            // m_kCollision * Distance from point to plane * Normal
-                                            float distToPlane = fabs(glm::dot(planeNormal, currentPoint - a));
-                                            fCollide += 50 * distToPlane * planeNormal;
-                    //                        fCollide += m_kCollision * distToPlane * planeNormal;
-                                        }
+                            // m_kCollision * Distance from point to plane * Normal
+                            float distToPlane = fabs(glm::dot(planeNormal, currentPoint - a));
+    //                                            fCollide += 50 * distToPlane * planeNormal;
+                            fCollide += m_kCollision * distToPlane * planeNormal;
+                        }
+                    }
+
+
                     F += fCollide;
-
-
                     //Force Field Calculation - by default exerts gravity everywhere
                     //In the future this should taken from as an input
                     F += m_gravity;

@@ -54,7 +54,6 @@ float QuaternionCamera::getHeightAngle() const {
     return m_heightAngle;
 }
 
-
 void QuaternionCamera::orientLook(const glm::vec4 &eye, const glm::vec4 &look, const glm::vec4 &up) {
     m_eye = eye;
     m_rot = glm::toQuat(glm::transpose(glm::lookAt(glm::vec3(0), look.xyz(), up.xyz())));

@@ -2,7 +2,7 @@
 #include "gl/shaders/ShaderAttribLocations.h"
 
 Bbox::Bbox():
-    Shape(0, 0)
+    Shape(0)
 {}
 
 Bbox::~Bbox(){}
@@ -17,6 +17,9 @@ void Bbox::setParam2(int inp) {
 }
 
 void Bbox::generateVertexData(){
+}
+
+void Bbox::setGravity(float scale, glm::vec3 new_direction) {
 }
 
 void Bbox::drawFloor() {
@@ -82,6 +85,18 @@ void Bbox::drawBbox() {
         -1.f, 2.f, -2.f, -1.f, -2.f, -2.f,
         -1.f, 2.f, 2.f, -1.f, -2.f, 2.f,
         0.f, 2.f, 2.f, 0.f, -2.f, 2.f,
-        0.f, 2.f, -2.f, 0.f, -2.f, -2.f};
+        0.f, 2.f, -2.f, 0.f, -2.f, -2.f,
+        -2.f, 2.f, -1.f, 2.f, 2.f, -1.f,
+        -2.f, 2.f, 0.f, 2.f, 2.f, 0.f,
+        -2.f, 2.f, 1.f, 2.f, 2.f, 1.f,
+        -2.f, -2.f, -1.f, 2.f, -2.f, -1.f,
+        -2.f, -2.f, 0.f, 2.f, -2.f, 0.f,
+        -2.f, -2.f, 1.f, 2.f, -2.f, 1.f,
+        -1.f, 2.f, -2.f, -1.f, 2.f, 2.f,
+        0.f, 2.f, -2.f, 0.f, 2.f, 2.f,
+        1.f, 2.f, -2.f, 1.f, 2.f, 2.f,
+        -1.f, -2.f, -2.f, -1.f, -2.f, 2.f,
+        0.f, -2.f, -2.f, 0.f, -2.f, 2.f,
+        1.f, -2.f, -2.f, 1.f, -2.f, 2.f};
     drawLines(lineData);
 }

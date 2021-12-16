@@ -1,9 +1,10 @@
 #include "JelloCube.h"
 #include "JelloUtil.h"
+#include "Settings.h"
 #include <iostream>
 
 JelloCube::JelloCube():
-    Shape(8,8),
+    Shape(8),
     m_kElastic(200),
     m_dElastic(0.15),
     m_kCollision(400),
@@ -15,8 +16,8 @@ JelloCube::JelloCube():
     generateVertexData();
 }
 
-JelloCube::JelloCube(int param1, int param2, float kElastic, float dElastic, float kCollision, float dCollision, float mass, float gravity):
-    Shape(param1,param2),
+JelloCube::JelloCube(int param1, float kElastic, float dElastic, float kCollision, float dCollision, float mass, float gravity):
+    Shape(param1),
     m_kElastic(kElastic),
     m_dElastic(dElastic),
     m_kCollision(kCollision),
@@ -86,8 +87,12 @@ float JelloCube::getGravity() {
     return m_gravity.y;
 }
 
-void JelloCube::setGravity(float yValue) {
-    m_gravity.y = yValue;
+void JelloCube::setGravity(float scale, glm::vec3 new_direction) {
+    if (settings.fallCameraY) {
+        m_gravity = scale * new_direction;
+    } else {
+        m_gravity = scale * glm::vec3(0, -1, 0);
+    }
 }
 
 void JelloCube::generateVertexData(){
@@ -95,7 +100,7 @@ void JelloCube::generateVertexData(){
     int num_control_points = pow(dim,3);
     m_points.reserve(num_control_points);
     m_velocity.reserve(num_control_points);
-    m_velocity.insert(m_velocity.begin(), num_control_points, glm::vec3(30.f, 30.f, 30.f));
+    m_velocity.insert(m_velocity.begin(), num_control_points, glm::vec3(0.f, 0.f, 0.f));
     m_normals.reserve(dim * dim * 6);
 
     //Initialize points

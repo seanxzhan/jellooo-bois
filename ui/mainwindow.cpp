@@ -91,18 +91,18 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(rb, SIGNAL(clicked()), this, SLOT(activateCanvas2D()));
 
     a.clear();
-    a += ui->shapeTypeCone;
+//    a += ui->shapeTypeCone;
     a += ui->shapeTypeCube;
     a += ui->shapeTypeJelloCube;
     a += ui->shapeTypeSMCube;
-    a += ui->shapeTypeCylinder;
-    a += ui->shapeTypeSphere;
+//    a += ui->shapeTypeCylinder;
+//    a += ui->shapeTypeSphere;
 //    a += ui->shapeTypeTorus;
 //    a += ui->shapeTypeSpecial1;
 //    a += ui->shapeTypeSpecial2;
     a += ui->simTypeJelloSim;
     a += ui->simTypeStaticCube;
-    a += ui->simTypeExample;
+//    a += ui->simTypeExample;
     a += ui->cnnctnTypeStruct;
     a += ui->cnnctnTypeShear;
     a += ui->cnnctnTypeBend;
@@ -159,18 +159,14 @@ void MainWindow::dataBind() {
         settings.shapeType,
         ui->shapeTypeCube,
         ui->shapeTypeJelloCube,
-        ui->shapeTypeSMCube,
-        ui->shapeTypeCylinder,
-        ui->shapeTypeCone,
-        ui->shapeTypeSphere))
+        ui->shapeTypeSMCube))
 
     BIND(ChoiceBinding::bindRadioButtons(
         simulationGroup,
         NUM_SIM_TYPES,
         settings.simType,
         ui->simTypeJelloSim,
-        ui->simTypeStaticCube,
-        ui->simTypeExample))
+        ui->simTypeStaticCube))
 
 
     BIND(ChoiceBinding::bindRadioButtons(
@@ -192,13 +188,15 @@ void MainWindow::dataBind() {
 
     BIND(IntBinding::bindSliderAndTextbox(
         ui->shapeParameterSlider1, ui->shapeParameterTextbox1, settings.shapeParameter1, 1.f, 100.f))
-    BIND(IntBinding::bindSliderAndTextbox(
-        ui->shapeParameterSlider2, ui->shapeParameterTextbox2, settings.shapeParameter2, 1.f, 100.f))
+//    BIND(IntBinding::bindSliderAndTextbox(
+//        ui->shapeParameterSlider2, ui->shapeParameterTextbox2, settings.shapeParameter2, 1.f, 100.f))
 //    BIND(FloatBinding::bindSliderAndTextbox(
 //        ui->shapeParameterSlider3, ui->shapeParameterTextbox3, settings.shapeParameter3, 1.f, 100.f))
     BIND(BoolBinding::bindCheckbox(ui->useLightingCheckbox, settings.useLighting))
     BIND(BoolBinding::bindCheckbox(ui->drawWireframeCheckbox, settings.drawWireframe))
     BIND(BoolBinding::bindCheckbox(ui->drawNormalsCheckbox, settings.drawNormals))
+    BIND(BoolBinding::bindCheckbox(ui->usePlaneCheckbox, settings.usePlane))
+    BIND(BoolBinding::bindCheckbox(ui->fallCameraY, settings.fallCameraY))
 
     // Camtrans dock
     BIND(BoolBinding::bindCheckbox(ui->cameraOrbitCheckbox, settings.useOrbitCamera))
@@ -219,7 +217,7 @@ void MainWindow::dataBind() {
     BIND(ChoiceBinding::bindTabs(ui->tabWidget, settings.currentTab))
     BIND(FloatBinding::bindSliderAndTextbox(ui->kElasticSlider, ui->kElastic, settings.kElastic, 0, 2000));
     BIND(FloatBinding::bindSliderAndTextbox(ui->dElasticSlider, ui->dElastic, settings.dElastic, 0, 2000));
-    BIND(FloatBinding::bindSliderAndTextbox(ui->kCollisionSlider, ui->kCollision, settings.kCollision, 0, 100));
+    BIND(FloatBinding::bindSliderAndTextbox(ui->kCollisionSlider, ui->kCollision, settings.kCollision, 0, 10000));
     BIND(FloatBinding::bindSliderAndTextbox(ui->dCollisionSlider, ui->dCollision, settings.dCollision, 0, 100));
     BIND(FloatBinding::bindSliderAndTextbox(ui->massSlider, ui->mass, settings.mass, 0, 100));
     BIND(FloatBinding::bindSliderAndTextbox(ui->gravitySlider, ui->gravity, settings.gravity, 0, 100));

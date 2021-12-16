@@ -51,7 +51,7 @@ void Settings::loadSettingsOrDefaults() {
     rotateAngle = s.value("rotateAngle", 0).toInt();
 
     // Shapes
-    shapeType = s.value("shapeType", SHAPE_SPHERE).toInt();
+    shapeType = s.value("shapeType", SHAPE_CUBE).toInt();
     shapeParameter1 = s.value("shapeParameter1", 15).toInt();
     shapeParameter2 = s.value("shapeParameter2", 15).toInt();
     shapeParameter3 = s.value("shapeParameter3", 15).toDouble();
@@ -67,6 +67,12 @@ void Settings::loadSettingsOrDefaults() {
 
     // Jello Colors
     jelloColor = s.value("jelloColor", JC_White).toInt();
+
+    // plane on and off
+    usePlane = s.value("usePlane", false).toBool();
+
+    // falling towards cameray space y axis
+    fallCameraY = s.value("fallCameraY", false).toBool();
 
     // Camtrans
     useOrbitCamera = s.value("useOrbitCamera", true).toBool();
