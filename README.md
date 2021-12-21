@@ -28,3 +28,5 @@ Sean: Spring mass cube visualization, GUI, shaders, GL stuff
 Marc: Environment mapping, glass shaders, plane intersection
 
 Luca: Physics, GUI, tried multithreading (somehow slower so not included)
+
+DEMO Video: https://www.youtube.com/watch?app=desktop&v=1JgazX0uai4&feature=youtu.be
